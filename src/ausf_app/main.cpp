@@ -86,9 +86,9 @@ int main(int argc, char **argv) {
 
   ausf_cfg.load(Options::getlibconfigConfig());
   ausf_cfg.display();
-  
-  cout << endl << ausf_cfg.sbi.port << endl;
-  Pistache::Address addr(Pistache::Ipv4::any(), Pistache::Port(ausf_cfg.sbi.port)); 
+
+  //Pistache::Address addr(Pistache::Ipv4::any(), Pistache::Port(ausf_cfg.sbi.port));
+  Pistache::Address addr(std::string(inet_ntoa (*((struct in_addr *)&ausf_cfg.sbi.addr4))), Pistache::Port(ausf_cfg.sbi.port));
 
   httpEndpoint = new Pistache::Http::Endpoint((addr));
   auto router = std::make_shared<Pistache::Rest::Router>();
