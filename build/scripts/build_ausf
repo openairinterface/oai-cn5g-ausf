@@ -1,0 +1,143 @@
+#!/bin/bash
+
+THIS_SCRIPT_PATH=$(dirname $(readlink -f $0))
+
+OPENXGAUSF_DIR=${THIS_SCRIPT_PATH%/*}
+OPENXGAUSF_DIR=${OPENXGAUSF_DIR%/*}
+
+###############################
+## echo and  family
+###############################
+black='\E[30m'
+red='\E[31m'
+green='\E[32m'
+yellow='\E[33m'
+blue='\E[1;34m'
+magenta='\E[35m'
+cyan='\E[36m'
+white='\E[37m'
+reset_color='\E[00m'
+COLORIZE=1
+
+#-------------------------------------------------------------------------------
+cecho()
+{
+    # Color-echo
+    # arg1 = message
+    # arg2 = color
+    local default_msg="No Message."
+    message=${1:-$default_msg}
+    color=${2:-$green}
+    [ "$COLORIZE" = "1" ] && message="$color$message$reset_color"
+    echo -e "$message"
+    return
+}
+
+echo_error()   { cecho "$*" $red          ;}
+echo_fatal()   { cecho "$*" $red; exit -1 ;}
+echo_warning() { cecho "$*" $yellow       ;}
+echo_success() { cecho "$*" $green        ;}
+echo_info()    { cecho "$*" $blue         ;}
+
+function help()
+{
+	echo_error " "
+   	echo_error "Usage: build_ausf [OPTION]..."
+    echo_error "Build the AUSF executable."
+    echo_error " "
+    echo_error "Options:"
+    echo_error "Mandatory arguments to long options are mandatory for short options too."
+    echo_error "  -b, --build-type                          Build type as defined in cmake, allowed values are: Debug Release"
+    echo_error "  -c, --clean                               Clean the build generated files: config, object, executable files (build from scratch)"
+	echo_error "  -I, --install-deps                        Installing Dependency Libraries."
+	echo_error "  -h, --help                                Print this help."
+	echo_error "  -j, --jobs                                Multiple jobs for compiling."
+}
+function main()
+{
+	local -i install_deps=0
+	local -i debug=0
+	local -i clean=0
+	local -i jobs=0
+
+	until [ -z "$1" ]
+	do
+		case "$1" in
+			-b | --build-type)
+				if [[ "$2" -eq "Debug" ]]; then
+					debug=1
+				elif [[ "$2" -eq "Release" ]]; then
+					debug=2
+				else
+					help
+					return 0
+				fi
+				shift 2;
+		;;
+			-c | --clean)
+				clean=1
+				echo "clean generated files ($OPENXGAUSF_DIR/build/AUSF)"
+				shift;
+		;;
+			-j | --jobs)
+				jobs=1
+				shift;
+		;;
+			-I | --install-deps)
+				install_deps=1
+				shift;
+		;;
+			-h | --help)
+				help
+				shift;
+				return 0
+		;;
+			*)
+				echo "Unknown option $1"
+				help
+				return 1
+		;;
+		esac
+	done
+
+	if [ ! -d "$OPENXGAUSF_DIR/build" ]; then
+	  	echo "Unknown path $OPENXGAUSF_DIR/build"
+	  	return 0
+	fi
+
+	if [[ $install_deps -ne 0 ]]; then
+		apt-get install cmake curl git libboost-all-dev libconfig++-dev libcurl4-gnutls-dev libgmp-dev libspdlog-dev  nettle-dev -y
+		if [ ! -d "$OPENXGAUSF_DIR/build/ext/json/git_src/build" ]; then
+			mkdir $OPENXGAUSF_DIR/build/ext/json/git_src/build
+		fi
+		cd $OPENXGAUSF_DIR/build/ext/json/git_src/build
+		cmake ..
+		make
+		make install
+		echo "install successful!"
+		return 0
+	fi
+
+	if [[ $clean -ne 0 ]]; then
+		rm -rf $OPENXGAUSF_DIR/build/AUSF
+	fi
+	
+	if [ ! -d "$OPENXGAUSF_DIR/build/AUSF" ]; then
+	  	mkdir $OPENXGAUSF_DIR/build/AUSF
+		cd $OPENXGAUSF_DIR/build/AUSF
+		if [[ $debug -eq 1 ]]; then
+			cmake $OPENXGAUSF_DIR/src/ausf_app/ -DCMAKE_OPENXGAUSF_DIR=$OPENXGAUSF_DIR -DCMAKE_OPENXGAUSF_BUILD_TYPE=Debug
+		else
+			cmake $OPENXGAUSF_DIR/src/ausf_app/ -DCMAKE_OPENXGAUSF_DIR=$OPENXGAUSF_DIR
+		fi
+	fi
+
+	cd $OPENXGAUSF_DIR/build/AUSF
+	if [[ $jobs -ne 0 ]]; then
+		make -j4
+	else
+		make
+	fi
+}
+
+main $@
