@@ -1,11 +1,40 @@
+/*
+ * Licensed to the OpenAirInterface (OAI) Software Alliance under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The OpenAirInterface Software Alliance licenses this file to You under
+ * the OAI Public License, Version 1.1  (the "License"); you may not use this
+ *file except in compliance with the License. You may obtain a copy of the
+ *License at
+ *
+ *      http://www.openairinterface.org/?page_id=698
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *-------------------------------------------------------------------------------
+ * For more information about the OpenAirInterface (OAI) Software Alliance:
+ *      contact@openairinterface.org
+ */
+
+/*! file
+brief
+author  Jian Yang,Fengjiao He,Hongxin Wang
+date 2020
+email: contact@openairinterface.org
+*/
+
 #include "sha256.hpp"
+
 #include <cstring>
 #include <fstream>
 
 Sha256::Sha256() {}
 Sha256::~Sha256() {}
 
-const unsigned int Sha256::sha256_k[64] = // UL = uint32
+const unsigned int Sha256::sha256_k[64] =  // UL = uint32
     {0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
      0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
      0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786,
@@ -108,20 +137,18 @@ void Sha256::finalResult(unsigned char *digest) {
   }
 }
 
-std::string sha256(std::string input)
-{
-    unsigned char digest[Sha256::DIGEST_SIZE];
-    memset(digest,0,Sha256::DIGEST_SIZE);
-    
-    Sha256 ctx = Sha256();
-    ctx.init();
-    ctx.update( (unsigned char*)input.c_str(), input.length());
-    ctx.finalResult(digest);
-    
-    char buf[2*Sha256::DIGEST_SIZE+1];
-    buf[2*Sha256::DIGEST_SIZE] = 0;
-    for (int i = 0; i < Sha256::DIGEST_SIZE; i++)
-        sprintf(buf+i*2, "%02x", digest[i]);
-    return std::string(buf);
-}
+std::string sha256(std::string input) {
+  unsigned char digest[Sha256::DIGEST_SIZE];
+  memset(digest, 0, Sha256::DIGEST_SIZE);
 
+  Sha256 ctx = Sha256();
+  ctx.init();
+  ctx.update((unsigned char *)input.c_str(), input.length());
+  ctx.finalResult(digest);
+
+  char buf[2 * Sha256::DIGEST_SIZE + 1];
+  buf[2 * Sha256::DIGEST_SIZE] = 0;
+  for (int i = 0; i < Sha256::DIGEST_SIZE; i++)
+    sprintf(buf + i * 2, "%02x", digest[i]);
+  return std::string(buf);
+}

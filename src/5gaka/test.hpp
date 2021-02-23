@@ -1,10 +1,39 @@
+/*
+ * Licensed to the OpenAirInterface (OAI) Software Alliance under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The OpenAirInterface Software Alliance licenses this file to You under
+ * the OAI Public License, Version 1.1  (the "License"); you may not use this
+ *file except in compliance with the License. You may obtain a copy of the
+ *License at
+ *
+ *      http://www.openairinterface.org/?page_id=698
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *-------------------------------------------------------------------------------
+ * For more information about the OpenAirInterface (OAI) Software Alliance:
+ *      contact@openairinterface.org
+ */
+
+/*! file
+brief
+author  Jian Yang,Fengjiao He,Hongxin Wang
+date 2020
+email: contact@openairinterface.org
+*/
+
 #ifndef _TEST_HPP_
 #define _TEST_HPP_
+
+#include <stdlib.h>
 
 #include "OCTET_STRING.h"
 #include "authentication_algorithms_with_5gaka.hpp"
 #include "f12345.h"
-#include <stdlib.h>
 
 // uint8_t key[16] = {0x46, 0x5b, 0x5c, 0xe8, 0xb1, 0x99, 0xb4, 0x9f, 0xaa,
 // 0x5f, 0x0a, 0x2e, 0xe2, 0x38, 0xa6, 0xbc}; uint8_t key[16] = {0x03, 0x96,
@@ -121,8 +150,7 @@ void kdf_test() {
   Authentication_5gaka::kdf(Key, 32, M.buf, M.size, O, 16);
   // Authentication_5gaka::kdf(K.buf, K.size, M.buf, M.size, O, 16);
   printf("KDF test ...\n");
-  for (int i = 0; i < 16; i++)
-    printf("%x ", O[i]);
+  for (int i = 0; i < 16; i++) printf("%x ", O[i]);
   printf("\n");
 }
 
@@ -140,8 +168,7 @@ void rijndael_test() {
   uint8_t txt_enc[16];
   Authentication_5gaka::RijndaelEncrypt(txt, txt_enc);
   printf("encrypted text ...\n");
-  for (int i = 0; i < 16; i++)
-    printf("%x ", txt_enc[i]);
+  for (int i = 0; i < 16; i++) printf("%x ", txt_enc[i]);
   printf("\n");
 }
 
@@ -158,11 +185,9 @@ void f1_test() {
   Authentication_5gaka::f1(opc, key, rand, sqn, amf, mac_a);
   Authentication_5gaka::f1star(opc, key, rand, sqn, amf, mac_s);
   printf("testing f1...\n");
-  for (int i = 0; i < 8; i++)
-    printf("%x ", mac_a[i]);
+  for (int i = 0; i < 8; i++) printf("%x ", mac_a[i]);
   printf("\n");
-  for (int i = 0; i < 8; i++)
-    printf("%x ", mac_s[i]);
+  for (int i = 0; i < 8; i++) printf("%x ", mac_s[i]);
   printf("\n");
 }
 
@@ -183,26 +208,21 @@ void f2345_test() {
   uint8_t res[8], ck[16], ik[16], ak[6];
   Authentication_5gaka::f2345(opc, key, rand, res, ck, ik, ak);
   printf("res: 0x\n");
-  for (int i = 0; i < 8; i++)
-    printf("%x", res[i]);
+  for (int i = 0; i < 8; i++) printf("%x", res[i]);
   printf("\n");
   printf("ak: 0x");
-  for (int i = 0; i < 6; i++)
-    printf("%x", ak[i]);
+  for (int i = 0; i < 6; i++) printf("%x", ak[i]);
   printf("\n");
   printf("ck: 0x\n");
-  for (int i = 0; i < 16; i++)
-    printf("%x", ck[i]);
+  for (int i = 0; i < 16; i++) printf("%x", ck[i]);
   printf("\n");
   printf("ik: 0x\n");
-  for (int i = 0; i < 16; i++)
-    printf("%x", ik[i]);
+  for (int i = 0; i < 16; i++) printf("%x", ik[i]);
   printf("\n");
   uint8_t ak2[6];
   Authentication_5gaka::f5star(opc, key, rand, ak2);
   printf("ak2: 0x");
-  for (int i = 0; i < 6; i++)
-    printf("%x ", ak2[i]);
+  for (int i = 0; i < 6; i++) printf("%x ", ak2[i]);
   printf("\n");
 }
 
@@ -234,16 +254,13 @@ void res_test() {
   Authentication_5gaka::kdf(key, 32, S, 3 + netName.size, output, 16);
   printf("inputstring ...\n");
   // for(int i=0; i< 1; i++)
-  for (int i = 0; i < 3 + netName.size; i++)
-    printf("%c", S[i]);
+  for (int i = 0; i < 3 + netName.size; i++) printf("%c", S[i]);
   printf("\n");
   printf("key ...\n");
-  for (int i = 0; i < 32; i++)
-    printf("%x", key[i]);
+  for (int i = 0; i < 32; i++) printf("%x", key[i]);
   printf("\n");
   printf("out ...\n");
-  for (int i = 0; i < 16; i++)
-    printf("%x ", output[i]);
+  for (int i = 0; i < 16; i++) printf("%x ", output[i]);
   printf("\n");
 }
 
@@ -298,7 +315,6 @@ void buffer_test() {
 }
 
 void xresStar_test() {
-
   uint8_t opc[16] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
                      0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f};
   uint8_t key[16] = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
@@ -317,23 +333,20 @@ void xresStar_test() {
   printf("snn length(0x%x)\n", netName.size);
   S[1 + netName.size] = (netName.size & 0xff00) >> 8;
   S[2 + netName.size] = (netName.size & 0x00ff);
-  for (int i = 0; i < 16; i++)
-    S[3 + netName.size + i] = rand[i];
+  for (int i = 0; i < 16; i++) S[3 + netName.size + i] = rand[i];
   S[19 + netName.size] = 0x00;
   S[20 + netName.size] = 0x10;
-  for (int i = 0; i < 8; i++)
-    S[21 + netName.size + i] = res[i];
+  for (int i = 0; i < 8; i++) S[21 + netName.size + i] = res[i];
   S[29 + netName.size] = 0x00;
   S[30 + netName.size] = 0x08;
 
   uint8_t ckik[32];
   memcpy(&key[0], ck, 16);
-  memcpy(&key[16], ik, 16); // KEY
+  memcpy(&key[16], ik, 16);  // KEY
 
   uint8_t out[32], output[16];
   Authentication_5gaka::kdf(ckik, 32, S, 31 + netName.size, out, 32);
-  for (int i = 0; i < 16; i++)
-    output[i] = out[16 + i];
+  for (int i = 0; i < 16; i++) output[i] = out[16 + i];
   print_buffer("amf_n1", "XRES*", output, 16);
 }
 
@@ -394,8 +407,7 @@ void mac_test() {
   // uint8_t sqnak[6] = {0xcb, 0x9f, 0x58, 0xa7, 0x8d, 0x98};
   uint8_t sqnak[6] = {0x97, 0x77, 0x9b, 0x30, 0x56, 0x86};
   uint8_t sqn[6];
-  for (int i = 0; i < 6; i++)
-    sqn[i] = sqnak[i] ^ ak[i];
+  for (int i = 0; i < 6; i++) sqn[i] = sqnak[i] ^ ak[i];
   print_buffer("amf_n1", "sqn", sqn, 6);
   uint8_t amf[2] = {0x90, 0x01};
   uint8_t mac_a[8];

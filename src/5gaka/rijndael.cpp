@@ -1,3 +1,31 @@
+/*
+ * Licensed to the OpenAirInterface (OAI) Software Alliance under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The OpenAirInterface Software Alliance licenses this file to You under
+ * the OAI Public License, Version 1.1  (the "License"); you may not use this
+ *file except in compliance with the License. You may obtain a copy of the
+ *License at
+ *
+ *      http://www.openairinterface.org/?page_id=698
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *-------------------------------------------------------------------------------
+ * For more information about the OpenAirInterface (OAI) Software Alliance:
+ *      contact@openairinterface.org
+ */
+
+/*! file
+brief
+author  Jian Yang,Fengjiao He,Hongxin Wang
+date 2020
+email: contact@openairinterface.org
+*/
+
 #include "authentication_algorithms_with_5gaka.hpp"
 
 typedef uint8_t u8;
@@ -87,14 +115,12 @@ void Authentication_5gaka::RijndaelKeySchedule(const uint8_t key[16]) {
 /************ internal functions ******************/
 void KeyAdd(u8 state[4][4], u8 roundKeys[11][4][4], int round) {
   for (int i = 0; i < 4; i++)
-    for (int j = 0; j < 4; j++)
-      state[i][j] ^= roundKeys[round][i][j];
+    for (int j = 0; j < 4; j++) state[i][j] ^= roundKeys[round][i][j];
   return;
 }
 int ByteSub(u8 state[4][4]) {
   for (int i = 0; i < 4; i++)
-    for (int j = 0; j < 4; j++)
-      state[i][j] = S[state[i][j]];
+    for (int j = 0; j < 4; j++) state[i][j] = S[state[i][j]];
   return 0;
 }
 
@@ -155,14 +181,12 @@ void Authentication_5gaka::RijndaelEncrypt(const uint8_t input[16],
                                            uint8_t output[16]) {
   int i = 0, r = 0;
   u8 state[4][4];
-  for (i = 0; i < 16; i++)
-    state[i & 0x3][i >> 2] = input[i];
+  for (i = 0; i < 16; i++) state[i & 0x3][i >> 2] = input[i];
   KeyAdd(state, roundKeys, 0);
 #if AUTH_ALG_ON
   printf("end of round(%d)\n0x", 0);
 #endif
-  for (int i = 0; i < 16; i++)
-    printf("%x ", state[i & 0x3][i >> 2]);
+  for (int i = 0; i < 16; i++) printf("%x ", state[i & 0x3][i >> 2]);
   printf("\n");
   for (r = 1; r <= 9; r++) {
     ByteSub(state);
@@ -171,8 +195,7 @@ void Authentication_5gaka::RijndaelEncrypt(const uint8_t input[16],
     KeyAdd(state, roundKeys, r);
 #if AUTH_ALG_ON
     printf("end of round(%d)\n0x", r);
-    for (i = 0; i < 16; i++)
-      printf("%x ", state[i & 0x3][i >> 2]);
+    for (i = 0; i < 16; i++) printf("%x ", state[i & 0x3][i >> 2]);
     printf("\n");
 #endif
   }
@@ -181,16 +204,13 @@ void Authentication_5gaka::RijndaelEncrypt(const uint8_t input[16],
   KeyAdd(state, roundKeys, r);
 #if AUTH_ALG_ON
   printf("end of round(%d)\n0x", r);
-  for (int i = 0; i < 16; i++)
-    printf("%x ", state[i & 0x3][i >> 2]);
+  for (int i = 0; i < 16; i++) printf("%x ", state[i & 0x3][i >> 2]);
   printf("\n");
 #endif
-  for (i = 0; i < 16; i++)
-    output[i] = state[i & 0x3][i >> 2];
+  for (i = 0; i < 16; i++) output[i] = state[i & 0x3][i >> 2];
 #if AUTH_ALG_ON
   printf("output_encrypt: ");
-  for (i = 0; i < 16; i++)
-    printf("%x", output[i]);
+  for (i = 0; i < 16; i++) printf("%x", output[i]);
   printf("\n");
 #endif
   return;

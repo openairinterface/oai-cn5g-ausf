@@ -26,20 +26,17 @@
 */
 #include "conversions.hpp"
 
-
 #include <arpa/inet.h>
 #include <ctype.h>
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <iostream>
-#include <sstream>
-#include <iomanip>
 #include <string.h>
 
-
-
+#include <iomanip>
+#include <iostream>
+#include <sstream>
 
 static const char hex_to_ascii_table[16] = {
     '0', '1', '2', '3', '4', '5', '6', '7',
@@ -81,27 +78,21 @@ int conv::ascii_to_hex(uint8_t *dst, const char *h) {
   for (;;) {
     int high, low;
 
-    while (*hex && isspace(*hex))
-      hex++;
+    while (*hex && isspace(*hex)) hex++;
 
-    if (!*hex)
-      return 1;
+    if (!*hex) return 1;
 
     high = ascii_to_hex_table[*hex++];
 
-    if (high < 0)
-      return 0;
+    if (high < 0) return 0;
 
-    while (*hex && isspace(*hex))
-      hex++;
+    while (*hex && isspace(*hex)) hex++;
 
-    if (!*hex)
-      return 0;
+    if (!*hex) return 0;
 
     low = ascii_to_hex_table[*hex++];
 
-    if (low < 0)
-      return 0;
+    if (low < 0) return 0;
 
     dst[i++] = (high << 4) | low;
   }
@@ -163,7 +154,8 @@ std::string conv::toString(const struct in6_addr &in6addr) {
   return s;
 }
 
-//------------------------------from udm------------------------------------------------
+//------------------------------from
+//udm------------------------------------------------
 std::string conv::uint8_to_hex_string(const uint8_t *v, const size_t s) {
   std::stringstream ss;
 
@@ -176,37 +168,34 @@ std::string conv::uint8_to_hex_string(const uint8_t *v, const size_t s) {
   return ss.str();
 }
 
-void conv::hex_str_to_uint8(const char* string, uint8_t *des) {
+void conv::hex_str_to_uint8(const char *string, uint8_t *des) {
+  if (string == NULL) return;
 
-    if (string == NULL)
-        return;
+  size_t slength = strlen(string);
+  if ((slength % 2) != 0)  // must be even
+    return;
 
-    size_t slength = strlen(string);
-    if ((slength % 2) != 0) // must be even
-        return;
+  size_t dlength = slength / 2;
 
-    size_t dlength = slength / 2;
+  // des = (uint8_t*)malloc(dlength);
 
-    //des = (uint8_t*)malloc(dlength);
+  memset(des, 0, dlength);
 
-    memset(des, 0, dlength);
+  size_t index = 0;
+  while (index < slength) {
+    char c = string[index];
+    int value = 0;
+    if (c >= '0' && c <= '9')
+      value = (c - '0');
+    else if (c >= 'A' && c <= 'F')
+      value = (10 + (c - 'A'));
+    else if (c >= 'a' && c <= 'f')
+      value = (10 + (c - 'a'));
+    else
+      return;
 
-    size_t index = 0;
-    while (index < slength) {
-        char c = string[index];
-        int value = 0;
-        if (c >= '0' && c <= '9')
-            value = (c - '0');
-        else if (c >= 'A' && c <= 'F')
-            value = (10 + (c - 'A'));
-        else if (c >= 'a' && c <= 'f')
-            value = (10 + (c - 'a'));
-        else
-            return;
+    des[(index / 2)] += value << (((index + 1) % 2) * 4);
 
-        des[(index / 2)] += value << (((index + 1) % 2) * 4);
-
-        index++;
-    }
-
+    index++;
+  }
 }

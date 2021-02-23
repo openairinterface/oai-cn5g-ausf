@@ -18,10 +18,11 @@
 #define __OPTIONS_H
 
 #include <stdint.h>
+
 #include <string>
 
 class Options {
-public:
+ public:
   static bool parse(int argc, char **argv);
   static bool parseInputOptions(int argc, char **argv);
   static bool parseJson();
@@ -31,7 +32,7 @@ public:
   static const bool &getlogRotFilelog() { return m_log_rot_file_log; }
   static const bool &getlogStdout() { return m_log_stdout; }
 
-private:
+ private:
   enum OptionsSelected {
     libconfigcfg = 0x01,
     log_stdout = 0x02,
@@ -47,4 +48,4 @@ private:
   static std::string m_libconfigcfg;
 };
 
-#endif // #define __OPTIONS_H
+#endif  // #define __OPTIONS_H

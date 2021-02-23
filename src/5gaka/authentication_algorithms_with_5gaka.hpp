@@ -1,3 +1,31 @@
+/*
+ * Licensed to the OpenAirInterface (OAI) Software Alliance under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The OpenAirInterface Software Alliance licenses this file to You under
+ * the OAI Public License, Version 1.1  (the "License"); you may not use this
+ *file except in compliance with the License. You may obtain a copy of the
+ *License at
+ *
+ *      http://www.openairinterface.org/?page_id=698
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *-------------------------------------------------------------------------------
+ * For more information about the OpenAirInterface (OAI) Software Alliance:
+ *      contact@openairinterface.org
+ */
+
+/*! file
+brief
+author  Jian Yang,Fengjiao He,Hongxin Wang
+date 2020
+email: contact@openairinterface.org
+*/
+
 #ifndef _5GAKA_H_
 #define _5GAKA_H_
 
@@ -6,8 +34,9 @@
 #include <pthread.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <string>
 #include <unistd.h>
+
+#include <string>
 //}
 
 #define SQN_LENGTH_BITS (48)
@@ -39,9 +68,9 @@ typedef struct {
   uint8_t xresStar[16];
   uint8_t autn[16];
   uint8_t kausf[32];
-} _5G_HE_AV_t; // clause 6.3.6.2.5, ts33.501
+} _5G_HE_AV_t;  // clause 6.3.6.2.5, ts33.501
 
-typedef struct _5G_AV_s{
+typedef struct _5G_AV_s {
   uint8_t avType;
   uint8_t rand[16];
   uint8_t hxres[16];
@@ -74,7 +103,7 @@ typedef enum {
 } algorithm_type_dist_t;
 
 class Authentication_5gaka {
-public:
+ public:
   /****** sequence number functions ********/
   // struct sqn_ue_s *sqn_exists(uint64_t imsi);
   // void sqn_insert(struct sqn_ue_s *item);
@@ -82,11 +111,11 @@ public:
   // struct sqn_ue_s *sqn_new(uint64_t imsi);
   // void sqn_list_init(void);
   // void sqn_get(uint64_t imsi, uint8_t sqn[6]);
-public:
+ public:
   /****** random number functions *********/
   // void random_init(void);
   // void generate_random(uint8_t *random, ssize_t length);
-public:
+ public:
   /****** internal algorithms f1 f2 f3 f4 f5 ********/
   static void f1(const uint8_t opc[16], const uint8_t k[16],
                  const uint8_t _rand[16], const uint8_t sqn[6],
@@ -100,7 +129,7 @@ public:
   static void f5star(const uint8_t kP[16], const uint8_t k[16],
                      const uint8_t rand[16], uint8_t ak[6]);
 
-public:
+ public:
   /****** key derive  ***********/
   static void kdf(uint8_t *key, uint16_t key_len, uint8_t *s, uint16_t s_len,
                   uint8_t *out, uint16_t out_len);
@@ -120,7 +149,7 @@ public:
   static uint8_t *sqn_ms_derive(const uint8_t opc[16], uint8_t *key,
                                 uint8_t *auts, uint8_t *rand);
 
-public:
+ public:
   /****** general functions ********/
   static void ComputeOPc(const uint8_t kP[16], const uint8_t opP[16],
                          uint8_t opcP[16]);
@@ -135,20 +164,20 @@ public:
                               uint8_t *output);
   static void generate_random(uint8_t *random_p, ssize_t length);
 
-  static void sha256(unsigned char *message, int msg_len, unsigned char *output);
-  static void generate_Hxres(uint8_t rand[16],uint8_t xresStar[16],
-                                            uint8_t *hxresStar);
+  static void sha256(unsigned char *message, int msg_len,
+                     unsigned char *output);
+  static void generate_Hxres(uint8_t rand[16], uint8_t xresStar[16],
+                             uint8_t *hxresStar);
   // static void generate_authCtxId(uint8_t autn[16],
-  //                                           uint8_t *authCtxId);                         
-  static bool equal_uint8(uint8_t *oldVal,uint8_t *newVal,
-                                            int msg_len);
+  //                                           uint8_t *authCtxId);
+  static bool equal_uint8(uint8_t *oldVal, uint8_t *newVal, int msg_len);
 
-public:
+ public:
   /****** Rijndael ********/
   static void RijndaelKeySchedule(const uint8_t key[16]);
   static void RijndaelEncrypt(const uint8_t in[16], uint8_t out[16]);
 
-private:
+ private:
   auc_vector_t auc_vector;
 };
 
