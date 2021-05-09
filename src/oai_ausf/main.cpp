@@ -88,15 +88,11 @@ int main(int argc, char** argv) {
   sigaction(SIGINT, &sigIntHandler, NULL);
 
   // Config
-  //ausf_cfg.load(Options::getlibconfigConfig());
-  //ausf_cfg.display();
-
   ausf_cfg.load(Options::getlibconfigConfig());
   ausf_cfg.display();
 
   // AUSF application layer
   ausf_app_inst = new ausf_app(Options::getlibconfigConfig());
-
 
   // PID file
   // Currently hard-coded value. TODO: add as config option.
