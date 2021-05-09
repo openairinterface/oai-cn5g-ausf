@@ -46,18 +46,18 @@ random_state_t random_state;
 
 using namespace std;
 
-extern void print_buffer(const std::string app, const std::string commit,
-                         uint8_t *buf, int len);
-extern void hexStr2Byte(const char *src, unsigned char *dest, int len);
+extern void print_buffer(
+    const std::string app, const std::string commit, uint8_t* buf, int len);
+extern void hexStr2Byte(const char* src, unsigned char* dest, int len);
 /************ algorithm f1 **************/
 /*
   Computes network authentication code MAC-A from key K, random, challenge RAND,
   sequence number SQN and authentication management field AMF.
 */
 
-void Authentication_5gaka::f1(const uint8_t opc[16], const uint8_t k[16],
-                              const uint8_t _rand[16], const uint8_t sqn[6],
-                              const uint8_t amf[2], uint8_t mac_a[8]) {
+void Authentication_5gaka::f1(
+    const uint8_t opc[16], const uint8_t k[16], const uint8_t _rand[16],
+    const uint8_t sqn[6], const uint8_t amf[2], uint8_t mac_a[8]) {
   uint8_t temp[16];
   uint8_t in1[16];
   uint8_t out1[16];
@@ -71,12 +71,12 @@ void Authentication_5gaka::f1(const uint8_t opc[16], const uint8_t k[16],
   RijndaelEncrypt(rijndaelInput, temp);
 
   for (i = 0; i < 6; i++) {
-    in1[i] = sqn[i];
+    in1[i]     = sqn[i];
     in1[i + 8] = sqn[i];
   }
 
   for (i = 0; i < 2; i++) {
-    in1[i + 6] = amf[i];
+    in1[i + 6]  = amf[i];
     in1[i + 14] = amf[i];
   }
 
@@ -107,10 +107,9 @@ void Authentication_5gaka::f1(const uint8_t opc[16], const uint8_t k[16],
    confidentiality key CK, integrity key IK and anonymity key AK.
 
   -----------------------------------------------------------------*/
-void Authentication_5gaka::f2345(const uint8_t opc[16], const uint8_t k[16],
-                                 const uint8_t _rand[16], uint8_t res[8],
-                                 uint8_t ck[16], uint8_t ik[16],
-                                 uint8_t ak[6]) {
+void Authentication_5gaka::f2345(
+    const uint8_t opc[16], const uint8_t k[16], const uint8_t _rand[16],
+    uint8_t res[8], uint8_t ck[16], uint8_t ik[16], uint8_t ak[6]) {
   uint8_t temp[16];
   uint8_t out[16];
   uint8_t rijndaelInput[16];
@@ -179,9 +178,9 @@ void Authentication_5gaka::f2345(const uint8_t opc[16], const uint8_t k[16],
 
   -----------------------------------------------------------------*/
 
-void Authentication_5gaka::f1star(const uint8_t opc[16], const uint8_t k[16],
-                                  const uint8_t _rand[16], const uint8_t sqn[6],
-                                  const uint8_t amf[2], uint8_t mac_s[8]) {
+void Authentication_5gaka::f1star(
+    const uint8_t opc[16], const uint8_t k[16], const uint8_t _rand[16],
+    const uint8_t sqn[6], const uint8_t amf[2], uint8_t mac_s[8]) {
   uint8_t temp[16];
   uint8_t in1[16];
   uint8_t out1[16];
@@ -195,12 +194,12 @@ void Authentication_5gaka::f1star(const uint8_t opc[16], const uint8_t k[16],
   RijndaelEncrypt(rijndaelInput, temp);
 
   for (i = 0; i < 6; i++) {
-    in1[i] = sqn[i];
+    in1[i]     = sqn[i];
     in1[i + 8] = sqn[i];
   }
 
   for (i = 0; i < 2; i++) {
-    in1[i + 6] = amf[i];
+    in1[i + 6]  = amf[i];
     in1[i + 14] = amf[i];
   }
 
@@ -232,8 +231,9 @@ void Authentication_5gaka::f1star(const uint8_t opc[16], const uint8_t k[16],
    anonymity key AK.
 
   -----------------------------------------------------------------*/
-void Authentication_5gaka::f5star(const uint8_t opc[16], const uint8_t k[16],
-                                  const uint8_t _rand[16], uint8_t ak[6]) {
+void Authentication_5gaka::f5star(
+    const uint8_t opc[16], const uint8_t k[16], const uint8_t _rand[16],
+    uint8_t ak[6]) {
   uint8_t temp[16];
   uint8_t out[16];
   uint8_t rijndaelInput[16];
@@ -265,8 +265,8 @@ void Authentication_5gaka::f5star(const uint8_t opc[16], const uint8_t k[16],
 /*-------------------------------------------------------------------
    Function to compute OPc from OP and K.
   -----------------------------------------------------------------*/
-void Authentication_5gaka::ComputeOPc(const uint8_t kP[16],
-                                      const uint8_t opP[16], uint8_t opcP[16]) {
+void Authentication_5gaka::ComputeOPc(
+    const uint8_t kP[16], const uint8_t opP[16], uint8_t opcP[16]) {
   uint8_t i;
 
   RijndaelKeySchedule(kP);
@@ -293,11 +293,9 @@ void Authentication_5gaka::ComputeOPc(const uint8_t kP[16],
   return;
 }
 
-void Authentication_5gaka::generate_autn(const uint8_t sqn[6],
-                                         const uint8_t ak[6],
-                                         const uint8_t amf[2],
-                                         const uint8_t mac_a[8],
-                                         uint8_t autn[16]) {
+void Authentication_5gaka::generate_autn(
+    const uint8_t sqn[6], const uint8_t ak[6], const uint8_t amf[2],
+    const uint8_t mac_a[8], uint8_t autn[16]) {
   for (int i = 0; i < 6; i++) {
     autn[i] = sqn[i] ^ ak[i];
   }
@@ -305,8 +303,9 @@ void Authentication_5gaka::generate_autn(const uint8_t sqn[6],
   memcpy(&autn[8], mac_a, 8);
 }
 
-void Authentication_5gaka::kdf(uint8_t *key, uint16_t key_len, uint8_t *s,
-                               uint16_t s_len, uint8_t *out, uint16_t out_len) {
+void Authentication_5gaka::kdf(
+    uint8_t* key, uint16_t key_len, uint8_t* s, uint16_t s_len, uint8_t* out,
+    uint16_t out_len) {
   struct hmac_sha256_ctx ctx;
   memset(&ctx, 0, sizeof(ctx));
   hmac_sha256_set_key(&ctx, key_len, key);
@@ -314,14 +313,14 @@ void Authentication_5gaka::kdf(uint8_t *key, uint16_t key_len, uint8_t *s,
   hmac_sha256_digest(&ctx, out_len, out);
 }
 
-void Authentication_5gaka::derive_kseaf(std::string serving_network,
-                                        uint8_t kausf[32], uint8_t kseaf[32]) {
+void Authentication_5gaka::derive_kseaf(
+    std::string serving_network, uint8_t kausf[32], uint8_t kseaf[32]) {
   Logger::ausf_server().debug("derive_kseaf ...");
   // Logger::ausf_server().debug("inputstring: snn(%s)",
   // serving_network.c_str());
   OCTET_STRING_t netName;
-  OCTET_STRING_fromBuf(&netName, serving_network.c_str(),
-                       serving_network.length());
+  OCTET_STRING_fromBuf(
+      &netName, serving_network.c_str(), serving_network.length());
   // print_buffer("ausf_server", "inputstring: snn(hex)", netName.buf,
   // netName.size);
   uint8_t S[100];
@@ -337,16 +336,15 @@ void Authentication_5gaka::derive_kseaf(std::string serving_network,
   // Logger::ausf_server().debug("derive kseaf finished!");
 }
 
-void Authentication_5gaka::derive_kausf(uint8_t ck[16], uint8_t ik[16],
-                                        std::string serving_network,
-                                        uint8_t sqn[6], uint8_t ak[6],
-                                        uint8_t kausf[32]) {
+void Authentication_5gaka::derive_kausf(
+    uint8_t ck[16], uint8_t ik[16], std::string serving_network, uint8_t sqn[6],
+    uint8_t ak[6], uint8_t kausf[32]) {
   Logger::ausf_server().debug("derive_kausf ...");
   // Logger::ausf_server().debug("inputstring: snn(%s)",
   // serving_network.c_str());
   OCTET_STRING_t netName;
-  OCTET_STRING_fromBuf(&netName, serving_network.c_str(),
-                       serving_network.length());
+  OCTET_STRING_fromBuf(
+      &netName, serving_network.c_str(), serving_network.length());
   // print_buffer("ausf_server", "inputstring: snn(hex)", netName.buf,
   // netName.size);
   uint8_t S[100];
@@ -361,7 +359,7 @@ void Authentication_5gaka::derive_kausf(uint8_t ck[16], uint8_t ik[16],
   for (int i = 0; i < 6; i++) {
     S[3 + netName.size + i] = sqn[i] ^ ak[i];
   }
-  S[9 + netName.size] = 0x00;
+  S[9 + netName.size]  = 0x00;
   S[10 + netName.size] = 0x06;
   // print_buffer("ausf_server", "inputstring S", S, 11+netName.size);
   // print_buffer("ausf_server", "key KEY", key, 32);
@@ -370,8 +368,8 @@ void Authentication_5gaka::derive_kausf(uint8_t ck[16], uint8_t ik[16],
   // Logger::ausf_server().debug("derive kausf finished!");
 }
 
-void Authentication_5gaka::derive_kamf(std::string imsi, uint8_t *kseaf,
-                                       uint8_t *kamf, uint16_t abba) {
+void Authentication_5gaka::derive_kamf(
+    std::string imsi, uint8_t* kseaf, uint8_t* kamf, uint16_t abba) {
   Logger::ausf_server().debug("derive_kamf ...");
   std::string ueSupi = imsi;  // OK
   // Logger::ausf_server().debug("inputstring: supi(%s)", ueSupi.c_str());
@@ -400,20 +398,20 @@ void Authentication_5gaka::derive_kamf(std::string imsi, uint8_t *kseaf,
   // Logger::ausf_server().debug("derive kamf finished!");
 }
 
-void Authentication_5gaka::derive_knas(algorithm_type_dist_t nas_alg_type,
-                                       uint8_t nas_alg_id, uint8_t kamf[32],
-                                       uint8_t *knas) {
+void Authentication_5gaka::derive_knas(
+    algorithm_type_dist_t nas_alg_type, uint8_t nas_alg_id, uint8_t kamf[32],
+    uint8_t* knas) {
   Logger::ausf_server().debug("derive_knas ...");
 
   uint8_t S[20];
   uint8_t out[32] = {0};
-  S[0] = 0x69;  // FC
-  S[1] = (uint8_t)(nas_alg_type & 0xFF);
-  S[2] = 0x00;
-  S[3] = 0x01;
-  S[4] = nas_alg_id;
-  S[5] = 0x00;
-  S[6] = 0x01;
+  S[0]            = 0x69;  // FC
+  S[1]            = (uint8_t)(nas_alg_type & 0xFF);
+  S[2]            = 0x00;
+  S[3]            = 0x01;
+  S[4]            = nas_alg_id;
+  S[5]            = 0x00;
+  S[6]            = 0x01;
   // print_buffer("ausf_server", "inputstring S", S, 7);
   // print_buffer("ausf_server", "key KEY", kamf, 32);
   kdf(kamf, 32, S, 7, out, 32);
@@ -423,17 +421,17 @@ void Authentication_5gaka::derive_knas(algorithm_type_dist_t nas_alg_type,
   // Logger::ausf_server().debug("derive knas finished!");
 }
 
-void Authentication_5gaka::derive_kgnb(uint32_t uplinkCount, uint8_t accessType,
-                                       uint8_t kamf[32], uint8_t *kgnb) {
+void Authentication_5gaka::derive_kgnb(
+    uint32_t uplinkCount, uint8_t accessType, uint8_t kamf[32], uint8_t* kgnb) {
   Logger::ausf_server().debug("derive_kgnb ...");
   uint8_t S[20];
-  S[0] = 0x6E;
-  *(uint32_t *)(S + 1) = htonl(uplinkCount);
-  S[5] = 0x00;
-  S[6] = 0x04;
-  S[7] = accessType;
-  S[8] = 0x00;
-  S[9] = 0x01;
+  S[0]                 = 0x6E;
+  *(uint32_t*) (S + 1) = htonl(uplinkCount);
+  S[5]                 = 0x00;
+  S[6]                 = 0x04;
+  S[7]                 = accessType;
+  S[8]                 = 0x00;
+  S[9]                 = 0x01;
   // print_buffer("ausf_server", "inputstring S", S, 10);
   // print_buffer("ausf_server", "key KEY", kamf, 32);
   kdf(kamf, 32, S, 10, kgnb, 32);
@@ -441,9 +439,9 @@ void Authentication_5gaka::derive_kgnb(uint32_t uplinkCount, uint8_t accessType,
   // Logger::ausf_server().debug("derive kgnb finished!");
 }
 
-void Authentication_5gaka::derive_kasme(uint8_t ck[16], uint8_t ik[16],
-                                        uint8_t plmn[3], uint8_t sqn[6],
-                                        uint8_t ak[6], uint8_t *kasme) {
+void Authentication_5gaka::derive_kasme(
+    uint8_t ck[16], uint8_t ik[16], uint8_t plmn[3], uint8_t sqn[6],
+    uint8_t ak[6], uint8_t* kasme) {
   uint8_t s[14];
   int i;
   uint8_t key[32];
@@ -481,10 +479,9 @@ void Authentication_5gaka::derive_kasme(uint8_t ck[16], uint8_t ik[16],
   kdf(key, 32, s, 14, kasme, 32);
 }
 
-int Authentication_5gaka::generate_vector(const uint8_t opc[16], uint64_t imsi,
-                                          uint8_t key[16], uint8_t plmn[3],
-                                          uint8_t sqn[6],
-                                          auc_vector_t *vector) {
+int Authentication_5gaka::generate_vector(
+    const uint8_t opc[16], uint64_t imsi, uint8_t key[16], uint8_t plmn[3],
+    uint8_t sqn[6], auc_vector_t* vector) {
   uint8_t amf[] = {0x80, 0x00};
   uint8_t mac_a[8];
   uint8_t ck[16];
@@ -520,25 +517,24 @@ int Authentication_5gaka::generate_vector(const uint8_t opc[16], uint64_t imsi,
   return 0;
 }
 
-uint8_t *Authentication_5gaka::sqn_ms_derive(const uint8_t opc[16],
-                                             uint8_t *key, uint8_t *auts,
-                                             uint8_t *rand_p) {
+uint8_t* Authentication_5gaka::sqn_ms_derive(
+    const uint8_t opc[16], uint8_t* key, uint8_t* auts, uint8_t* rand_p) {
   /*
    * AUTS = Conc(SQN MS ) || MAC-S
    * * * * Conc(SQN MS ) = SQN MS ^ f5* (RAND)
    * * * * MAC-S = f1* (SQN MS || RAND || AMF)
    */
-  uint8_t ak[6] = {0};
-  uint8_t *conc_sqn_ms = NULL;
-  uint8_t *mac_s = NULL;
+  uint8_t ak[6]                        = {0};
+  uint8_t* conc_sqn_ms                 = NULL;
+  uint8_t* mac_s                       = NULL;
   uint8_t mac_s_computed[MAC_S_LENGTH] = {0};
-  uint8_t *sqn_ms = NULL;
-  uint8_t amf[2] = {0, 0};
-  int i = 0;
+  uint8_t* sqn_ms                      = NULL;
+  uint8_t amf[2]                       = {0, 0};
+  int i                                = 0;
 
   conc_sqn_ms = auts;
-  mac_s = &auts[6];
-  sqn_ms = (uint8_t *)malloc(SQN_LENGTH_OCTEST);
+  mac_s       = &auts[6];
+  sqn_ms      = (uint8_t*) malloc(SQN_LENGTH_OCTEST);
   /*
    * if (hss_config.valid_opc == 0) {
    * SetOP(hss_config.operator_key);
@@ -574,13 +570,12 @@ uint8_t *Authentication_5gaka::sqn_ms_derive(const uint8_t opc[16],
 //---------------------------udm---------------------------------------------------
 
 // ck, ik, vector.xres, vector.rand, serving_network, vector.xresStar
-void Authentication_5gaka::annex_a_4_33501(uint8_t ck[16], uint8_t ik[16],
-                                           uint8_t *input, uint8_t rand[16],
-                                           std::string serving_network,
-                                           uint8_t *output) {
+void Authentication_5gaka::annex_a_4_33501(
+    uint8_t ck[16], uint8_t ik[16], uint8_t* input, uint8_t rand[16],
+    std::string serving_network, uint8_t* output) {
   OCTET_STRING_t netName;
-  OCTET_STRING_fromBuf(&netName, serving_network.c_str(),
-                       serving_network.length());
+  OCTET_STRING_fromBuf(
+      &netName, serving_network.c_str(), serving_network.length());
   uint8_t S[100];
   S[0] = 0x6B;
   memcpy(&S[1], netName.buf, netName.size);
@@ -619,7 +614,7 @@ void Authentication_5gaka::annex_a_4_33501(uint8_t ck[16], uint8_t ik[16],
   // print_buffer("udm_ueau", "XRES*(new)", out, 32);
 }
 
-void Authentication_5gaka::generate_random(uint8_t *random_p, ssize_t length) {
+void Authentication_5gaka::generate_random(uint8_t* random_p, ssize_t length) {
   gmp_randinit_default(random_state.state);
   gmp_randseed_ui(random_state.state, time(NULL));
   random_t random_nb;
@@ -632,8 +627,8 @@ void Authentication_5gaka::generate_random(uint8_t *random_p, ssize_t length) {
   int r = 0, mask = 0, shift;
   for (int i = 0; i < length; i++) {
     if ((i % sizeof(i)) == 0) r = rand();
-    shift = 8 * (i % sizeof(i));
-    mask = 0xFF << shift;
+    shift       = 8 * (i % sizeof(i));
+    mask        = 0xFF << shift;
     random_p[i] = (r & mask) >> shift;
   }
 }
@@ -643,8 +638,8 @@ void Authentication_5gaka::generate_random(uint8_t *random_p, ssize_t length) {
 
 // h(x)
 Sha256 ctx;
-void Authentication_5gaka::sha256(unsigned char *message, int msg_len,
-                                  unsigned char *output) {
+void Authentication_5gaka::sha256(
+    unsigned char* message, int msg_len, unsigned char* output) {
   memset(output, 0, Sha256::DIGEST_SIZE);
   ctx.init();
   ctx.update(message, msg_len);
@@ -652,9 +647,8 @@ void Authentication_5gaka::sha256(unsigned char *message, int msg_len,
 }
 
 // hxres
-void Authentication_5gaka::generate_Hxres(uint8_t rand[16],
-                                          uint8_t xresStar[16],
-                                          uint8_t *hxresStar) {
+void Authentication_5gaka::generate_Hxres(
+    uint8_t rand[16], uint8_t xresStar[16], uint8_t* hxresStar) {
   uint8_t inputString[40];
 
   memcpy(&inputString[0], rand, 16);
@@ -665,8 +659,8 @@ void Authentication_5gaka::generate_Hxres(uint8_t rand[16],
   // cout << endl;
 
   unsigned char sha256Out[Sha256::DIGEST_SIZE];
-  Authentication_5gaka::sha256((unsigned char *)inputString, 32, sha256Out);
-  for (int j = 0; j < 16; j++) hxresStar[j] = (uint8_t)sha256Out[j];
+  Authentication_5gaka::sha256((unsigned char*) inputString, 32, sha256Out);
+  for (int j = 0; j < 16; j++) hxresStar[j] = (uint8_t) sha256Out[j];
 
   // cout << "hxresStar" << std::endl;
   // for (int i = 0; i < 16; i++)printf("%x ", hxresStar[i]);
@@ -689,8 +683,8 @@ void Authentication_5gaka::generate_Hxres(uint8_t rand[16],
 
 // }
 
-bool Authentication_5gaka::equal_uint8(uint8_t *oldVal, uint8_t *newVal,
-                                       int msg_len) {
+bool Authentication_5gaka::equal_uint8(
+    uint8_t* oldVal, uint8_t* newVal, int msg_len) {
   for (int i = 0; i < msg_len; i++) {
     if (oldVal[i] != newVal[i]) return false;
   };

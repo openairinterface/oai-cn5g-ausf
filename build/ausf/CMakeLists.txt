@@ -18,18 +18,19 @@
 # For more information about the OpenAirInterface (OAI) Software Alliance:
 #      contact@openairinterface.org
 ################################################################################
+cmake_minimum_required (VERSION 3.0.2)
+project(oai-cn)
 
-include_directories(${SRC_TOP_DIR}/../build/ext/spdlog/include)
-include_directories(${SRC_TOP_DIR}/api_server/api)
-include_directories(${SRC_TOP_DIR}/api_server/impl)
-include_directories(${SRC_TOP_DIR}/api_server/model)
-include_directories(${SRC_TOP_DIR}/api_server/)
-include_directories(${SRC_TOP_DIR}/common/)
-include_directories(${SRC_TOP_DIR}/common/utils)
+# Override options for AUSF
+set (  PACKAGE_NAME                    "AUSF" )
+set (  STATIC_LINKING                   False )
+#############################################
+# Base directories, compatible with legacy OAI building
+################################################
+set (OPENAIRCN_DIR   $ENV{OPENAIRCN_DIR})
+set (BUILD_TOP_DIR   ${OPENAIRCN_DIR}/build)
+set (SRC_TOP_DIR     $ENV{OPENAIRCN_DIR}/src)
 
-add_library (AUSF STATIC
-  ausf_app.cpp
-  ausf_client.cpp 
-)
+include(${CMAKE_CURRENT_SOURCE_DIR}/../../src/oai_ausf/CMakeLists.txt)
 
-
+ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/../../src/ausf_app ${CMAKE_CURRENT_BINARY_DIR}/ausf_app)

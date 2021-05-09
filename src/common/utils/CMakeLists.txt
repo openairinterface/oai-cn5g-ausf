@@ -18,18 +18,31 @@
 # For more information about the OpenAirInterface (OAI) Software Alliance:
 #      contact@openairinterface.org
 ################################################################################
-
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${SRC_TOP_DIR}/common)
+include_directories(${SRC_TOP_DIR}/common/unicode)
+include_directories(${SRC_TOP_DIR}/nas/common)
+include_directories(${SRC_TOP_DIR}/utils)
+include_directories(${SRC_TOP_DIR}/utils/bstr)
 include_directories(${SRC_TOP_DIR}/../build/ext/spdlog/include)
-include_directories(${SRC_TOP_DIR}/api_server/api)
-include_directories(${SRC_TOP_DIR}/api_server/impl)
-include_directories(${SRC_TOP_DIR}/api_server/model)
-include_directories(${SRC_TOP_DIR}/api_server/)
-include_directories(${SRC_TOP_DIR}/common/)
-include_directories(${SRC_TOP_DIR}/common/utils)
 
-add_library (AUSF STATIC
-  ausf_app.cpp
-  ausf_client.cpp 
-)
+set(CN_UTILS_SRC STATIC
+ ${CMAKE_CURRENT_SOURCE_DIR}/bstrlib.c
+ ${CMAKE_CURRENT_SOURCE_DIR}/backtrace.c
+ ${CMAKE_CURRENT_SOURCE_DIR}/conversions.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/dynamic_memory_check.c
+ ${CMAKE_CURRENT_SOURCE_DIR}/hex_string_convert.cpp
+ ${CMAKE_CURRENT_SOURCE_DIR}/http_multi_parser.cpp
+ ${CMAKE_CURRENT_SOURCE_DIR}/if.cpp
+ ${CMAKE_CURRENT_SOURCE_DIR}/string.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/pid_file.cpp
+ ${CMAKE_CURRENT_SOURCE_DIR}/thread_sched.cpp
+ ${CMAKE_CURRENT_SOURCE_DIR}/mime_parser.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/ausf_config.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/curl.cpp
+    )
+
+
+add_library(CN_UTILS ${CN_UTILS_SRC})
 
 

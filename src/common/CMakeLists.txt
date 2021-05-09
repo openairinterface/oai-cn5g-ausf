@@ -19,17 +19,16 @@
 #      contact@openairinterface.org
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/utils)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
+include_directories(${SRC_TOP_DIR}/common)
 include_directories(${SRC_TOP_DIR}/../build/ext/spdlog/include)
-include_directories(${SRC_TOP_DIR}/api_server/api)
-include_directories(${SRC_TOP_DIR}/api_server/impl)
-include_directories(${SRC_TOP_DIR}/api_server/model)
-include_directories(${SRC_TOP_DIR}/api_server/)
-include_directories(${SRC_TOP_DIR}/common/)
-include_directories(${SRC_TOP_DIR}/common/utils)
 
-add_library (AUSF STATIC
-  ausf_app.cpp
-  ausf_client.cpp 
+add_library(3GPP_COMMON_TYPES STATIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/conversions.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/options.cpp
 )
 
 

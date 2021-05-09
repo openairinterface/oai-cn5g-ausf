@@ -19,17 +19,19 @@
 #      contact@openairinterface.org
 ################################################################################
 
-include_directories(${SRC_TOP_DIR}/../build/ext/spdlog/include)
-include_directories(${SRC_TOP_DIR}/api_server/api)
-include_directories(${SRC_TOP_DIR}/api_server/impl)
-include_directories(${SRC_TOP_DIR}/api_server/model)
-include_directories(${SRC_TOP_DIR}/api_server/)
-include_directories(${SRC_TOP_DIR}/common/)
+set(5GAKA_DIR "${SRC_TOP_DIR}/5gaka")
+
+include_directories(${SRC_TOP_DIR}/ausf_app)
+include_directories(${SRC_TOP_DIR}/common)
 include_directories(${SRC_TOP_DIR}/common/utils)
+include_directories(${SRC_TOP_DIR}/common/libngap)
+include_directories(${SRC_TOP_DIR}/5gaka)
+include_directories(${SRC_TOP_DIR}/../build/ext/spdlog/include)
 
-add_library (AUSF STATIC
-  ausf_app.cpp
-  ausf_client.cpp 
+file(GLOB 5GAKA_src_files
+    ${SRC_TOP_DIR}/common/libngap/*.c
+    ${5GAKA_DIR}/*.cpp
 )
-
-
+ 
+add_library(5GAKA STATIC
+           ${5GAKA_src_files})

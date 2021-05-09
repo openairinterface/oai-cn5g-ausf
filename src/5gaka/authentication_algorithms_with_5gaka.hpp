@@ -98,8 +98,8 @@ typedef enum {
   NAS_INT_ALG = 0x02,
   RRC_ENC_ALG = 0x03,
   RRC_INT_ALG = 0x04,
-  UP_ENC_ALG = 0x05,
-  UP_INT_ALG = 0x06
+  UP_ENC_ALG  = 0x05,
+  UP_INT_ALG  = 0x06
 } algorithm_type_dist_t;
 
 class Authentication_5gaka {
@@ -117,60 +117,65 @@ class Authentication_5gaka {
   // void generate_random(uint8_t *random, ssize_t length);
  public:
   /****** internal algorithms f1 f2 f3 f4 f5 ********/
-  static void f1(const uint8_t opc[16], const uint8_t k[16],
-                 const uint8_t _rand[16], const uint8_t sqn[6],
-                 const uint8_t amf[2], uint8_t mac_a[8]);
-  static void f1star(const uint8_t kP[16], const uint8_t k[16],
-                     const uint8_t rand[16], const uint8_t sqn[6],
-                     const uint8_t amf[2], uint8_t mac_s[8]);
-  static void f2345(const uint8_t opc[16], const uint8_t k[16],
-                    const uint8_t _rand[16], uint8_t res[8], uint8_t ck[16],
-                    uint8_t ik[16], uint8_t ak[6]);
-  static void f5star(const uint8_t kP[16], const uint8_t k[16],
-                     const uint8_t rand[16], uint8_t ak[6]);
+  static void f1(
+      const uint8_t opc[16], const uint8_t k[16], const uint8_t _rand[16],
+      const uint8_t sqn[6], const uint8_t amf[2], uint8_t mac_a[8]);
+  static void f1star(
+      const uint8_t kP[16], const uint8_t k[16], const uint8_t rand[16],
+      const uint8_t sqn[6], const uint8_t amf[2], uint8_t mac_s[8]);
+  static void f2345(
+      const uint8_t opc[16], const uint8_t k[16], const uint8_t _rand[16],
+      uint8_t res[8], uint8_t ck[16], uint8_t ik[16], uint8_t ak[6]);
+  static void f5star(
+      const uint8_t kP[16], const uint8_t k[16], const uint8_t rand[16],
+      uint8_t ak[6]);
 
  public:
   /****** key derive  ***********/
-  static void kdf(uint8_t *key, uint16_t key_len, uint8_t *s, uint16_t s_len,
-                  uint8_t *out, uint16_t out_len);
-  static void derive_kasme(uint8_t ck[16], uint8_t ik[16], uint8_t plmn[3],
-                           uint8_t sqn[6], uint8_t ak[6], uint8_t kasme[32]);
-  static void derive_kausf(uint8_t ck[16], uint8_t ik[16],
-                           std::string serving_network, uint8_t sqn[6],
-                           uint8_t ak[6], uint8_t kausf[32]);
-  static void derive_kseaf(std::string serving_network, uint8_t kausf[32],
-                           uint8_t kseaf[32]);
-  static void derive_kamf(std::string imsi, uint8_t *kseaf, uint8_t *kamf,
-                          uint16_t abba);
-  static void derive_knas(algorithm_type_dist_t nas_alg_type,
-                          uint8_t nas_alg_id, uint8_t kamf[32], uint8_t *knas);
-  static void derive_kgnb(uint32_t uplinkCount, uint8_t accessType,
-                          uint8_t kamf[32], uint8_t *kgnb);
-  static uint8_t *sqn_ms_derive(const uint8_t opc[16], uint8_t *key,
-                                uint8_t *auts, uint8_t *rand);
+  static void kdf(
+      uint8_t* key, uint16_t key_len, uint8_t* s, uint16_t s_len, uint8_t* out,
+      uint16_t out_len);
+  static void derive_kasme(
+      uint8_t ck[16], uint8_t ik[16], uint8_t plmn[3], uint8_t sqn[6],
+      uint8_t ak[6], uint8_t kasme[32]);
+  static void derive_kausf(
+      uint8_t ck[16], uint8_t ik[16], std::string serving_network,
+      uint8_t sqn[6], uint8_t ak[6], uint8_t kausf[32]);
+  static void derive_kseaf(
+      std::string serving_network, uint8_t kausf[32], uint8_t kseaf[32]);
+  static void derive_kamf(
+      std::string imsi, uint8_t* kseaf, uint8_t* kamf, uint16_t abba);
+  static void derive_knas(
+      algorithm_type_dist_t nas_alg_type, uint8_t nas_alg_id, uint8_t kamf[32],
+      uint8_t* knas);
+  static void derive_kgnb(
+      uint32_t uplinkCount, uint8_t accessType, uint8_t kamf[32],
+      uint8_t* kgnb);
+  static uint8_t* sqn_ms_derive(
+      const uint8_t opc[16], uint8_t* key, uint8_t* auts, uint8_t* rand);
 
  public:
   /****** general functions ********/
-  static void ComputeOPc(const uint8_t kP[16], const uint8_t opP[16],
-                         uint8_t opcP[16]);
-  static void generate_autn(const uint8_t sqn[6], const uint8_t ak[6],
-                            const uint8_t amf[2], const uint8_t mac_a[8],
-                            uint8_t autn[16]);
-  static int generate_vector(const uint8_t opc[16], uint64_t imsi,
-                             uint8_t key[16], uint8_t plmn[3], uint8_t sqn[6],
-                             auc_vector_t *vector);
-  static void annex_a_4_33501(uint8_t ck[16], uint8_t ik[16], uint8_t *input,
-                              uint8_t rand[16], std::string serving_network,
-                              uint8_t *output);
-  static void generate_random(uint8_t *random_p, ssize_t length);
+  static void ComputeOPc(
+      const uint8_t kP[16], const uint8_t opP[16], uint8_t opcP[16]);
+  static void generate_autn(
+      const uint8_t sqn[6], const uint8_t ak[6], const uint8_t amf[2],
+      const uint8_t mac_a[8], uint8_t autn[16]);
+  static int generate_vector(
+      const uint8_t opc[16], uint64_t imsi, uint8_t key[16], uint8_t plmn[3],
+      uint8_t sqn[6], auc_vector_t* vector);
+  static void annex_a_4_33501(
+      uint8_t ck[16], uint8_t ik[16], uint8_t* input, uint8_t rand[16],
+      std::string serving_network, uint8_t* output);
+  static void generate_random(uint8_t* random_p, ssize_t length);
 
-  static void sha256(unsigned char *message, int msg_len,
-                     unsigned char *output);
-  static void generate_Hxres(uint8_t rand[16], uint8_t xresStar[16],
-                             uint8_t *hxresStar);
+  static void sha256(
+      unsigned char* message, int msg_len, unsigned char* output);
+  static void generate_Hxres(
+      uint8_t rand[16], uint8_t xresStar[16], uint8_t* hxresStar);
   // static void generate_authCtxId(uint8_t autn[16],
   //                                           uint8_t *authCtxId);
-  static bool equal_uint8(uint8_t *oldVal, uint8_t *newVal, int msg_len);
+  static bool equal_uint8(uint8_t* oldVal, uint8_t* newVal, int msg_len);
 
  public:
   /****** Rijndael ********/

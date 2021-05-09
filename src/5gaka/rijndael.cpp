@@ -129,7 +129,7 @@ void ShiftRow(u8 state[4][4]) {
   /*
    * left rotate row 1 by 1
    */
-  temp = state[1][0];
+  temp        = state[1][0];
   state[1][0] = state[1][1];
   state[1][1] = state[1][2];
   state[1][2] = state[1][3];
@@ -137,16 +137,16 @@ void ShiftRow(u8 state[4][4]) {
   /*
    * left rotate row 2 by 2
    */
-  temp = state[2][0];
+  temp        = state[2][0];
   state[2][0] = state[2][2];
   state[2][2] = temp;
-  temp = state[2][1];
+  temp        = state[2][1];
   state[2][1] = state[2][3];
   state[2][3] = temp;
   /*
    * left rotate row 3 by 3
    */
-  temp = state[3][0];
+  temp        = state[3][0];
   state[3][0] = state[3][3];
   state[3][3] = state[3][2];
   state[3][2] = state[3][1];
@@ -177,8 +177,8 @@ void MixColumn(u8 state[4][4]) {
    16-byte output (using round keys already derived from 16-byte
    key).
   -----------------------------------------------------------------*/
-void Authentication_5gaka::RijndaelEncrypt(const uint8_t input[16],
-                                           uint8_t output[16]) {
+void Authentication_5gaka::RijndaelEncrypt(
+    const uint8_t input[16], uint8_t output[16]) {
   int i = 0, r = 0;
   u8 state[4][4];
   for (i = 0; i < 16; i++) state[i & 0x3][i >> 2] = input[i];

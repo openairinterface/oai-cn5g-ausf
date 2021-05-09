@@ -44,8 +44,8 @@ email: contact@openairinterface.org
 // 0xbf, 0x35 }; uint8_t sqn[6] = {0xff, 0x9b, 0xb4, 0xd0, 0xb6, 0x07}; uint8_t
 // amf[2] = {0xb9, 0xb9};
 
-extern void print_buffer(const std::string app, const std::string commit,
-                         uint8_t *buf, int len);
+extern void print_buffer(
+    const std::string app, const std::string commit, uint8_t* buf, int len);
 
 int ff1_test() {
 #if 0
@@ -99,10 +99,10 @@ int ff1_test() {
 #endif
 }
 
-void string_to_utf8(const std::string &word,
-                    std::vector<std::string> &characters) {
+void string_to_utf8(
+    const std::string& word, std::vector<std::string>& characters) {
   int num = word.size();
-  int i = 0;
+  int i   = 0;
   while (i < num) {
     int size = 1;
     if (word[i] & 0x80) {
@@ -158,7 +158,7 @@ void kdf_test() {
 
 void rijndael_test() {
   printf("RijndaelKeySchedule testing ...\n");
-  uint8_t key[16] = {0x46, 0x5b, 0x5c, 0xe8, 0xb1, 0x99, 0xb4, 0x9f,
+  uint8_t key[16]  = {0x46, 0x5b, 0x5c, 0xe8, 0xb1, 0x99, 0xb4, 0x9f,
                      0xaa, 0x5f, 0x0a, 0x2e, 0xe2, 0x38, 0xa6, 0xbc};
   uint8_t key1[16] = {0x03, 0x96, 0xeb, 0x31, 0x7b, 0x6d, 0x1c, 0x36,
                       0xf1, 0x9c, 0x1c, 0x84, 0xcd, 0x6f, 0xfd, 0x16};
@@ -173,14 +173,14 @@ void rijndael_test() {
 }
 
 void f1_test() {
-  uint8_t opc[16] = {0xcd, 0x63, 0xcb, 0x71, 0x95, 0x4a, 0x9f, 0x4e,
+  uint8_t opc[16]  = {0xcd, 0x63, 0xcb, 0x71, 0x95, 0x4a, 0x9f, 0x4e,
                      0x48, 0xa5, 0x99, 0x4e, 0x37, 0xa0, 0x2b, 0xaf};
   uint8_t rand[16] = {0x23, 0x55, 0x3c, 0xbe, 0x96, 0x37, 0xa8, 0x9d,
                       0x21, 0x8a, 0xe6, 0x4d, 0xae, 0x47, 0xbf, 0x35};
-  uint8_t key[16] = {0x46, 0x5b, 0x5c, 0xe8, 0xb1, 0x99, 0xb4, 0x9f,
+  uint8_t key[16]  = {0x46, 0x5b, 0x5c, 0xe8, 0xb1, 0x99, 0xb4, 0x9f,
                      0xaa, 0x5f, 0x0a, 0x2e, 0xe2, 0x38, 0xa6, 0xbc};
-  uint8_t sqn[6] = {0xff, 0x9b, 0xb4, 0xd0, 0xb6, 0x07};
-  uint8_t amf[2] = {0xb9, 0xb9};
+  uint8_t sqn[6]   = {0xff, 0x9b, 0xb4, 0xd0, 0xb6, 0x07};
+  uint8_t amf[2]   = {0xb9, 0xb9};
   uint8_t mac_a[8], mac_s[8];
   Authentication_5gaka::f1(opc, key, rand, sqn, amf, mac_a);
   Authentication_5gaka::f1star(opc, key, rand, sqn, amf, mac_s);
@@ -302,22 +302,22 @@ void res_test() {
 // }
 
 void buffer_test() {
-  uint8_t mac[4] = {0x11, 0x22, 0x33, 0x44};
+  uint8_t mac[4]    = {0x11, 0x22, 0x33, 0x44};
   uint8_t buffer[6] = {0};
   uint32_t mac32;
-  mac32 = ntohl(*((uint32_t *)mac));
+  mac32 = ntohl(*((uint32_t*) mac));
   memcpy(buffer, &mac32, 4);
   print_buffer("amf_n1", "uint8_t *mac", mac, 4);
   printf("mac32: 0x%x\n", mac32);
   print_buffer("amf_n1", "buffer", buffer, 4);
-  *((uint32_t *)buffer) = htonl(mac32);
+  *((uint32_t*) buffer) = htonl(mac32);
   print_buffer("amf_n1", "buffer2", buffer, 4);
 }
 
 void xresStar_test() {
-  uint8_t opc[16] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+  uint8_t opc[16]  = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
                      0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f};
-  uint8_t key[16] = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
+  uint8_t key[16]  = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
                      0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff};
   uint8_t rand[16] = {0x5b, 0x2e, 0x1c, 0x24, 0x28, 0xc7, 0x56, 0x28,
                       0xe4, 0x43, 0xb0, 0xac, 0x89, 0x5d, 0x5b, 0x73};
@@ -351,9 +351,9 @@ void xresStar_test() {
 }
 
 void mac_test() {
-  uint8_t opc[16] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+  uint8_t opc[16]  = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
                      0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f};
-  uint8_t key[16] = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
+  uint8_t key[16]  = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
                      0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff};
   uint8_t rand[16] = {0x6a, 0x89, 0x59, 0xfb, 0x18, 0x8c, 0x73, 0x30,
                       0x8d, 0x67, 0x9f, 0x7b, 0xc8, 0x31, 0x3d, 0x65};
@@ -376,8 +376,8 @@ void mac_test() {
   /******************** XRES to XRES* **************************/
   // std::string snnStr = "5G:mnc002.mcc460.3gppnetwork.org";
   std::string snnStr = "5G:mnc001.mcc110.3gppnetwork.org";
-  uint8_t *snn = (uint8_t *)snnStr.c_str();
-  int len = snnStr.length();
+  uint8_t* snn       = (uint8_t*) snnStr.c_str();
+  int len            = snnStr.length();
   uint8_t KEY[32];
   memcpy(&KEY[0], ck, 16);
   memcpy(&KEY[16], ik, 16);
@@ -422,7 +422,7 @@ void mac_test() {
   S[1 + len] = (len & 0xff00) >> 8;
   S[2 + len] = len & 0x00ff;
   memcpy(&S[3 + len], sqnak, 6);
-  S[9 + len] = 0x00;
+  S[9 + len]  = 0x00;
   S[10 + len] = 0x06;
   print_buffer("amf_n1", "Kausf Derivation: Input", S, 11 + len);
 
@@ -434,9 +434,9 @@ void mac_test() {
   memset(S, 0, 200);
   // std::string newsnnStr = "5G:mnc002.mcc460.3gppnetwork.org";
   std::string newsnnStr = "5G:mnc001.mcc110.3gppnetwork.org";
-  uint8_t *newsnn = (uint8_t *)newsnnStr.c_str();
-  len = newsnnStr.length();
-  S[0] = 0x6C;
+  uint8_t* newsnn       = (uint8_t*) newsnnStr.c_str();
+  len                   = newsnnStr.length();
+  S[0]                  = 0x6C;
   memcpy(&S[1], newsnn, len);
   S[1 + len] = (len & 0xff00) >> 8;
   S[2 + len] = len & 0x00ff;
@@ -452,8 +452,8 @@ void mac_test() {
   // std::string supiStr = "imsi-460110123456789";
   // std::string supiStr = "460020100001103";
   std::string supiStr = "110010123456789";
-  uint8_t *supi = (uint8_t *)supiStr.c_str();
-  len = supiStr.length();
+  uint8_t* supi       = (uint8_t*) supiStr.c_str();
+  len                 = supiStr.length();
   // uint8_t supi[8] = {0x46, 0x0F, 0x11, 0x01, 0x23, 0x45, 0x67, 0x89};
   // len = 8;
   memset(S, 0, 200);
@@ -541,6 +541,8 @@ void new_mac_test() {
   // print_buffer("amf_n1", "Knas_int out", Knas_int, 16);
 }
 
-void istream_test() { char c = '1'; }
+void istream_test() {
+  char c = '1';
+}
 
 #endif
