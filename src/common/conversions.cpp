@@ -59,21 +59,21 @@ static const signed char ascii_to_hex_table[0x100] = {
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
-void conv::hexa_to_ascii(uint8_t *from, char *to, size_t length) {
+void conv::hexa_to_ascii(uint8_t* from, char* to, size_t length) {
   size_t i;
 
   for (i = 0; i < length; i++) {
     uint8_t upper = (from[i] & 0xf0) >> 4;
     uint8_t lower = from[i] & 0x0f;
 
-    to[2 * i] = hex_to_ascii_table[upper];
+    to[2 * i]     = hex_to_ascii_table[upper];
     to[2 * i + 1] = hex_to_ascii_table[lower];
   }
 }
 
-int conv::ascii_to_hex(uint8_t *dst, const char *h) {
-  const unsigned char *hex = (const unsigned char *)h;
-  unsigned i = 0;
+int conv::ascii_to_hex(uint8_t* dst, const char* h) {
+  const unsigned char* hex = (const unsigned char*) h;
+  unsigned i               = 0;
 
   for (;;) {
     int high, low;
@@ -99,18 +99,18 @@ int conv::ascii_to_hex(uint8_t *dst, const char *h) {
 }
 
 //------------------------------------------------------------------------------
-std::string conv::mccToString(const uint8_t digit1, const uint8_t digit2,
-                              const uint8_t digit3) {
-  std::string s = {};
+std::string conv::mccToString(
+    const uint8_t digit1, const uint8_t digit2, const uint8_t digit3) {
+  std::string s  = {};
   uint16_t mcc16 = digit1 * 100 + digit2 * 10 + digit3;
   // s.append(std::to_string(digit1)).append(std::to_string(digit2)).append(std::to_string(digit3));
   s.append(std::to_string(mcc16));
   return s;
 }
 //------------------------------------------------------------------------------
-std::string conv::mncToString(const uint8_t digit1, const uint8_t digit2,
-                              const uint8_t digit3) {
-  std::string s = {};
+std::string conv::mncToString(
+    const uint8_t digit1, const uint8_t digit2, const uint8_t digit3) {
+  std::string s  = {};
   uint16_t mcc16 = 0;
 
   if (digit3 == 0x0F) {
@@ -125,15 +125,15 @@ std::string conv::mncToString(const uint8_t digit1, const uint8_t digit2,
 //------------------------------------------------------------------------------
 struct in_addr conv::fromString(const std::string addr4) {
   unsigned char buf[sizeof(struct in6_addr)] = {};
-  int s = inet_pton(AF_INET, addr4.c_str(), buf);
-  struct in_addr *ia = (struct in_addr *)buf;
+  int s              = inet_pton(AF_INET, addr4.c_str(), buf);
+  struct in_addr* ia = (struct in_addr*) buf;
   return *ia;
 }
 //------------------------------------------------------------------------------
-std::string conv::toString(const struct in_addr &inaddr) {
-  std::string s = {};
+std::string conv::toString(const struct in_addr& inaddr) {
+  std::string s              = {};
   char str[INET6_ADDRSTRLEN] = {};
-  if (inet_ntop(AF_INET, (const void *)&inaddr, str, INET6_ADDRSTRLEN) ==
+  if (inet_ntop(AF_INET, (const void*) &inaddr, str, INET6_ADDRSTRLEN) ==
       NULL) {
     s.append("Error in_addr");
   } else {
@@ -142,10 +142,10 @@ std::string conv::toString(const struct in_addr &inaddr) {
   return s;
 }
 
-std::string conv::toString(const struct in6_addr &in6addr) {
-  std::string s = {};
+std::string conv::toString(const struct in6_addr& in6addr) {
+  std::string s              = {};
   char str[INET6_ADDRSTRLEN] = {};
-  if (inet_ntop(AF_INET6, (const void *)&in6addr, str, INET6_ADDRSTRLEN) ==
+  if (inet_ntop(AF_INET6, (const void*) &in6addr, str, INET6_ADDRSTRLEN) ==
       nullptr) {
     s.append("Error in6_addr");
   } else {
@@ -155,8 +155,8 @@ std::string conv::toString(const struct in6_addr &in6addr) {
 }
 
 //------------------------------from
-//udm------------------------------------------------
-std::string conv::uint8_to_hex_string(const uint8_t *v, const size_t s) {
+// udm------------------------------------------------
+std::string conv::uint8_to_hex_string(const uint8_t* v, const size_t s) {
   std::stringstream ss;
 
   ss << std::hex << std::setfill('0');
@@ -168,7 +168,7 @@ std::string conv::uint8_to_hex_string(const uint8_t *v, const size_t s) {
   return ss.str();
 }
 
-void conv::hex_str_to_uint8(const char *string, uint8_t *des) {
+void conv::hex_str_to_uint8(const char* string, uint8_t* des) {
   if (string == NULL) return;
 
   size_t slength = strlen(string);
@@ -183,7 +183,7 @@ void conv::hex_str_to_uint8(const char *string, uint8_t *des) {
 
   size_t index = 0;
   while (index < slength) {
-    char c = string[index];
+    char c    = string[index];
     int value = 0;
     if (c >= '0' && c <= '9')
       value = (c - '0');

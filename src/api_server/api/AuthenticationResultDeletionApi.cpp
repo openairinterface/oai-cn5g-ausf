@@ -30,66 +30,71 @@ AuthenticationResultDeletionApi::AuthenticationResultDeletionApi(
   router = rtr;
 }
 
-void AuthenticationResultDeletionApi::init() { setupRoutes(); }
+void AuthenticationResultDeletionApi::init() {
+  setupRoutes();
+}
 
 void AuthenticationResultDeletionApi::setupRoutes() {
   using namespace Pistache::Rest;
 
-  Routes::Delete(*router,
-                 base + "/ue-authentications/:authCtxId/5g-aka-confirmation",
-                 Routes::bind(&AuthenticationResultDeletionApi::
-                                  delete5g_aka_authentication_result_handler,
-                              this));
-  Routes::Delete(*router, base + "/ue-authentications/:authCtxId/eap-session",
-                 Routes::bind(&AuthenticationResultDeletionApi::
-                                  delete_eap_authentication_result_handler,
-                              this));
+  Routes::Delete(
+      *router, base + "/ue-authentications/:authCtxId/5g-aka-confirmation",
+      Routes::bind(
+          &AuthenticationResultDeletionApi::
+              delete5g_aka_authentication_result_handler,
+          this));
+  Routes::Delete(
+      *router, base + "/ue-authentications/:authCtxId/eap-session",
+      Routes::bind(
+          &AuthenticationResultDeletionApi::
+              delete_eap_authentication_result_handler,
+          this));
 
   // Default handler, called when a route is not found
-  router->addCustomHandler(
-      Routes::bind(&AuthenticationResultDeletionApi::
-                       authentication_result_deletion_api_default_handler,
-                   this));
+  router->addCustomHandler(Routes::bind(
+      &AuthenticationResultDeletionApi::
+          authentication_result_deletion_api_default_handler,
+      this));
 }
 
 void AuthenticationResultDeletionApi::
     delete5g_aka_authentication_result_handler(
-        const Pistache::Rest::Request &request,
+        const Pistache::Rest::Request& request,
         Pistache::Http::ResponseWriter response) {
   // Getting the path params
   auto authCtxId = request.param(":authCtxId").as<std::string>();
 
   try {
     this->delete5g_aka_authentication_result(authCtxId, response);
-  } catch (nlohmann::detail::exception &e) {
+  } catch (nlohmann::detail::exception& e) {
     // send a 400 error
     response.send(Pistache::Http::Code::Bad_Request, e.what());
     return;
-  } catch (Pistache::Http::HttpError &e) {
+  } catch (Pistache::Http::HttpError& e) {
     response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
     return;
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     // send a 500 error
     response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
     return;
   }
 }
 void AuthenticationResultDeletionApi::delete_eap_authentication_result_handler(
-    const Pistache::Rest::Request &request,
+    const Pistache::Rest::Request& request,
     Pistache::Http::ResponseWriter response) {
   // Getting the path params
   auto authCtxId = request.param(":authCtxId").as<std::string>();
 
   try {
     this->delete_eap_authentication_result(authCtxId, response);
-  } catch (nlohmann::detail::exception &e) {
+  } catch (nlohmann::detail::exception& e) {
     // send a 400 error
     response.send(Pistache::Http::Code::Bad_Request, e.what());
     return;
-  } catch (Pistache::Http::HttpError &e) {
+  } catch (Pistache::Http::HttpError& e) {
     response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
     return;
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     // send a 500 error
     response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
     return;
@@ -98,16 +103,17 @@ void AuthenticationResultDeletionApi::delete_eap_authentication_result_handler(
 
 void AuthenticationResultDeletionApi::
     authentication_result_deletion_api_default_handler(
-        const Pistache::Rest::Request &,
+        const Pistache::Rest::Request&,
         Pistache::Http::ResponseWriter response) {
   cout << "----------authentication_result_deletion_api_default_handler--------"
           "----"
        << endl;
-  response.send(Pistache::Http::Code::Not_Found,
-                "The requested method does not exist-resDel");
+  response.send(
+      Pistache::Http::Code::Not_Found,
+      "The requested method does not exist-resDel");
 }
 
-} // namespace api
-} // namespace server
-} // namespace openapitools
-} // namespace org
+}  // namespace api
+}  // namespace server
+}  // namespace openapitools
+}  // namespace org

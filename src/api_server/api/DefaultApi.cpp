@@ -30,13 +30,16 @@ DefaultApi::DefaultApi(std::shared_ptr<Pistache::Rest::Router> rtr) {
   router = rtr;
 }
 
-void DefaultApi::init() { setupRoutes(); }
+void DefaultApi::init() {
+  setupRoutes();
+}
 
 void DefaultApi::setupRoutes() {
   using namespace Pistache::Rest;
 
-  Routes::Post(*router, base + "/ue-authentications/:authCtxId/eap-session",
-               Routes::bind(&DefaultApi::eap_auth_method_handler, this));
+  Routes::Post(
+      *router, base + "/ue-authentications/:authCtxId/eap-session",
+      Routes::bind(&DefaultApi::eap_auth_method_handler, this));
   Routes::Post(
       *router, base + "/rg-authentications",
       Routes::bind(&DefaultApi::rg_authentications_post_handler, this));
@@ -48,8 +51,8 @@ void DefaultApi::setupRoutes() {
           this));
   Routes::Post(
       *router, base + "/ue-authentications/deregister",
-      Routes::bind(&DefaultApi::ue_authentications_deregister_post_handler,
-                   this));
+      Routes::bind(
+          &DefaultApi::ue_authentications_deregister_post_handler, this));
   Routes::Post(
       *router, base + "/ue-authentications",
       Routes::bind(&DefaultApi::ue_authentications_post_handler, this));
@@ -60,7 +63,7 @@ void DefaultApi::setupRoutes() {
 }
 
 void DefaultApi::eap_auth_method_handler(
-    const Pistache::Rest::Request &request,
+    const Pistache::Rest::Request& request,
     Pistache::Http::ResponseWriter response) {
   // Getting the path params
   auto authCtxId = request.param(":authCtxId").as<std::string>();
@@ -72,26 +75,23 @@ void DefaultApi::eap_auth_method_handler(
   try {
     nlohmann::json::parse(request.body()).get_to(eapSession);
     this->eap_auth_method(authCtxId, eapSession, response);
-  } catch (nlohmann::detail::exception &e) {
+  } catch (nlohmann::detail::exception& e) {
     // send a 400 error
     response.send(Pistache::Http::Code::Bad_Request, e.what());
     return;
-  } catch (Pistache::Http::HttpError &e) {
+  } catch (Pistache::Http::HttpError& e) {
     response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
     return;
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     // send a 500 error
     response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
     return;
   }
 }
 
-
-
 void DefaultApi::rg_authentications_post_handler(
-    const Pistache::Rest::Request &request,
+    const Pistache::Rest::Request& request,
     Pistache::Http::ResponseWriter response) {
-
   // Getting the body param
 
   RgAuthenticationInfo rgAuthenticationInfo;
@@ -99,14 +99,14 @@ void DefaultApi::rg_authentications_post_handler(
   try {
     nlohmann::json::parse(request.body()).get_to(rgAuthenticationInfo);
     this->rg_authentications_post(rgAuthenticationInfo, response);
-  } catch (nlohmann::detail::exception &e) {
+  } catch (nlohmann::detail::exception& e) {
     // send a 400 error
     response.send(Pistache::Http::Code::Bad_Request, e.what());
     return;
-  } catch (Pistache::Http::HttpError &e) {
+  } catch (Pistache::Http::HttpError& e) {
     response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
     return;
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     // send a 500 error
     response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
     return;
@@ -114,12 +114,13 @@ void DefaultApi::rg_authentications_post_handler(
 }
 
 void DefaultApi::ue_authentications_auth_ctx_id5g_aka_confirmation_put_handler(
-    const Pistache::Rest::Request &request,
+    const Pistache::Rest::Request& request,
     Pistache::Http::ResponseWriter response) {
-      Logger::ausf_server().info("--Received 5g_aka_confirmation put Request");
+  Logger::ausf_server().info("--Received 5g_aka_confirmation put Request");
   // Getting the path params
   auto authCtxId = request.param(":authCtxId").as<std::string>();
-  Logger::ausf_server().info("5gaka confirmation received with authctxID %s",authCtxId.c_str());
+  Logger::ausf_server().info(
+      "5gaka confirmation received with authctxID %s", authCtxId.c_str());
 
   // Getting the body param
 
@@ -130,15 +131,15 @@ void DefaultApi::ue_authentications_auth_ctx_id5g_aka_confirmation_put_handler(
     Logger::ausf_server().debug("json parsed");
     this->ue_authentications_auth_ctx_id5g_aka_confirmation_put(
         authCtxId, confirmationData, response);
-  } catch (nlohmann::detail::exception &e) {
+  } catch (nlohmann::detail::exception& e) {
     // send a 400 error
     Logger::ausf_server().error("**400 error");
     response.send(Pistache::Http::Code::Bad_Request, e.what());
     return;
-  } catch (Pistache::Http::HttpError &e) {
+  } catch (Pistache::Http::HttpError& e) {
     response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
     return;
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     // send a 500 error
     Logger::ausf_server().error("**500 error");
     response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
@@ -147,9 +148,8 @@ void DefaultApi::ue_authentications_auth_ctx_id5g_aka_confirmation_put_handler(
 }
 
 void DefaultApi::ue_authentications_deregister_post_handler(
-    const Pistache::Rest::Request &request,
+    const Pistache::Rest::Request& request,
     Pistache::Http::ResponseWriter response) {
-
   // Getting the body param
 
   DeregistrationInfo deregistrationInfo;
@@ -157,14 +157,14 @@ void DefaultApi::ue_authentications_deregister_post_handler(
   try {
     nlohmann::json::parse(request.body()).get_to(deregistrationInfo);
     this->ue_authentications_deregister_post(deregistrationInfo, response);
-  } catch (nlohmann::detail::exception &e) {
+  } catch (nlohmann::detail::exception& e) {
     // send a 400 error
     response.send(Pistache::Http::Code::Bad_Request, e.what());
     return;
-  } catch (Pistache::Http::HttpError &e) {
+  } catch (Pistache::Http::HttpError& e) {
     response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
     return;
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     // send a 500 error
     response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
     return;
@@ -172,9 +172,9 @@ void DefaultApi::ue_authentications_deregister_post_handler(
 }
 
 void DefaultApi::ue_authentications_post_handler(
-    const Pistache::Rest::Request &request,
+    const Pistache::Rest::Request& request,
     Pistache::Http::ResponseWriter response) {
-//   cout << "------------ue authentications post handler---------" << endl;
+  //   cout << "------------ue authentications post handler---------" << endl;
   Logger::ausf_server().info("--Received ue-authentications post Request");
 
   // Getting the body param
@@ -185,15 +185,15 @@ void DefaultApi::ue_authentications_post_handler(
     nlohmann::json::parse(request.body()).get_to(authenticationInfo);
     Logger::ausf_server().debug("json parsed");
     this->ue_authentications_post(authenticationInfo, response);
-  } catch (nlohmann::detail::exception &e) {
+  } catch (nlohmann::detail::exception& e) {
     // send a 400 error
     Logger::ausf_server().error("**400 error");
     response.send(Pistache::Http::Code::Bad_Request, e.what());
     return;
-  } catch (Pistache::Http::HttpError &e) {
+  } catch (Pistache::Http::HttpError& e) {
     response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
     return;
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     // send a 500 error
     Logger::ausf_server().error("**500 error");
     response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
@@ -202,14 +202,14 @@ void DefaultApi::ue_authentications_post_handler(
 }
 
 void DefaultApi::default_api_default_handler(
-    const Pistache::Rest::Request &, Pistache::Http::ResponseWriter response) {
-
+    const Pistache::Rest::Request&, Pistache::Http::ResponseWriter response) {
   Logger::ausf_server().info("--in default api handler--");
-  response.send(Pistache::Http::Code::Not_Found,
-                "The requested method does not exist-default");
+  response.send(
+      Pistache::Http::Code::Not_Found,
+      "The requested method does not exist-default");
 }
 
-} // namespace api
-} // namespace server
-} // namespace openapitools
-} // namespace org
+}  // namespace api
+}  // namespace server
+}  // namespace openapitools
+}  // namespace org

@@ -35,8 +35,8 @@ email: contact@openairinterface.org
 #include "logger.hpp"
 using namespace std;
 
-void print_buffer(const string app, const string commit, uint8_t *buf,
-                  int len) {
+void print_buffer(
+    const string app, const string commit, uint8_t* buf, int len) {
   if (!app.compare("ausf_server")) cout << commit.c_str() << endl;
   Logger::ausf_server().debug(commit.c_str());
 
@@ -44,7 +44,7 @@ void print_buffer(const string app, const string commit, uint8_t *buf,
   printf("\n");
 }
 
-void hexStr2Byte(const char *src, unsigned char *dest, int len) {
+void hexStr2Byte(const char* src, unsigned char* dest, int len) {
   short i;
   unsigned char hBy, lBy;
   for (i = 0; i < len; i += 2) {

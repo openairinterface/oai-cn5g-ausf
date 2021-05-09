@@ -12,7 +12,7 @@ extern "C" {
 #endif
 
 typedef struct ANY {
-  uint8_t *buf; /* BER-encoded ANY contents */
+  uint8_t* buf; /* BER-encoded ANY contents */
   int size;     /* Size of the above buffer */
 
   asn_struct_ctx_t _asn_ctx; /* Parsing across buffer boundaries */
@@ -45,14 +45,14 @@ per_type_encoder_f ANY_encode_aper;
  ******************************/
 
 /* Convert another ASN.1 type into the ANY. This implies DER encoding. */
-int ANY_fromType(ANY_t *, asn_TYPE_descriptor_t *td, void *struct_ptr);
-int ANY_fromType_aper(ANY_t *st, asn_TYPE_descriptor_t *td, void *sptr);
-ANY_t *ANY_new_fromType(asn_TYPE_descriptor_t *td, void *struct_ptr);
-ANY_t *ANY_new_fromType_aper(asn_TYPE_descriptor_t *td, void *sptr);
+int ANY_fromType(ANY_t*, asn_TYPE_descriptor_t* td, void* struct_ptr);
+int ANY_fromType_aper(ANY_t* st, asn_TYPE_descriptor_t* td, void* sptr);
+ANY_t* ANY_new_fromType(asn_TYPE_descriptor_t* td, void* struct_ptr);
+ANY_t* ANY_new_fromType_aper(asn_TYPE_descriptor_t* td, void* sptr);
 
 /* Convert the contents of the ANY type into the specified type. */
-int ANY_to_type(ANY_t *, asn_TYPE_descriptor_t *td, void **struct_ptr);
-int ANY_to_type_aper(ANY_t *, asn_TYPE_descriptor_t *td, void **struct_ptr);
+int ANY_to_type(ANY_t*, asn_TYPE_descriptor_t* td, void** struct_ptr);
+int ANY_to_type_aper(ANY_t*, asn_TYPE_descriptor_t* td, void** struct_ptr);
 
 #define ANY_fromBuf(s, buf, size) OCTET_STRING_fromBuf((s), (buf), (size))
 #define ANY_new_fromBuf(buf, size)                                             \

@@ -39,12 +39,11 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <chrono>
 
-
 #include "logger.hpp"
 #include "ausf_client.hpp"
 
 using namespace oai::ausf::app;
-//using namespace oai::ausf::model;
+// using namespace oai::ausf::model;
 using namespace std::chrono;
 
 extern ausf_app* ausf_app_inst;
@@ -52,14 +51,11 @@ ausf_client* ausf_client_inst = nullptr;
 
 //------------------------------------------------------------------------------
 ausf_app::ausf_app(const std::string& config_file) {
-  //logger::ausf_server().startup("Starting...");
+  // logger::ausf_server().startup("Starting...");
 
-
-  //logger::ausf_server().startup("Started");
+  // logger::ausf_server().startup("Started");
 }
 
 ausf_app::~ausf_app() {
- // logger::ausf_server().debug("Delete AUSF_APP instance...");
-
+  // logger::ausf_server().debug("Delete AUSF_APP instance...");
 }
-

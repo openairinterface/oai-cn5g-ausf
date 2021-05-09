@@ -31,7 +31,7 @@ namespace model {
 ///
 /// </summary>
 class DeregistrationInfo {
-public:
+ public:
   DeregistrationInfo();
   virtual ~DeregistrationInfo();
 
@@ -44,18 +44,18 @@ public:
   ///
   /// </summary>
   std::string getSupi() const;
-  void setSupi(std::string const &value);
+  void setSupi(std::string const& value);
 
-  friend void to_json(nlohmann::json &j, const DeregistrationInfo &o);
-  friend void from_json(const nlohmann::json &j, DeregistrationInfo &o);
+  friend void to_json(nlohmann::json& j, const DeregistrationInfo& o);
+  friend void from_json(const nlohmann::json& j, DeregistrationInfo& o);
 
-protected:
+ protected:
   std::string m_Supi;
 };
 
-} // namespace model
-} // namespace server
-} // namespace openapitools
-} // namespace org
+}  // namespace model
+}  // namespace server
+}  // namespace openapitools
+}  // namespace org
 
 #endif /* DeregistrationInfo_H_ */

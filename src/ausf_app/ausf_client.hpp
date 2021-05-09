@@ -40,14 +40,11 @@ namespace app {
 
 class ausf_client {
  private:
-
-
  public:
   ausf_client();
   virtual ~ausf_client();
 
   ausf_client(ausf_client const&) = delete;
-
 };
 }  // namespace app
 }  // namespace ausf

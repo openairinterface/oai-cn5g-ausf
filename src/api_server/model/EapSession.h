@@ -35,7 +35,7 @@ namespace model {
 ///
 /// </summary>
 class EapSession {
-public:
+ public:
   EapSession();
   virtual ~EapSession();
 
@@ -48,40 +48,40 @@ public:
   /// contains an EAP packet
   /// </summary>
   std::string getEapPayload() const;
-  void setEapPayload(std::string const &value);
+  void setEapPayload(std::string const& value);
   /// <summary>
   ///
   /// </summary>
   std::string getKSeaf() const;
-  void setKSeaf(std::string const &value);
+  void setKSeaf(std::string const& value);
   bool kSeafIsSet() const;
   void unsetKSeaf();
   /// <summary>
   ///
   /// </summary>
-  std::map<std::string, LinksValueSchema> &getLinks();
-  void setLinks(std::map<std::string, LinksValueSchema> const &value);
+  std::map<std::string, LinksValueSchema>& getLinks();
+  void setLinks(std::map<std::string, LinksValueSchema> const& value);
   bool linksIsSet() const;
   void unset_links();
   /// <summary>
   ///
   /// </summary>
   AuthResult getAuthResult() const;
-  void setAuthResult(AuthResult const &value);
+  void setAuthResult(AuthResult const& value);
   bool authResultIsSet() const;
   void unsetAuthResult();
   /// <summary>
   ///
   /// </summary>
   std::string getSupi() const;
-  void setSupi(std::string const &value);
+  void setSupi(std::string const& value);
   bool supiIsSet() const;
   void unsetSupi();
 
-  friend void to_json(nlohmann::json &j, const EapSession &o);
-  friend void from_json(const nlohmann::json &j, EapSession &o);
+  friend void to_json(nlohmann::json& j, const EapSession& o);
+  friend void from_json(const nlohmann::json& j, EapSession& o);
 
-protected:
+ protected:
   std::string m_EapPayload;
 
   std::string m_KSeaf;
@@ -94,9 +94,9 @@ protected:
   bool m_SupiIsSet;
 };
 
-} // namespace model
-} // namespace server
-} // namespace openapitools
-} // namespace org
+}  // namespace model
+}  // namespace server
+}  // namespace openapitools
+}  // namespace org
 
 #endif /* EapSession_H_ */

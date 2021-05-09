@@ -32,7 +32,6 @@
 #include <iostream>
 #include <thread>
 
-
 using namespace oai::ausf::app;
 using namespace util;
 using namespace std;
@@ -40,7 +39,7 @@ using namespace std;
 using namespace config;
 
 ausf_config ausf_cfg;
-ausf_app* ausf_app_inst = nullptr;
+ausf_app* ausf_app_inst   = nullptr;
 AUSFApiServer* api_server = nullptr;
 #include "ausf_config.hpp"
 
@@ -98,7 +97,8 @@ int main(int argc, char** argv) {
   // Currently hard-coded value. TODO: add as config option.
   string pid_file_name = get_exe_absolute_path("/var/run", ausf_cfg.instance);
   if (!is_pid_file_lock_success(pid_file_name.c_str())) {
-    Logger::ausf_server().error("Lock PID file %s failed\n", pid_file_name.c_str());
+    Logger::ausf_server().error(
+        "Lock PID file %s failed\n", pid_file_name.c_str());
     exit(-EDEADLK);
   }
 

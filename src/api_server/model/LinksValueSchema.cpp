@@ -19,7 +19,7 @@ namespace server {
 namespace model {
 
 LinksValueSchema::LinksValueSchema() {
-  m_Href = "";
+  m_Href      = "";
   m_HrefIsSet = false;
 }
 
@@ -29,28 +29,33 @@ void LinksValueSchema::validate() {
   // TODO: implement validation
 }
 
-void to_json(nlohmann::json &j, const LinksValueSchema &o) {
+void to_json(nlohmann::json& j, const LinksValueSchema& o) {
   j = nlohmann::json();
-  if (o.hrefIsSet())
-    j["href"] = o.m_Href;
+  if (o.hrefIsSet()) j["href"] = o.m_Href;
 }
 
-void from_json(const nlohmann::json &j, LinksValueSchema &o) {
+void from_json(const nlohmann::json& j, LinksValueSchema& o) {
   if (j.find("href") != j.end()) {
     j.at("href").get_to(o.m_Href);
     o.m_HrefIsSet = true;
   }
 }
 
-std::string LinksValueSchema::getHref() const { return m_Href; }
-void LinksValueSchema::setHref(std::string const &value) {
-  m_Href = value;
+std::string LinksValueSchema::getHref() const {
+  return m_Href;
+}
+void LinksValueSchema::setHref(std::string const& value) {
+  m_Href      = value;
   m_HrefIsSet = true;
 }
-bool LinksValueSchema::hrefIsSet() const { return m_HrefIsSet; }
-void LinksValueSchema::unsetHref() { m_HrefIsSet = false; }
+bool LinksValueSchema::hrefIsSet() const {
+  return m_HrefIsSet;
+}
+void LinksValueSchema::unsetHref() {
+  m_HrefIsSet = false;
+}
 
-} // namespace model
-} // namespace server
-} // namespace openapitools
-} // namespace org
+}  // namespace model
+}  // namespace server
+}  // namespace openapitools
+}  // namespace org

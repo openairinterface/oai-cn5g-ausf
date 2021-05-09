@@ -55,12 +55,9 @@ static std::size_t callback(
 }
 
 //------------------------------------------------------------------------------
-ausf_client::ausf_client() {
-}
+ausf_client::ausf_client() {}
 
 //------------------------------------------------------------------------------
 ausf_client::~ausf_client() {
   Logger::ausf_server().debug("Delete AUSF Client instance...");
-
 }
-

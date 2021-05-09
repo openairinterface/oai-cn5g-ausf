@@ -23,18 +23,20 @@ using namespace org::openapitools::server::model;
 AuthenticationResultDeletionApiImpl::AuthenticationResultDeletionApiImpl(
     std::shared_ptr<Pistache::Rest::Router> rtr, ausf_app* ausf_app_inst,
     std::string address)
-    : AuthenticationResultDeletionApi(rtr), m_ausf_app(ausf_app_inst), m_address(address) {}
+    : AuthenticationResultDeletionApi(rtr),
+      m_ausf_app(ausf_app_inst),
+      m_address(address) {}
 
 void AuthenticationResultDeletionApiImpl::delete5g_aka_authentication_result(
-    const std::string &authCtxId, Pistache::Http::ResponseWriter &response) {
+    const std::string& authCtxId, Pistache::Http::ResponseWriter& response) {
   response.send(Pistache::Http::Code::Ok, "Do some magic\n");
 }
 void AuthenticationResultDeletionApiImpl::delete_eap_authentication_result(
-    const std::string &authCtxId, Pistache::Http::ResponseWriter &response) {
+    const std::string& authCtxId, Pistache::Http::ResponseWriter& response) {
   response.send(Pistache::Http::Code::Ok, "Do some magic\n");
 }
 
-} // namespace api
-} // namespace server
-} // namespace openapitools
-} // namespace org
+}  // namespace api
+}  // namespace server
+}  // namespace openapitools
+}  // namespace org

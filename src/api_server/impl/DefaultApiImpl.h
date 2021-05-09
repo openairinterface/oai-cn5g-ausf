@@ -49,32 +49,36 @@ using namespace oai::ausf::app;
 using namespace org::openapitools::server::model;
 
 class DefaultApiImpl : public org::openapitools::server::api::DefaultApi {
-public:
-  DefaultApiImpl(std::shared_ptr<Pistache::Rest::Router>,  ausf_app* ausf_app_inst,
-	      std::string address);
+ public:
+  DefaultApiImpl(
+      std::shared_ptr<Pistache::Rest::Router>, ausf_app* ausf_app_inst,
+      std::string address);
   ~DefaultApiImpl() {}
 
-  void eap_auth_method(const std::string &authCtxId,
-                       const EapSession &eapSession,
-                       Pistache::Http::ResponseWriter &response);
-  void rg_authentications_post(const RgAuthenticationInfo &rgAuthenticationInfo,
-                               Pistache::Http::ResponseWriter &response);
+  void eap_auth_method(
+      const std::string& authCtxId, const EapSession& eapSession,
+      Pistache::Http::ResponseWriter& response);
+  void rg_authentications_post(
+      const RgAuthenticationInfo& rgAuthenticationInfo,
+      Pistache::Http::ResponseWriter& response);
   void ue_authentications_auth_ctx_id5g_aka_confirmation_put(
-      const std::string &authCtxId, const ConfirmationData &confirmationData,
-      Pistache::Http::ResponseWriter &response);
+      const std::string& authCtxId, const ConfirmationData& confirmationData,
+      Pistache::Http::ResponseWriter& response);
   void ue_authentications_deregister_post(
-      const DeregistrationInfo &deregistrationInfo,
-      Pistache::Http::ResponseWriter &response);
-  void ue_authentications_post(const AuthenticationInfo &authenticationInfo,
-                               Pistache::Http::ResponseWriter &response);
-private:
- ausf_app* m_ausf_app;
- std::string m_address;
+      const DeregistrationInfo& deregistrationInfo,
+      Pistache::Http::ResponseWriter& response);
+  void ue_authentications_post(
+      const AuthenticationInfo& authenticationInfo,
+      Pistache::Http::ResponseWriter& response);
+
+ private:
+  ausf_app* m_ausf_app;
+  std::string m_address;
 };
 
-} // namespace api
-} // namespace server
-} // namespace openapitools
-} // namespace org
+}  // namespace api
+}  // namespace server
+}  // namespace openapitools
+}  // namespace org
 
 #endif

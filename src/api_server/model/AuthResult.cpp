@@ -26,11 +26,13 @@ void AuthResult::validate() {
   // TODO: implement validation
 }
 
-void to_json(nlohmann::json &j, const AuthResult &o) { j = nlohmann::json(); }
+void to_json(nlohmann::json& j, const AuthResult& o) {
+  j = nlohmann::json();
+}
 
-void from_json(const nlohmann::json &j, AuthResult &o) {}
+void from_json(const nlohmann::json& j, AuthResult& o) {}
 
-} // namespace model
-} // namespace server
-} // namespace openapitools
-} // namespace org
+}  // namespace model
+}  // namespace server
+}  // namespace openapitools
+}  // namespace org

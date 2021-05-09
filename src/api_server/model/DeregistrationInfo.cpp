@@ -18,7 +18,9 @@ namespace openapitools {
 namespace server {
 namespace model {
 
-DeregistrationInfo::DeregistrationInfo() { m_Supi = ""; }
+DeregistrationInfo::DeregistrationInfo() {
+  m_Supi = "";
+}
 
 DeregistrationInfo::~DeregistrationInfo() {}
 
@@ -26,19 +28,23 @@ void DeregistrationInfo::validate() {
   // TODO: implement validation
 }
 
-void to_json(nlohmann::json &j, const DeregistrationInfo &o) {
-  j = nlohmann::json();
+void to_json(nlohmann::json& j, const DeregistrationInfo& o) {
+  j         = nlohmann::json();
   j["supi"] = o.m_Supi;
 }
 
-void from_json(const nlohmann::json &j, DeregistrationInfo &o) {
+void from_json(const nlohmann::json& j, DeregistrationInfo& o) {
   j.at("supi").get_to(o.m_Supi);
 }
 
-std::string DeregistrationInfo::getSupi() const { return m_Supi; }
-void DeregistrationInfo::setSupi(std::string const &value) { m_Supi = value; }
+std::string DeregistrationInfo::getSupi() const {
+  return m_Supi;
+}
+void DeregistrationInfo::setSupi(std::string const& value) {
+  m_Supi = value;
+}
 
-} // namespace model
-} // namespace server
-} // namespace openapitools
-} // namespace org
+}  // namespace model
+}  // namespace server
+}  // namespace openapitools
+}  // namespace org

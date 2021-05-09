@@ -3,9 +3,9 @@
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The OpenAirInterface Software Alliance licenses this file to You under
- * the OAI Public License, Version 1.1  (the "License"); you may not use this file
- * except in compliance with the License.
- * You may obtain a copy of the License at
+ * the OAI Public License, Version 1.1  (the "License"); you may not use this
+ *file except in compliance with the License. You may obtain a copy of the
+ *License at
  *
  *      http://www.openairinterface.org/?page_id=698
  *
@@ -44,21 +44,19 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 
-#define AUSF_CONFIG_STRING_AUSF_CONFIG                    "AUSF"
-#define AUSF_CONFIG_STRING_PID_DIRECTORY                 "PID_DIRECTORY"
-#define AUSF_CONFIG_STRING_INSTANCE_ID                   "INSTANCE_ID"
-#define AUSF_CONFIG_STRING_AUSF_NAME                      "AUSF_NAME"
+#define AUSF_CONFIG_STRING_AUSF_CONFIG "AUSF"
+#define AUSF_CONFIG_STRING_PID_DIRECTORY "PID_DIRECTORY"
+#define AUSF_CONFIG_STRING_INSTANCE_ID "INSTANCE_ID"
+#define AUSF_CONFIG_STRING_AUSF_NAME "AUSF_NAME"
 
-
-#define AUSF_CONFIG_STRING_INTERFACES                    "INTERFACES"
-#define AUSF_CONFIG_STRING_INTERFACE_SBI_AUSF             "SBI_AUSF"
-#define AUSF_CONFIG_STRING_INTERFACE_NUDM                "NUDM"
-#define AUSF_CONFIG_STRING_INTERFACE_NAMF                 "NAMF"
-#define AUSF_CONFIG_STRING_INTERFACE_NAME                "INTERFACE_NAME"
-#define AUSF_CONFIG_STRING_IPV4_ADDRESS                  "IPV4_ADDRESS"
-#define AUSF_CONFIG_STRING_PORT                          "PORT"
-#define AUSF_CONFIG_STRING_PPID                          "PPID"
-
+#define AUSF_CONFIG_STRING_INTERFACES "INTERFACES"
+#define AUSF_CONFIG_STRING_INTERFACE_SBI_AUSF "SBI_AUSF"
+#define AUSF_CONFIG_STRING_INTERFACE_NUDM "NUDM"
+#define AUSF_CONFIG_STRING_INTERFACE_NAMF "NAMF"
+#define AUSF_CONFIG_STRING_INTERFACE_NAME "INTERFACE_NAME"
+#define AUSF_CONFIG_STRING_IPV4_ADDRESS "IPV4_ADDRESS"
+#define AUSF_CONFIG_STRING_PORT "PORT"
+#define AUSF_CONFIG_STRING_PPID "PPID"
 
 // #define AUSF_CONFIG_STRING_UDM_INSTANCES_POOL            "UDM_INSTANCES_POOL"
 // #define AUSF_CONFIG_STRING_UDM_INSTANCE_ID               "UDM_INSTANCE_ID"
@@ -66,7 +64,8 @@
 // #define AUSF_CONFIG_STRING_UDM_INSTANCE_VERSION          "VERSION"
 // #define AUSF_CONFIG_STRING_UDM_INSTANCE_SELECTED         "SELECTED"
 
-// #define AUSF_CONFIG_STRING_STATISTICS_TIMER_INTERVAL     "STATISTICS_TIMER_INTERVAL"
+// #define AUSF_CONFIG_STRING_STATISTICS_TIMER_INTERVAL
+// "STATISTICS_TIMER_INTERVAL"
 
 // #define AUSF_CONFIG_STRING_GUAMI                         "GUAMI"
 // #define AUSF_CONFIG_STRING_SERVED_GUAMI_LIST             "SERVED_GUAMI_LIST"
@@ -94,7 +93,6 @@
 // #define AUSF_CONFIG_STRING_AUTH_MYSQL_DB                 "MYSQL_db"
 // #define AUSF_CONFIG_STRING_AUTH_OPERATOR_KEY             "OPERATOR_key"
 // #define AUSF_CONFIG_STRING_AUTH_RANDOM                   "RANDOM"
-
 
 using namespace libconfig;
 
@@ -142,8 +140,8 @@ class ausf_config {
  public:
   ausf_config();
   ~ausf_config();
-  int load(const std::string &config_file);
-  int load_interface(const Setting &if_cfg, interface_cfg_t &cfg);
+  int load(const std::string& config_file);
+  int load_interface(const Setting& if_cfg, interface_cfg_t& cfg);
   void display();
 
   unsigned int instance;
@@ -154,13 +152,13 @@ class ausf_config {
   interface_cfg_t nudm;
   interface_cfg_t namf;
 
-  //unsigned int statistics_interval;
-  //std::vector<plmn_item_t> plmn_list;
-  //std::string is_emergency_support;
-  //auth_conf auth_para;
-  //std::vector<udr_inst_t> udr_pool;
+  // unsigned int statistics_interval;
+  // std::vector<plmn_item_t> plmn_list;
+  // std::string is_emergency_support;
+  // auth_conf auth_para;
+  // std::vector<udr_inst_t> udr_pool;
 };
 
-}
+}  // namespace config
 
 #endif

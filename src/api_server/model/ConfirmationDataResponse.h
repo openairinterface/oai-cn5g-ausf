@@ -32,7 +32,7 @@ namespace model {
 ///
 /// </summary>
 class ConfirmationDataResponse {
-public:
+ public:
   ConfirmationDataResponse();
   virtual ~ConfirmationDataResponse();
 
@@ -45,7 +45,7 @@ public:
   ///
   /// </summary>
   bool getAuthResult() const;
-  void setAuthResult(bool const &value);
+  void setAuthResult(bool const& value);
 
   // AuthResult getAuthResult() const;
   // void setAuthResult(AuthResult const &value);
@@ -54,21 +54,21 @@ public:
   ///
   /// </summary>
   std::string getSupi() const;
-  void setSupi(std::string const &value);
+  void setSupi(std::string const& value);
   bool supiIsSet() const;
   void unsetSupi();
   /// <summary>
   ///
   /// </summary>
   std::string getKseaf() const;
-  void setKseaf(std::string const &value);
+  void setKseaf(std::string const& value);
   bool kseafIsSet() const;
   void unsetKseaf();
 
-  friend void to_json(nlohmann::json &j, const ConfirmationDataResponse &o);
-  friend void from_json(const nlohmann::json &j, ConfirmationDataResponse &o);
+  friend void to_json(nlohmann::json& j, const ConfirmationDataResponse& o);
+  friend void from_json(const nlohmann::json& j, ConfirmationDataResponse& o);
 
-protected:
+ protected:
   bool m_AuthResult;
   // AuthResult m_AuthResult;   //AuthResult not defined
 
@@ -78,9 +78,9 @@ protected:
   bool m_KseafIsSet;
 };
 
-} // namespace model
-} // namespace server
-} // namespace openapitools
-} // namespace org
+}  // namespace model
+}  // namespace server
+}  // namespace openapitools
+}  // namespace org
 
 #endif /* ConfirmationDataResponse_H_ */

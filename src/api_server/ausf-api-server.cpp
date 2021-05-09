@@ -71,7 +71,7 @@ void setUpUnixSignals(std::vector<int> quitSignals) {
 #endif
 
 using namespace org::openapitools::server::api;
-//using namespace oai::ausf::api;
+// using namespace oai::ausf::api;
 using namespace oai::ausf::app;
 
 void AUSFApiServer::init(size_t thr) {
@@ -82,7 +82,6 @@ void AUSFApiServer::init(size_t thr) {
 
   m_authenticationResultDeletionApiImpl->init();
   m_defaultApiImpl->init();
-
 }
 void AUSFApiServer::start() {
   Logger::ausf_server().info("HTTP1 server started");

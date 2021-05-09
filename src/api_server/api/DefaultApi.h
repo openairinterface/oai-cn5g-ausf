@@ -43,30 +43,34 @@ namespace api {
 using namespace org::openapitools::server::model;
 
 class DefaultApi {
-public:
+ public:
   DefaultApi(std::shared_ptr<Pistache::Rest::Router>);
   virtual ~DefaultApi() {}
   void init();
 
   const std::string base = "/nausf-auth/v1";
 
-private:
+ private:
   void setupRoutes();
 
-  void eap_auth_method_handler(const Pistache::Rest::Request &request,
-                               Pistache::Http::ResponseWriter response);
-  void rg_authentications_post_handler(const Pistache::Rest::Request &request,
-                                       Pistache::Http::ResponseWriter response);
+  void eap_auth_method_handler(
+      const Pistache::Rest::Request& request,
+      Pistache::Http::ResponseWriter response);
+  void rg_authentications_post_handler(
+      const Pistache::Rest::Request& request,
+      Pistache::Http::ResponseWriter response);
   void ue_authentications_auth_ctx_id5g_aka_confirmation_put_handler(
-      const Pistache::Rest::Request &request,
+      const Pistache::Rest::Request& request,
       Pistache::Http::ResponseWriter response);
   void ue_authentications_deregister_post_handler(
-      const Pistache::Rest::Request &request,
+      const Pistache::Rest::Request& request,
       Pistache::Http::ResponseWriter response);
-  void ue_authentications_post_handler(const Pistache::Rest::Request &request,
-                                       Pistache::Http::ResponseWriter response);
-  void default_api_default_handler(const Pistache::Rest::Request &request,
-                                   Pistache::Http::ResponseWriter response);
+  void ue_authentications_post_handler(
+      const Pistache::Rest::Request& request,
+      Pistache::Http::ResponseWriter response);
+  void default_api_default_handler(
+      const Pistache::Rest::Request& request,
+      Pistache::Http::ResponseWriter response);
 
   std::shared_ptr<Pistache::Rest::Router> router;
 
@@ -78,9 +82,9 @@ private:
   /// </remarks>
   /// <param name="authCtxId"></param>
   /// <param name="eapSession"> (optional)</param>
-  virtual void eap_auth_method(const std::string &authCtxId,
-                               const EapSession &eapSession,
-                               Pistache::Http::ResponseWriter &response) = 0;
+  virtual void eap_auth_method(
+      const std::string& authCtxId, const EapSession& eapSession,
+      Pistache::Http::ResponseWriter& response) = 0;
 
   /// <summary>
   ///
@@ -89,9 +93,9 @@ private:
   ///
   /// </remarks>
   /// <param name="rgAuthenticationInfo"></param>
-  virtual void
-  rg_authentications_post(const RgAuthenticationInfo &rgAuthenticationInfo,
-                          Pistache::Http::ResponseWriter &response) = 0;
+  virtual void rg_authentications_post(
+      const RgAuthenticationInfo& rgAuthenticationInfo,
+      Pistache::Http::ResponseWriter& response) = 0;
 
   /// <summary>
   ///
@@ -102,8 +106,8 @@ private:
   /// <param name="authCtxId"></param>
   /// <param name="confirmationData"> (optional)</param>
   virtual void ue_authentications_auth_ctx_id5g_aka_confirmation_put(
-      const std::string &authCtxId, const ConfirmationData &confirmationData,
-      Pistache::Http::ResponseWriter &response) = 0;
+      const std::string& authCtxId, const ConfirmationData& confirmationData,
+      Pistache::Http::ResponseWriter& response) = 0;
 
   /// <summary>
   ///
@@ -113,8 +117,8 @@ private:
   /// </remarks>
   /// <param name="deregistrationInfo"></param>
   virtual void ue_authentications_deregister_post(
-      const DeregistrationInfo &deregistrationInfo,
-      Pistache::Http::ResponseWriter &response) = 0;
+      const DeregistrationInfo& deregistrationInfo,
+      Pistache::Http::ResponseWriter& response) = 0;
 
   /// <summary>
   ///
@@ -123,14 +127,14 @@ private:
   ///
   /// </remarks>
   /// <param name="authenticationInfo"></param>
-  virtual void
-  ue_authentications_post(const AuthenticationInfo &authenticationInfo,
-                          Pistache::Http::ResponseWriter &response) = 0;
+  virtual void ue_authentications_post(
+      const AuthenticationInfo& authenticationInfo,
+      Pistache::Http::ResponseWriter& response) = 0;
 };
 
-} // namespace api
-} // namespace server
-} // namespace openapitools
-} // namespace org
+}  // namespace api
+}  // namespace server
+}  // namespace openapitools
+}  // namespace org
 
 #endif /* DefaultApi_H_ */

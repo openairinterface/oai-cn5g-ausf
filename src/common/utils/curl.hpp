@@ -46,12 +46,13 @@
 #define CURL_TIMEOUT_MS 100L
 
 class Curl {
-public:
+ public:
   /****** curl function ********/
-  static void curl_http_client(std::string remoteUri, std::string Method,
-                               std::string msgBody, std::string &Response);
+  static void curl_http_client(
+      std::string remoteUri, std::string Method, std::string msgBody,
+      std::string& Response);
 
-private:
+ private:
 };
 
 #endif

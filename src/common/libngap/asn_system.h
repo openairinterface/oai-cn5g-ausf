@@ -97,7 +97,7 @@ typedef unsigned int uint32_t;
 #endif /* Thread safety */
 
 #ifndef offsetof /* If not defined by <stddef.h> */
-#define offsetof(s, m) ((ptrdiff_t) & (((s *)0)->m) - (ptrdiff_t)((s *)0))
+#define offsetof(s, m) ((ptrdiff_t) & (((s*) 0)->m) - (ptrdiff_t)((s*) 0))
 #endif /* offsetof */
 
 #ifndef MIN /* Suitable for comparing primitive types (integers) */
@@ -115,7 +115,7 @@ typedef unsigned int uint32_t;
 
 #if __STDC_VERSION__ >= 199901L
 #ifndef SIZE_MAX
-#define SIZE_MAX ((~((size_t)0)) >> 1)
+#define SIZE_MAX ((~((size_t) 0)) >> 1)
 #endif
 
 #ifndef RSIZE_MAX /* C11, Annex K */
@@ -128,7 +128,7 @@ typedef unsigned int uint32_t;
 #undef SIZE_MAX
 #undef RSIZE_MAX
 #undef RSSIZE_MAX
-#define SIZE_MAX ((~((size_t)0)) >> 1)
+#define SIZE_MAX ((~((size_t) 0)) >> 1)
 #define RSIZE_MAX (SIZE_MAX >> 1)
 #define RSSIZE_MAX ((ssize_t)(RSIZE_MAX >> 1))
 #endif

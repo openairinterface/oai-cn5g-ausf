@@ -17,10 +17,10 @@ extern "C" {
  */
 typedef struct asn_per_constraint_s {
   enum asn_per_constraint_flags {
-    APC_UNCONSTRAINED = 0x0,    /* No PER visible constraints */
+    APC_UNCONSTRAINED    = 0x0, /* No PER visible constraints */
     APC_SEMI_CONSTRAINED = 0x1, /* Constrained at "lb" */
-    APC_CONSTRAINED = 0x2,      /* Fully constrained */
-    APC_EXTENSIBLE = 0x4        /* May have extension */
+    APC_CONSTRAINED      = 0x2, /* Fully constrained */
+    APC_EXTENSIBLE       = 0x4  /* May have extension */
   } flags;
   int range_bits;     /* Full number of bits in the range */
   int effective_bits; /* Effective bits */
@@ -45,27 +45,28 @@ typedef struct asn_bit_data_s asn_per_data_t;
  * X.691 (08/2015) #11.9 "General rules for encoding a length determinant"
  * Get the length "n" from the Unaligned PER stream.
  */
-ssize_t uper_get_length(asn_per_data_t *pd, int effective_bound_bits,
-                        size_t lower_bound, int *repeat);
+ssize_t uper_get_length(
+    asn_per_data_t* pd, int effective_bound_bits, size_t lower_bound,
+    int* repeat);
 
-ssize_t aper_get_length(asn_per_data_t *pd, int range, int effective_bound_bits,
-                        int *repeat);
+ssize_t aper_get_length(
+    asn_per_data_t* pd, int range, int effective_bound_bits, int* repeat);
 
 /*
  * Get the normally small length "n".
  */
-ssize_t uper_get_nslength(asn_per_data_t *pd);
-ssize_t aper_get_nslength(asn_per_data_t *pd);
+ssize_t uper_get_nslength(asn_per_data_t* pd);
+ssize_t aper_get_nslength(asn_per_data_t* pd);
 
 /*
  * Get the normally small non-negative whole number.
  */
-ssize_t uper_get_nsnnwn(asn_per_data_t *pd);
-ssize_t aper_get_nsnnwn(asn_per_data_t *pd, int range);
+ssize_t uper_get_nsnnwn(asn_per_data_t* pd);
+ssize_t aper_get_nsnnwn(asn_per_data_t* pd, int range);
 
 /* X.691-2008/11, #11.5.6 */
-int uper_get_constrained_whole_number(asn_per_data_t *pd, unsigned long *v,
-                                      int nbits);
+int uper_get_constrained_whole_number(
+    asn_per_data_t* pd, unsigned long* v, int nbits);
 
 /* Temporary compatibility layer. Will get removed. */
 typedef struct asn_bit_outp_s asn_per_outp_t;
@@ -80,13 +81,13 @@ typedef struct asn_bit_outp_s asn_per_outp_t;
  *  -1: Conversion failed due to range problems.
  *   0: Conversion was successful.
  */
-int per_long_range_rebase(long v, long lb, long ub, unsigned long *output);
+int per_long_range_rebase(long v, long lb, long ub, unsigned long* output);
 /* The inverse operation: restores the value by the offset and its bounds. */
-int per_long_range_unrebase(unsigned long inp, long lb, long ub, long *outp);
+int per_long_range_unrebase(unsigned long inp, long lb, long ub, long* outp);
 
 /* X.691-2008/11, #11.5 */
-int uper_put_constrained_whole_number_u(asn_per_outp_t *po, unsigned long v,
-                                        int nbits);
+int uper_put_constrained_whole_number_u(
+    asn_per_outp_t* po, unsigned long v, int nbits);
 
 /*
  * X.691 (08/2015) #11.9 "General rules for encoding a length determinant"
@@ -96,29 +97,29 @@ int uper_put_constrained_whole_number_u(asn_per_outp_t *po, unsigned long v,
  * This function returns the number of units which may be flushed
  * in the next units saving iteration.
  */
-ssize_t uper_put_length(asn_per_outp_t *po, size_t whole_length,
-                        int *opt_need_eom);
+ssize_t uper_put_length(
+    asn_per_outp_t* po, size_t whole_length, int* opt_need_eom);
 
-ssize_t aper_put_length(asn_per_outp_t *po, int range, size_t length);
+ssize_t aper_put_length(asn_per_outp_t* po, int range, size_t length);
 
 /* Align the current bit position to octet bundary */
-int aper_put_align(asn_per_outp_t *po);
-int32_t aper_get_align(asn_per_data_t *pd);
+int aper_put_align(asn_per_outp_t* po);
+int32_t aper_get_align(asn_per_data_t* pd);
 
 /*
  * Put the normally small length "n" to the Unaligned PER stream.
  * Returns 0 or -1.
  */
-int uper_put_nslength(asn_per_outp_t *po, size_t length);
+int uper_put_nslength(asn_per_outp_t* po, size_t length);
 
-int aper_put_nslength(asn_per_outp_t *po, size_t length);
+int aper_put_nslength(asn_per_outp_t* po, size_t length);
 
 /*
  * Put the normally small non-negative whole number.
  */
-int uper_put_nsnnwn(asn_per_outp_t *po, int n);
+int uper_put_nsnnwn(asn_per_outp_t* po, int n);
 
-int aper_put_nsnnwn(asn_per_outp_t *po, int range, int number);
+int aper_put_nsnnwn(asn_per_outp_t* po, int range, int number);
 
 #ifdef __cplusplus
 }

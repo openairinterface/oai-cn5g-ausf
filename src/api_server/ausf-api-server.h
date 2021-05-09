@@ -48,22 +48,20 @@
 #include "ausf_app.hpp"
 
 using namespace org::openapitools::server::api;
-//using namespace oai::ausf::api;
+// using namespace oai::ausf::api;
 using namespace oai::ausf::app;
 class AUSFApiServer {
  public:
-	AUSFApiServer(Pistache::Address address, ausf_app* ausf_app_inst)
+  AUSFApiServer(Pistache::Address address, ausf_app* ausf_app_inst)
       : m_httpEndpoint(std::make_shared<Pistache::Http::Endpoint>(address)) {
     m_router  = std::make_shared<Pistache::Rest::Router>();
     m_address = address.host() + ":" + (address.port()).toString();
 
     m_defaultApiImpl =
-        std::make_shared<DefaultApiImpl>(
-            m_router, ausf_app_inst, m_address);
+        std::make_shared<DefaultApiImpl>(m_router, ausf_app_inst, m_address);
     m_authenticationResultDeletionApiImpl =
         std::make_shared<AuthenticationResultDeletionApiImpl>(
             m_router, ausf_app_inst, m_address);
-
   }
   void init(size_t thr = 1);
   void start();
@@ -72,8 +70,7 @@ class AUSFApiServer {
  private:
   std::shared_ptr<Pistache::Http::Endpoint> m_httpEndpoint;
   std::shared_ptr<Pistache::Rest::Router> m_router;
-  std::shared_ptr<DefaultApiImpl>
-      m_defaultApiImpl;
+  std::shared_ptr<DefaultApiImpl> m_defaultApiImpl;
   std::shared_ptr<AuthenticationResultDeletionApiImpl>
       m_authenticationResultDeletionApiImpl;
   std::string m_address;

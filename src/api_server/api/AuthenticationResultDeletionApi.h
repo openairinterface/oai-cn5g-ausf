@@ -35,24 +35,24 @@ namespace api {
 using namespace org::openapitools::server::model;
 
 class AuthenticationResultDeletionApi {
-public:
+ public:
   AuthenticationResultDeletionApi(std::shared_ptr<Pistache::Rest::Router>);
   virtual ~AuthenticationResultDeletionApi() {}
   void init();
 
   const std::string base = "/nausf-auth/v1";
 
-private:
+ private:
   void setupRoutes();
 
   void delete5g_aka_authentication_result_handler(
-      const Pistache::Rest::Request &request,
+      const Pistache::Rest::Request& request,
       Pistache::Http::ResponseWriter response);
   void delete_eap_authentication_result_handler(
-      const Pistache::Rest::Request &request,
+      const Pistache::Rest::Request& request,
       Pistache::Http::ResponseWriter response);
   void authentication_result_deletion_api_default_handler(
-      const Pistache::Rest::Request &request,
+      const Pistache::Rest::Request& request,
       Pistache::Http::ResponseWriter response);
 
   std::shared_ptr<Pistache::Rest::Router> router;
@@ -65,8 +65,8 @@ private:
   /// </remarks>
   /// <param name="authCtxId"></param>
   virtual void delete5g_aka_authentication_result(
-      const std::string &authCtxId,
-      Pistache::Http::ResponseWriter &response) = 0;
+      const std::string& authCtxId,
+      Pistache::Http::ResponseWriter& response) = 0;
 
   /// <summary>
   /// Deletes the authentication result in the UDM
@@ -76,13 +76,13 @@ private:
   /// </remarks>
   /// <param name="authCtxId"></param>
   virtual void delete_eap_authentication_result(
-      const std::string &authCtxId,
-      Pistache::Http::ResponseWriter &response) = 0;
+      const std::string& authCtxId,
+      Pistache::Http::ResponseWriter& response) = 0;
 };
 
-} // namespace api
-} // namespace server
-} // namespace openapitools
-} // namespace org
+}  // namespace api
+}  // namespace server
+}  // namespace openapitools
+}  // namespace org
 
 #endif /* AuthenticationResultDeletionApi_H_ */

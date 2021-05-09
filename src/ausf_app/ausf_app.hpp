@@ -36,7 +36,7 @@ namespace oai {
 namespace ausf {
 namespace app {
 
-//class ausf_config;
+// class ausf_config;
 class ausf_app {
  public:
   explicit ausf_app(const std::string& config_file);
@@ -45,9 +45,7 @@ class ausf_app {
 
   virtual ~ausf_app();
 
-
  private:
-
 };
 }  // namespace app
 }  // namespace ausf

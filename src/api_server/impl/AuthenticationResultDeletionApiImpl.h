@@ -33,37 +33,35 @@
 #include "ausf_app.hpp"
 #include <string>
 
-
 namespace org {
 namespace openapitools {
 namespace server {
 namespace api {
-
 
 using namespace oai::ausf::app;
 using namespace org::openapitools::server::model;
 
 class AuthenticationResultDeletionApiImpl
     : public org::openapitools::server::api::AuthenticationResultDeletionApi {
-public:
-  AuthenticationResultDeletionApiImpl(std::shared_ptr<Pistache::Rest::Router>, ausf_app* ausf_app_inst,
-	      std::string address);
+ public:
+  AuthenticationResultDeletionApiImpl(
+      std::shared_ptr<Pistache::Rest::Router>, ausf_app* ausf_app_inst,
+      std::string address);
   ~AuthenticationResultDeletionApiImpl() {}
 
-  void
-  delete5g_aka_authentication_result(const std::string &authCtxId,
-                                     Pistache::Http::ResponseWriter &response);
-  void
-  delete_eap_authentication_result(const std::string &authCtxId,
-                                   Pistache::Http::ResponseWriter &response);
-private:
- ausf_app* m_ausf_app;
- std::string m_address;
+  void delete5g_aka_authentication_result(
+      const std::string& authCtxId, Pistache::Http::ResponseWriter& response);
+  void delete_eap_authentication_result(
+      const std::string& authCtxId, Pistache::Http::ResponseWriter& response);
+
+ private:
+  ausf_app* m_ausf_app;
+  std::string m_address;
 };
 
-} // namespace api
-} // namespace server
-} // namespace openapitools
-} // namespace org
+}  // namespace api
+}  // namespace server
+}  // namespace openapitools
+}  // namespace org
 
 #endif

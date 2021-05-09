@@ -23,12 +23,12 @@ typedef struct asn_CHOICE_specifics_s {
   /*
    * Tags to members mapping table.
    */
-  const asn_TYPE_tag2member_t *tag2el;
+  const asn_TYPE_tag2member_t* tag2el;
   unsigned tag2el_count;
 
   /* Canonical ordering of CHOICE elements, for PER */
-  const unsigned *to_canonical_order;
-  const unsigned *from_canonical_order;
+  const unsigned* to_canonical_order;
+  const unsigned* from_canonical_order;
 
   /*
    * Extensions-related stuff.
@@ -61,8 +61,8 @@ extern asn_TYPE_operation_t asn_OP_CHOICE;
  * Return the 1-based choice variant presence index.
  * Returns 0 in case of error.
  */
-unsigned CHOICE_variant_get_presence(const asn_TYPE_descriptor_t *td,
-                                     const void *structure_ptr);
+unsigned CHOICE_variant_get_presence(
+    const asn_TYPE_descriptor_t* td, const void* structure_ptr);
 
 /*
  * Sets or resets the 1-based choice variant presence index.
@@ -70,8 +70,8 @@ unsigned CHOICE_variant_get_presence(const asn_TYPE_descriptor_t *td,
  * member is freed and zeroed-out first.
  * Returns 0 on success and -1 on error.
  */
-int CHOICE_variant_set_presence(const asn_TYPE_descriptor_t *td,
-                                void *structure_ptr, unsigned present);
+int CHOICE_variant_set_presence(
+    const asn_TYPE_descriptor_t* td, void* structure_ptr, unsigned present);
 
 #ifdef __cplusplus
 }

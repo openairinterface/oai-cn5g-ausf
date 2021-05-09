@@ -35,10 +35,10 @@ email: contact@openairinterface.org
 
 #include "spdlog/sinks/syslog_sink.h"
 
-Logger *Logger::m_singleton = NULL;
+Logger* Logger::m_singleton = NULL;
 
-void Logger::_init(const char *app, const bool log_stdout,
-                   const bool log_rot_file) {
+void Logger::_init(
+    const char* app, const bool log_stdout, const bool log_rot_file) {
   int num_sinks = 0;
   spdlog::set_async_mode(2048);
 #if TRACE_IS_ON
@@ -83,8 +83,9 @@ void Logger::_init(const char *app, const bool log_stdout,
   m_ausf_server = new _Logger("ausf_server", m_sinks, ss.str().c_str());
 }
 
-_Logger::_Logger(const char *category, std::vector<spdlog::sink_ptr> &sinks,
-                 const char *pattern)
+_Logger::_Logger(
+    const char* category, std::vector<spdlog::sink_ptr>& sinks,
+    const char* pattern)
     : m_log(category, sinks.begin(), sinks.end()) {
   m_log.set_pattern(pattern);
 #if TRACE_IS_ON
@@ -98,7 +99,7 @@ _Logger::_Logger(const char *category, std::vector<spdlog::sink_ptr> &sinks,
 #endif
 }
 
-void _Logger::trace(const char *format, ...) {
+void _Logger::trace(const char* format, ...) {
 #if TRACE_IS_ON
   va_list args;
   va_start(args, format);
@@ -107,7 +108,7 @@ void _Logger::trace(const char *format, ...) {
 #endif
 }
 
-void _Logger::trace(const std::string &format, ...) {
+void _Logger::trace(const std::string& format, ...) {
 #if TRACE_IS_ON
   va_list args;
   va_start(args, format);
@@ -116,7 +117,7 @@ void _Logger::trace(const std::string &format, ...) {
 #endif
 }
 
-void _Logger::debug(const char *format, ...) {
+void _Logger::debug(const char* format, ...) {
   // #if DEBUG_IS_ON
   va_list args;
   va_start(args, format);
@@ -125,7 +126,7 @@ void _Logger::debug(const char *format, ...) {
   // #endif
 }
 
-void _Logger::debug(const std::string &format, ...) {
+void _Logger::debug(const std::string& format, ...) {
   // #if DEBUG_IS_ON
   va_list args;
   va_start(args, format);
@@ -134,7 +135,7 @@ void _Logger::debug(const std::string &format, ...) {
   // #endif
 }
 
-void _Logger::info(const char *format, ...) {
+void _Logger::info(const char* format, ...) {
 #if INFO_IS_ON
   va_list args;
   va_start(args, format);
@@ -143,7 +144,7 @@ void _Logger::info(const char *format, ...) {
 #endif
 }
 
-void _Logger::info(const std::string &format, ...) {
+void _Logger::info(const std::string& format, ...) {
 #if INFO_IS_ON
   va_list args;
   va_start(args, format);
@@ -152,49 +153,49 @@ void _Logger::info(const std::string &format, ...) {
 #endif
 }
 
-void _Logger::startup(const char *format, ...) {
+void _Logger::startup(const char* format, ...) {
   va_list args;
   va_start(args, format);
   log(_ltStartup, format, args);
   va_end(args);
 }
 
-void _Logger::startup(const std::string &format, ...) {
+void _Logger::startup(const std::string& format, ...) {
   va_list args;
   va_start(args, format);
   log(_ltStartup, format.c_str(), args);
   va_end(args);
 }
 
-void _Logger::warn(const char *format, ...) {
+void _Logger::warn(const char* format, ...) {
   va_list args;
   va_start(args, format);
   log(_ltWarn, format, args);
   va_end(args);
 }
 
-void _Logger::warn(const std::string &format, ...) {
+void _Logger::warn(const std::string& format, ...) {
   va_list args;
   va_start(args, format);
   log(_ltWarn, format.c_str(), args);
   va_end(args);
 }
 
-void _Logger::error(const char *format, ...) {
+void _Logger::error(const char* format, ...) {
   va_list args;
   va_start(args, format);
   log(_ltError, format, args);
   va_end(args);
 }
 
-void _Logger::error(const std::string &format, ...) {
+void _Logger::error(const std::string& format, ...) {
   va_list args;
   va_start(args, format);
   log(_ltError, format.c_str(), args);
   va_end(args);
 }
 
-void _Logger::log(_LogType lt, const char *format, va_list &args) {
+void _Logger::log(_LogType lt, const char* format, va_list& args) {
   char buffer[2048];
 
   vsnprintf(buffer, sizeof(buffer), format, args);
