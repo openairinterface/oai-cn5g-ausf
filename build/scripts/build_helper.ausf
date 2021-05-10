@@ -418,7 +418,8 @@ check_install_ausf_deps() {
 
   #install_nghttp2_from_git $1 $2
   #ret=$?;[[ $ret -ne 0 ]] && return $ret
-    
+  
+  $SUDO ldconfig  
   return 0
 }
 #-------------------------------------------------------------------------------
