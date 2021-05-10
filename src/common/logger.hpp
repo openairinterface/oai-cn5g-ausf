@@ -83,22 +83,10 @@ class Logger {
     init(app.c_str(), log_stdout, log_rot_file);
   }
 
-  // static _Logger &async_cmd(){return *singleton().m_async_cmd;}
-  // static _Logger &amf_app(){return *singleton().m_amf_app;}
   static _Logger& config() { return *singleton().m_config; }
   static _Logger& system() { return *singleton().m_system; }
-  // static _Logger &sctp(){return *singleton().m_sctp;}
-  // static _Logger &nas_mm(){return *singleton().m_nas_mm;}
-  // static _Logger &ngap(){return *singleton().m_ngap;}
-  // static _Logger &itti(){return *singleton().m_itti;}
-  // static _Logger &amf_n2(){return *singleton().m_amf_n2;}
-  // static _Logger &task_amf_n2(){return *singleton().m_task_amf_n2;}
-  // static _Logger &amf_n1(){return *singleton().m_amf_n1;}
-  // static _Logger &task_amf_n1(){return *singleton().m_task_amf_n1;}
-  // static _Logger &amf_n11(){return *singleton().m_amf_n11;}
-  // static _Logger &task_amf_n11(){return *singleton().m_task_amf_n11;}
+  static _Logger &ausf_app(){return *singleton().m_ausf_app;}
   static _Logger& ausf_server() { return *singleton().m_ausf_server; }
-  // static _Logger &udm_ueau() { return *singleton().m_udm_ueau; }
 
  private:
   static Logger* m_singleton;
@@ -116,22 +104,10 @@ class Logger {
 
   std::string m_pattern;
 
-  // _Logger *m_async_cmd;
-  // _Logger *m_amf_app;
   _Logger* m_config;
   _Logger* m_system;
-  // _Logger *m_sctp;
-  // _Logger *m_nas_mm;
-  // _Logger *m_ngap;
-  // _Logger *m_itti;
-  // _Logger *m_amf_n2;
-  // _Logger *m_task_amf_n2;
-  // _Logger *m_amf_n1;
-  // _Logger *m_task_amf_n1;
-  // _Logger *m_amf_n11;
-  // _Logger *m_task_amf_n11;
+  _Logger *m_ausf_app;
   _Logger* m_ausf_server;
-  // _Logger *m_udm_ueau;
 };
 
 #endif

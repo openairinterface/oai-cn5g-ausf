@@ -194,8 +194,8 @@ void DefaultApi::ue_authentications_deregister_post_handler(
 void DefaultApi::ue_authentications_post_handler(
     const Pistache::Rest::Request& request,
     Pistache::Http::ResponseWriter response) {
-  //   cout << "------------ue authentications post handler---------" << endl;
-  Logger::ausf_server().info("--Received ue-authentications post Request");
+
+	Logger::ausf_server().info("--Received ue-authentications post Request");
 
   // Getting the body param
 
