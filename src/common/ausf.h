@@ -69,15 +69,6 @@ typedef enum patch_op_type_s {
 static const std::vector<std::string> patch_op_type_e2str = {
     "ADD", "REMOVE", "REPLACE", "MOVE", "COPY", "TEST", "UNKNOWN"};
 
-// Event Subscription IDs)
-typedef uint32_t evsub_id_t;
-#define EVSUB_ID_FMT "0x%" PRIx32
-#define EVSUB_ID_SCAN_FMT SCNx32
-#define INVALID_EVSUB_ID ((evsub_id_t) 0x00000000)
-#define UNASSIGNED_EVSUB_ID ((evsub_id_t) 0x00000000)
-
-#define NAUSF_NFM_NF_INSTANCE "/nf-instances/"
-
 #define NF_CURL_TIMEOUT_MS 1000L
 
 #define MAX_WAIT_MSECS 20000  // 1 second
