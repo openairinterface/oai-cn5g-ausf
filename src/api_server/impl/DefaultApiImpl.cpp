@@ -91,13 +91,19 @@ DefaultApiImpl::DefaultApiImpl(
 void DefaultApiImpl::eap_auth_method(
     const std::string& authCtxId, const EapSession& eapSession,
     Pistache::Http::ResponseWriter& response) {
-  response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+  Logger::ausf_server().info("eap_auth_method");
+  response.send(
+      Pistache::Http::Code::Not_Implemented,
+      "eap_auth_method API has not been implemented yet!\n");
 }
 
 void DefaultApiImpl::rg_authentications_post(
     const RgAuthenticationInfo& rgAuthenticationInfo,
     Pistache::Http::ResponseWriter& response) {
-  response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+  Logger::ausf_server().info("rg_authentications_post");
+  response.send(
+      Pistache::Http::Code::Not_Implemented,
+      "rg_authentications_post API has not been implemented yet!\n");
 }
 
 void DefaultApiImpl::ue_authentications_auth_ctx_id5g_aka_confirmation_put(
@@ -252,7 +258,10 @@ void DefaultApiImpl::ue_authentications_auth_ctx_id5g_aka_confirmation_put(
 void DefaultApiImpl::ue_authentications_deregister_post(
     const DeregistrationInfo& deregistrationInfo,
     Pistache::Http::ResponseWriter& response) {
-  response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+  Logger::ausf_server().info("ue_authentications_deregister_post");
+  response.send(
+      Pistache::Http::Code::Not_Implemented,
+      "ue_authentications_deregister_post API has not been implemented yet!\n");
 }
 
 void DefaultApiImpl::ue_authentications_post(

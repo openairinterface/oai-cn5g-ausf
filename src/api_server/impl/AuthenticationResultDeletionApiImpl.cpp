@@ -33,6 +33,7 @@
  */
 
 #include "AuthenticationResultDeletionApiImpl.h"
+#include "logger.hpp"
 
 namespace org {
 namespace openapitools {
@@ -50,11 +51,17 @@ AuthenticationResultDeletionApiImpl::AuthenticationResultDeletionApiImpl(
 
 void AuthenticationResultDeletionApiImpl::delete5g_aka_authentication_result(
     const std::string& authCtxId, Pistache::Http::ResponseWriter& response) {
-  response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+  Logger::ausf_server().info("delete5g_aka_authentication_result");
+  response.send(
+      Pistache::Http::Code::Not_Implemented,
+      "delete5g_aka_authentication_result API has not been implemented yet!\n");
 }
 void AuthenticationResultDeletionApiImpl::delete_eap_authentication_result(
     const std::string& authCtxId, Pistache::Http::ResponseWriter& response) {
-  response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+  Logger::ausf_server().info("delete_eap_authentication_result");
+  response.send(
+      Pistache::Http::Code::Not_Implemented,
+      "delete_eap_authentication_result API has not been implemented yet!\n");
 }
 
 }  // namespace api
