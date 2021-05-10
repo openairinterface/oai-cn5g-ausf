@@ -67,6 +67,7 @@ install_fmt() {
   fi
   return 0
 }
+
 #-------------------------------------------------------------------------------
 #arg1 is force (0 or 1) (no interactive script)
 #arg2 is debug (0 or 1) (install debug libraries)
@@ -140,7 +141,11 @@ install_pistache_from_git() {
     cd pistache && git checkout e18ed9baeb2145af6f9ea41246cf48054ffd9907
     ret=$?;[[ $ret -ne 0 ]] && popd && return $ret
     mkdir _build && cd _build
-    $CMAKE -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+    $CMAKE -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
+        -DPISTACHE_BUILD_EXAMPLES=false \
+        -DPISTACHE_BUILD_TESTS=false \
+        -DPISTACHE_BUILD_DOCS=false \
+        .. 
     ret=$?;[[ $ret -ne 0 ]] && popd && return $ret
     make
     ret=$?;[[ $ret -ne 0 ]] && popd && return $ret
@@ -150,9 +155,6 @@ install_pistache_from_git() {
   fi
   return 0
 }
-
-
-
 
 #-------------------------------------------------------------------------------
 #arg1 is force (0 or 1) (no interactive script)
@@ -253,7 +255,7 @@ install_nghttp2_from_git() {
       echo_fatal "$OS_DISTRO is not a supported distribution."
     fi
     echo "Install build tools"
-    $SUDO $INSTALLER install $OPTION $PACKAGE_LIST    
+    $SUDO $INSTALLER install $OPTION $PACKAGE_LIST
     ret=$?;[[ $ret -ne 0 ]] && return $ret
    
     GIT_URL=https://github.com/nghttp2/nghttp2.git
@@ -276,7 +278,7 @@ install_nghttp2_from_git() {
     ret=$?;[[ $ret -ne 0 ]] && popd && return $ret
     autoconf
     ret=$?;[[ $ret -ne 0 ]] && popd && return $ret
-    ./configure --enable-asio-lib
+    ./configure --enable-asio-lib --enable-lib-only
     ret=$?;[[ $ret -ne 0 ]] && popd && return $ret
     make
     ret=$?;[[ $ret -ne 0 ]] && popd && return $ret
@@ -351,7 +353,6 @@ check_install_ausf_deps() {
   $SUDO $INSTALLER install $OPTION $PACKAGE_LIST
   ret=$?;[[ $ret -ne 0 ]] && return $ret
 
-
   # Libraries
   if [[ $OS_DISTRO == "ubuntu" ]]; then
     case "$(get_distribution_release)" in
@@ -380,7 +381,8 @@ check_install_ausf_deps() {
       nettle-dev \
       libcurl4 \
       net-tools \
-      pkg-config"
+      pkg-config \
+      libasan2"
   elif [[ "$OS_BASEDISTRO" == "fedora" ]]; then
     PACKAGE_LIST="\
       guile-devel \
@@ -399,7 +401,8 @@ check_install_ausf_deps() {
       nettle-devel \
       libcurl-devel \
       python2 \
-      pkgconfig"
+      pkgconfig \
+      libasan"
   else
     echo_fatal "$OS_DISTRO is not a supported distribution."
   fi
