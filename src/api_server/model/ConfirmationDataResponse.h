@@ -45,9 +45,8 @@
 #include <nlohmann/json.hpp>
 #include <string>
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace model {
 
 /// <summary>
@@ -101,8 +100,7 @@ class ConfirmationDataResponse {
 };
 
 }  // namespace model
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai
 
 #endif /* ConfirmationDataResponse_H_ */

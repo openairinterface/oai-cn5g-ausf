@@ -34,9 +34,8 @@
 
 #include "AuthType.h"
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace model {
 
 AuthType::AuthType() {}
@@ -54,6 +53,5 @@ void to_json(nlohmann::json& j, const AuthType& o) {
 void from_json(const nlohmann::json& j, AuthType& o) {}
 
 }  // namespace model
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai

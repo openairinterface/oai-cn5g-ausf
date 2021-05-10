@@ -43,9 +43,8 @@
 
 #include <nlohmann/json.hpp>
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace model {
 
 /// <summary>
@@ -68,8 +67,7 @@ class AuthResult {
 };
 
 }  // namespace model
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai
 
 #endif /* AuthResult_H_ */

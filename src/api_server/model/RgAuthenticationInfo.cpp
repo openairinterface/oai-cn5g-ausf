@@ -34,9 +34,8 @@
 
 #include "RgAuthenticationInfo.h"
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace model {
 
 RgAuthenticationInfo::RgAuthenticationInfo() {
@@ -75,6 +74,5 @@ void RgAuthenticationInfo::setAuthenticatedInd(bool const value) {
 }
 
 }  // namespace model
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai

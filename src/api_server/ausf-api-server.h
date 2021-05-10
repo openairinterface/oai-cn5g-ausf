@@ -47,7 +47,7 @@
 #include "DefaultApiImpl.h"
 #include "ausf_app.hpp"
 
-using namespace org::openapitools::server::api;
+using namespace oai::ausf_server::api;
 // using namespace oai::ausf::api;
 using namespace oai::ausf::app;
 class AUSFApiServer {

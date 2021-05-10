@@ -34,9 +34,8 @@
 
 #include "ConfirmationData.h"
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace model {
 
 ConfirmationData::ConfirmationData() {
@@ -66,6 +65,5 @@ void ConfirmationData::setResStar(std::string const& value) {
 }
 
 }  // namespace model
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai

@@ -34,9 +34,8 @@
 
 #include "Helpers.h"
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace helpers {
 
 std::string toStringValue(const std::string& value) {
@@ -112,6 +111,5 @@ bool fromStringValue(const std::string& inStr, double& value) {
 }
 
 }  // namespace helpers
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai

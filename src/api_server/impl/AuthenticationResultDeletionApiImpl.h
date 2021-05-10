@@ -54,16 +54,15 @@
 #include "ausf_app.hpp"
 #include <string>
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace api {
 
 using namespace oai::ausf::app;
-using namespace org::openapitools::server::model;
+using namespace oai::ausf_server::model;
 
 class AuthenticationResultDeletionApiImpl
-    : public org::openapitools::server::api::AuthenticationResultDeletionApi {
+    : public oai::ausf_server::api::AuthenticationResultDeletionApi {
  public:
   AuthenticationResultDeletionApiImpl(
       std::shared_ptr<Pistache::Rest::Router>, ausf_app* ausf_app_inst,
@@ -81,8 +80,7 @@ class AuthenticationResultDeletionApiImpl
 };
 
 }  // namespace api
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai
 
 #endif

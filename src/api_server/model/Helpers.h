@@ -47,9 +47,8 @@
 #include <vector>
 #include <map>
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace helpers {
 
 std::string toStringValue(const std::string& value);
@@ -93,8 +92,7 @@ bool fromStringValue(
 }
 
 }  // namespace helpers
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai
 
 #endif  // Helpers_H_

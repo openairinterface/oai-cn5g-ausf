@@ -49,12 +49,11 @@
 #include "ProblemDetails.h"
 #include <string>
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace api {
 
-using namespace org::openapitools::server::model;
+using namespace oai::ausf_server::model;
 
 class AuthenticationResultDeletionApi {
  public:
@@ -103,8 +102,7 @@ class AuthenticationResultDeletionApi {
 };
 
 }  // namespace api
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai
 
 #endif /* AuthenticationResultDeletionApi_H_ */

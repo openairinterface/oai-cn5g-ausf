@@ -34,9 +34,8 @@
 
 #include "RgAuthCtx.h"
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace model {
 
 RgAuthCtx::RgAuthCtx() {
@@ -105,6 +104,5 @@ void RgAuthCtx::unsetAuthInd() {
 }
 
 }  // namespace model
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai

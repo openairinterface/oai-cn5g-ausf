@@ -56,12 +56,11 @@
 #include "UEAuthenticationCtx.h"
 #include <string>
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace api {
 
-using namespace org::openapitools::server::model;
+using namespace oai::ausf_server::model;
 
 class DefaultApi {
  public:
@@ -154,8 +153,7 @@ class DefaultApi {
 };
 
 }  // namespace api
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai
 
 #endif /* DefaultApi_H_ */

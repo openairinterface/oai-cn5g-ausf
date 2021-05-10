@@ -34,9 +34,8 @@
 
 #include "AuthResult.h"
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace model {
 
 AuthResult::AuthResult() {}
@@ -54,6 +53,5 @@ void to_json(nlohmann::json& j, const AuthResult& o) {
 void from_json(const nlohmann::json& j, AuthResult& o) {}
 
 }  // namespace model
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai

@@ -35,12 +35,11 @@
 #include "AuthenticationResultDeletionApiImpl.h"
 #include "logger.hpp"
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace api {
 
-using namespace org::openapitools::server::model;
+using namespace oai::ausf_server::model;
 
 AuthenticationResultDeletionApiImpl::AuthenticationResultDeletionApiImpl(
     std::shared_ptr<Pistache::Rest::Router> rtr, ausf_app* ausf_app_inst,
@@ -65,6 +64,5 @@ void AuthenticationResultDeletionApiImpl::delete_eap_authentication_result(
 }
 
 }  // namespace api
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai

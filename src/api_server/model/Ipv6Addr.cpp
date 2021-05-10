@@ -34,9 +34,8 @@
 
 #include "Ipv6Addr.h"
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace model {
 
 Ipv6Addr::Ipv6Addr() {}
@@ -54,6 +53,5 @@ void to_json(nlohmann::json& j, const Ipv6Addr& o) {
 void from_json(const nlohmann::json& j, Ipv6Addr& o) {}
 
 }  // namespace model
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai

@@ -70,7 +70,7 @@ void setUpUnixSignals(std::vector<int> quitSignals) {
 }
 #endif
 
-using namespace org::openapitools::server::api;
+using namespace oai::ausf_server::api;
 // using namespace oai::ausf::api;
 using namespace oai::ausf::app;
 

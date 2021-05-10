@@ -34,9 +34,8 @@
 
 #include "InvalidParam.h"
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace model {
 
 InvalidParam::InvalidParam() {
@@ -86,6 +85,5 @@ void InvalidParam::unsetReason() {
 }
 
 }  // namespace model
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai

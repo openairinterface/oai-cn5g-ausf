@@ -34,9 +34,8 @@
 
 #include "AuthenticationInfo.h"
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace model {
 
 AuthenticationInfo::AuthenticationInfo() {
@@ -215,6 +214,5 @@ void AuthenticationInfo::unsetN5gcInd() {
 }
 
 }  // namespace model
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai

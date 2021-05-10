@@ -49,9 +49,8 @@
 #include <vector>
 #include <nlohmann/json.hpp>
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace model {
 
 /// <summary>
@@ -105,8 +104,7 @@ class UEAuthenticationCtx {
 };
 
 }  // namespace model
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai
 
 #endif /* UEAuthenticationCtx_H_ */

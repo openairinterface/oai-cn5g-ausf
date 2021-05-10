@@ -62,14 +62,14 @@
 #include "ausf_app.hpp"
 #include <string>
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace api {
-using namespace oai::ausf::app;
-using namespace org::openapitools::server::model;
 
-class DefaultApiImpl : public org::openapitools::server::api::DefaultApi {
+using namespace oai::ausf::app;
+using namespace oai::ausf_server::model;
+
+class DefaultApiImpl : public oai::ausf_server::api::DefaultApi {
  public:
   DefaultApiImpl(
       std::shared_ptr<Pistache::Rest::Router>, ausf_app* ausf_app_inst,
@@ -98,8 +98,7 @@ class DefaultApiImpl : public org::openapitools::server::api::DefaultApi {
 };
 
 }  // namespace api
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai
 
 #endif

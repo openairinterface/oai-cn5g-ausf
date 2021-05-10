@@ -57,12 +57,11 @@ extern ausf_config ausf_cfg;
 
 using namespace std;
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace api {
 
-using namespace org::openapitools::server::model;
+using namespace oai::ausf_server::model;
 
 // stored temporarily
 uint8_t XRES_STAR[16];  // store xres*
@@ -474,6 +473,5 @@ void DefaultApiImpl::ue_authentications_post(
 }
 
 }  // namespace api
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai

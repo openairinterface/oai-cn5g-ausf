@@ -45,9 +45,8 @@
 #include "AuthResult.h"
 #include <nlohmann/json.hpp>
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace model {
 
 /// <summary>
@@ -96,8 +95,7 @@ class RgAuthCtx {
 };
 
 }  // namespace model
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai
 
 #endif /* RgAuthCtx_H_ */

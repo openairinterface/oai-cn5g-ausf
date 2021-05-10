@@ -34,9 +34,8 @@
 
 #include "Link.h"
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace model {
 
 Link::Link() {
@@ -77,6 +76,5 @@ void Link::unsetHref() {
 }
 
 }  // namespace model
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai

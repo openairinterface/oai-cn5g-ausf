@@ -34,9 +34,8 @@
 
 #include "ResynchronizationInfo.h"
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace model {
 
 ResynchronizationInfo::ResynchronizationInfo() {
@@ -75,6 +74,5 @@ void ResynchronizationInfo::setAuts(std::string const& value) {
 }
 
 }  // namespace model
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai

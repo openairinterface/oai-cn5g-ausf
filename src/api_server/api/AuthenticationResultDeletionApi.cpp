@@ -37,13 +37,12 @@
 
 using namespace std;
 
-namespace org {
-namespace openapitools {
-namespace server {
+namespace oai {
+namespace ausf_server {
 namespace api {
 
-using namespace org::openapitools::server::helpers;
-using namespace org::openapitools::server::model;
+using namespace oai::ausf_server::helpers;
+using namespace oai::ausf_server::model;
 
 AuthenticationResultDeletionApi::AuthenticationResultDeletionApi(
     std::shared_ptr<Pistache::Rest::Router> rtr) {
@@ -134,6 +133,5 @@ void AuthenticationResultDeletionApi::
 }
 
 }  // namespace api
-}  // namespace server
-}  // namespace openapitools
-}  // namespace org
+}  // namespace ausf_server
+}  // namespace oai
