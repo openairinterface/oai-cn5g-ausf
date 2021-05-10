@@ -64,14 +64,11 @@ namespace api {
 using namespace oai::ausf_server::model;
 
 // stored temporarily
-uint8_t XRES_STAR[16];  // store xres*
-// uint8_t KAUSF[32];
-std::string SUPI_AUSF;  // store supi
-
+uint8_t XRES_STAR[16];   // store xres*
+std::string SUPI_AUSF;   // store supi
 std::string AUTH_TYPE;   // store authType
 std::string SERVING_NN;  // store serving network name
-
-std::string KAUSF_TMP;  // store Kausf(string)
+std::string KAUSF_TMP;   // store Kausf(string)
 
 typedef struct {
   uint8_t rand[16];
@@ -126,22 +123,18 @@ void DefaultApiImpl::ue_authentications_auth_ctx_id5g_aka_confirmation_put(
     return;
   }
 
-  /*---------------------getting params---------------------------------*/
+  // getting params
   Logger::ausf_server().info(
       "Received authCtxId %s", authCtxId.c_str());  // authCtxId
   Logger::ausf_server().info(
-      "Received res* %s",
-      confirmationData.getResStar()
-          .c_str());  // res*(const char*)  "0ddc2f64bd8dc35906fad44499e18525"
+      "Received res* %s", confirmationData.getResStar().c_str());
 
   uint8_t resStar[16] = {0};
   conv::hex_str_to_uint8(
       confirmationData.getResStar().c_str(),
       resStar);  // string->uint8, res*(uint8)
 
-  /*---------------------认证确认-amf--------------------------------*/
   ConfirmationDataResponse confirmResponse;
-  // 1.验证AV是否过期: 认证成功后，AUSF将存储 KAUSF  ?
   uint8_t authCtxId_seaf[16];
   conv::hex_str_to_uint8(
       authCtxId.c_str(), authCtxId_seaf);  // authCtxId in seaf
@@ -157,16 +150,13 @@ void DefaultApiImpl::ue_authentications_auth_ctx_id5g_aka_confirmation_put(
     Logger::ausf_server().error(
         "Authentication failure by home network with authCtxId %s: AV expired",
         authCtxId.c_str());
-    confirmResponse.setAuthResult(
-        is_auth_vectors_present);  //向SEAF指示，从本地网络角度认证not成功
+    confirmResponse.setAuthResult(is_auth_vectors_present);
     KAUSF_TMP = "invalid";
   } else  // AV valid
   {
     Logger::ausf_server().info("AV is up to date, handling received res*...");
 
     // store Kausf
-
-    // 2.将接收到的RES*与存储的XRES*进行比较:RES*与XRES*相等，AUSF将从家庭网络角度认为认证成功
     // get stored xres* -----
     uint8_t xresStar[16] = {0};
     memcpy(xresStar, XRES_STAR, 16);  // xres* stored for 5g-aka-confirmation
@@ -176,8 +166,7 @@ void DefaultApiImpl::ue_authentications_auth_ctx_id5g_aka_confirmation_put(
         "xres in amf: %s", (conv::uint8_to_hex_string(resStar, 16)).c_str());
 
     bool authResult = Authentication_5gaka::equal_uint8(xresStar, resStar, 16);
-    confirmResponse.setAuthResult(
-        authResult);  // 3.向SEAF指示，从本地网络角度认证是否成功
+    confirmResponse.setAuthResult(authResult);
 
     if (!authResult)  // fail
     {
@@ -227,8 +216,6 @@ void DefaultApiImpl::ue_authentications_auth_ctx_id5g_aka_confirmation_put(
       char buf[32];
       strftime(buf, sizeof(buf), "%FT%TZ", gmtime(&rawtime));
       confirmResultInfo["timeStamp"] = buf;  // timestamp generated
-      // confirmResultInfo["timeStamp"] = "2020-08-12T17:02:51.128672225+09:00";
-      // //PARAM
 
       confirmResultInfo["authType"] = AUTH_TYPE;  // authType stored in ausf
       confirmResultInfo["servingNetworkName"] =
@@ -241,8 +228,8 @@ void DefaultApiImpl::ue_authentications_auth_ctx_id5g_aka_confirmation_put(
     }
   }
 
-  /*----------------ausf --> seaf-----------*/
-  //---forming response
+  // ausf --> seaf
+  // Forming response
   nlohmann::json confirmResponse_json;
   to_json(confirmResponse_json, confirmResponse);
   Logger::ausf_server().debug(
@@ -268,7 +255,7 @@ void DefaultApiImpl::ue_authentications_post(
     Pistache::Http::ResponseWriter& response) {
   Logger::ausf_server().debug("--ue_authentications_post--");
 
-  /*----------------------getting params-------------*/
+  // Getting params
   Logger::ausf_server().info(
       "servingNetworkName %s",
       authenticationInfo.getServingNetworkName().c_str());
@@ -279,7 +266,7 @@ void DefaultApiImpl::ue_authentications_post(
       authenticationInfo.getServingNetworkName();  // serving network name
   std::string supi = authenticationInfo.getSupiOrSuci();  // supi
 
-  /* -----------5g he av from udm-----------------*/
+  // 5g he av from udm
 
   // UDM GET interface ----- get authentication related info--------------------
   std::string udm_ip   = std::string(inet_ntoa(
@@ -378,8 +365,8 @@ void DefaultApiImpl::ue_authentications_post(
    * AV--------------------------*/
   /*  HXRES* <-- XRES*  */
   /*  KSEAF  <-- KAUSF  */
-  /*  在5G HE AV中用HXRES*替代XRES*，用 KSEAF 替代KAUSF */
-  /*  删除 KSEAF，并向SEAF返回5G SE AV（RAND, AUTN, HXRES*）*/
+  /*  5G HE AV HXRES* XRES*，KSEAF KAUSF */
+  /*  KSEAF，SEAF 5G SE AV（RAND, AUTN, HXRES*）*/
   /*  A.5, 3gpp ts33.501 */
   Logger::ausf_server().debug("==generating 5g av");
 
