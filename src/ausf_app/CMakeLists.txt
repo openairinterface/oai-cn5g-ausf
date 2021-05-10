@@ -30,6 +30,8 @@ include_directories(${SRC_TOP_DIR}/common/utils)
 add_library (AUSF STATIC
   ausf_app.cpp
   ausf_client.cpp 
+  ausf_config.cpp 
+  curl.cpp 
 )
 
 
