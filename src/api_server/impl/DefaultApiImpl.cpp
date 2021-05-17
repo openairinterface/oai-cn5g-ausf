@@ -192,9 +192,9 @@ void DefaultApiImpl::ue_authentications_auth_ctx_id5g_aka_confirmation_put(
       // 6. send authResult to udm
       // UDM POST interface ----- send authentication result
       // info--------------------
-      std::string udm_ip   = std::string(inet_ntoa(*(
-          (struct in_addr*) &ausf_cfg.nudm.addr4)));  // need to change to nudm
-      std::string udm_port = std::to_string(ausf_cfg.nudm.port);
+      std::string udm_ip = std::string(
+          inet_ntoa(*((struct in_addr*) &ausf_cfg.udm_addr.ipv4_addr)));
+      std::string udm_port = std::to_string(ausf_cfg.udm_addr.port);
       std::string udmUri;
       std::string Method;
       std::string Response;
@@ -269,9 +269,9 @@ void DefaultApiImpl::ue_authentications_post(
   // 5g he av from udm
 
   // UDM GET interface ----- get authentication related info--------------------
-  std::string udm_ip   = std::string(inet_ntoa(
-      *((struct in_addr*) &ausf_cfg.nudm.addr4)));  // need to change to nudm
-  std::string udm_port = std::to_string(ausf_cfg.nudm.port);
+  std::string udm_ip =
+      std::string(inet_ntoa(*((struct in_addr*) &ausf_cfg.udm_addr.ipv4_addr)));
+  std::string udm_port = std::to_string(ausf_cfg.udm_addr.port);
   std::string udmUri;
   std::string Method;
   std::string Response;

@@ -35,13 +35,27 @@
 #include "logger.hpp"
 #include "if.hpp"
 
-extern "C" {
+#include "string.hpp"
+
+// C includes
 #include <arpa/inet.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
+
+extern "C" {
+//#include <arpa/inet.h>
+//#include <stdbool.h>
+//#include <stdlib.h>
+//#include <string.h>
+//#include <sys/types.h>
+//#include <unistd.h>
 #include "common_defs.h"
 }
 
@@ -51,6 +65,9 @@ namespace config {
 
 //------------------------------------------------------------------------------
 ausf_config::ausf_config() {
+  udm_addr.ipv4_addr.s_addr = INADDR_ANY;
+  udm_addr.port             = 80;
+  udm_addr.api_version      = "v1";
   // TODO:
 }
 
@@ -100,7 +117,7 @@ int ausf_config::load(const std::string& config_file) {
         "%s : %s, using defaults", nfex.what(), nfex.getPath());
   }
   try {
-    ausf_cfg.lookupValue(AUSF_CONFIG_STRING_AUSF_NAME, AUSF_Name);
+    ausf_cfg.lookupValue(AUSF_CONFIG_STRING_AUSF_NAME, ausf_name);
   } catch (const SettingNotFoundException& nfex) {
     Logger::config().error(
         "%s : %s, using defaults", nfex.what(), nfex.getPath());
@@ -112,16 +129,70 @@ int ausf_config::load(const std::string& config_file) {
         new_if_cfg[AUSF_CONFIG_STRING_INTERFACE_SBI_AUSF];
     load_interface(sbi_ausf_cfg, sbi);
 
-    const Setting& nudm_cfg = new_if_cfg[AUSF_CONFIG_STRING_INTERFACE_NUDM];
-    load_interface(nudm_cfg, nudm);
+    // const Setting& nudm_cfg = new_if_cfg[AUSF_CONFIG_STRING_INTERFACE_NUDM];
+    // load_interface(nudm_cfg, nudm);
 
-    const Setting& namf_cfg = new_if_cfg[AUSF_CONFIG_STRING_INTERFACE_NAMF];
-    load_interface(namf_cfg, namf);
+    // const Setting& namf_cfg = new_if_cfg[AUSF_CONFIG_STRING_INTERFACE_NAMF];
+    // load_interface(namf_cfg, namf);
 
   } catch (const SettingNotFoundException& nfex) {
     Logger::config().error(
         "%s : %s, using defaults", nfex.what(), nfex.getPath());
     return -1;
+  }
+
+  try {
+    std::string astring;
+
+    // UDM
+    const Setting& udm_cfg = ausf_cfg[AUSF_CONFIG_STRING_UDM];
+    struct in_addr udm_ipv4_addr;
+    unsigned int udm_port = 0;
+    std::string udm_api_version;
+    udm_cfg.lookupValue(AUSF_CONFIG_STRING_UDM_IPV4_ADDRESS, astring);
+    IPV4_STR_ADDR_TO_INADDR(
+        util::trim(astring).c_str(), udm_ipv4_addr,
+        "BAD IPv4 ADDRESS FORMAT FOR UDM !");
+    udm_addr.ipv4_addr = udm_ipv4_addr;
+    if (!(udm_cfg.lookupValue(AUSF_CONFIG_STRING_UDM_PORT, udm_port))) {
+      Logger::ausf_app().error(AUSF_CONFIG_STRING_UDM_PORT "failed");
+      throw(AUSF_CONFIG_STRING_UDM_PORT "failed");
+    }
+    udm_addr.port = udm_port;
+
+    if (!(udm_cfg.lookupValue(
+            AUSF_CONFIG_STRING_API_VERSION, udm_api_version))) {
+      Logger::ausf_app().error(AUSF_CONFIG_STRING_API_VERSION "failed");
+      throw(AUSF_CONFIG_STRING_API_VERSION "failed");
+    }
+    udm_addr.api_version = udm_api_version;
+
+    // AMF
+    const Setting& amf_cfg = ausf_cfg[AUSF_CONFIG_STRING_AMF];
+    struct in_addr amf_ipv4_addr;
+    unsigned int amf_port = 0;
+    std::string amf_api_version;
+    amf_cfg.lookupValue(AUSF_CONFIG_STRING_AMF_IPV4_ADDRESS, astring);
+    IPV4_STR_ADDR_TO_INADDR(
+        util::trim(astring).c_str(), amf_ipv4_addr,
+        "BAD IPv4 ADDRESS FORMAT FOR AMF !");
+    amf_addr.ipv4_addr = amf_ipv4_addr;
+    if (!(amf_cfg.lookupValue(AUSF_CONFIG_STRING_AMF_PORT, amf_port))) {
+      Logger::ausf_app().error(AUSF_CONFIG_STRING_AMF_PORT "failed");
+      throw(AUSF_CONFIG_STRING_AMF_PORT "failed");
+    }
+    amf_addr.port = amf_port;
+
+    if (!(amf_cfg.lookupValue(
+            AUSF_CONFIG_STRING_API_VERSION, amf_api_version))) {
+      Logger::ausf_app().error(AUSF_CONFIG_STRING_API_VERSION "failed");
+      throw(AUSF_CONFIG_STRING_API_VERSION "failed");
+    }
+    amf_addr.api_version = amf_api_version;
+
+  } catch (const SettingNotFoundException& nfex) {
+    Logger::ausf_app().error("%s : %s", nfex.what(), nfex.getPath());
+    return RETURNerror;
   }
 }
 
@@ -137,24 +208,42 @@ void ausf_config::display() {
       pid_dir.c_str());
   Logger::config().info(
       "- AUSF NAME............................................: %s",
-      AUSF_Name.c_str());
+      ausf_name.c_str());
 
   Logger::config().info("- SBI Networking:");
   Logger::config().info("    iface ................: %s", sbi.if_name.c_str());
   Logger::config().info("    ip ...................: %s", inet_ntoa(sbi.addr4));
   Logger::config().info("    port .................: %d", sbi.port);
 
-  Logger::config().info("- Nudm Networking:");
-  Logger::config().info("    iface ................: %s", nudm.if_name.c_str());
-  Logger::config().info(
-      "    ip ...................: %s", inet_ntoa(nudm.addr4));
-  Logger::config().info("    port .................: %d", nudm.port);
+  // Logger::config().info("- Nudm Networking:");
+  // Logger::config().info("    iface ................: %s",
+  // nudm.if_name.c_str());
+  // Logger::config().info(
+  //    "    ip ...................: %s", inet_ntoa(udm_addr.addr4));
+  // Logger::config().info("    port .................: %d", udm_addr.port);
 
-  Logger::config().info("- Namf Networking:");
-  Logger::config().info("    iface ................: %s", namf.if_name.c_str());
+  Logger::config().info("- UDM:");
   Logger::config().info(
-      "    ip ...................: %s", inet_ntoa(namf.addr4));
-  Logger::config().info("    port .................: %d", namf.port);
+      "    IPv4 Addr ...........: %s",
+      inet_ntoa(*((struct in_addr*) &udm_addr.ipv4_addr)));
+  Logger::config().info("    Port ................: %lu  ", udm_addr.port);
+  Logger::config().info(
+      "    API version .........: %s", udm_addr.api_version.c_str());
+
+  /*  Logger::config().info("- Namf Networking:");
+    Logger::config().info("    iface ................: %s",
+    namf.if_name.c_str()); Logger::config().info( "    ip ...................:
+    %s", inet_ntoa(namf.addr4)); Logger::config().info("    port
+    .................: %d", namf.port);
+    */
+
+  Logger::config().info("- AMF:");
+  Logger::config().info(
+      "    IPv4 Addr ...........: %s",
+      inet_ntoa(*((struct in_addr*) &amf_addr.ipv4_addr)));
+  Logger::config().info("    Port ................: %lu  ", amf_addr.port);
+  Logger::config().info(
+      "    API version .........: %s", amf_addr.api_version.c_str());
 }
 
 //------------------------------------------------------------------------------

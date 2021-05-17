@@ -50,12 +50,23 @@
 
 #define AUSF_CONFIG_STRING_INTERFACES "INTERFACES"
 #define AUSF_CONFIG_STRING_INTERFACE_SBI_AUSF "SBI_AUSF"
-#define AUSF_CONFIG_STRING_INTERFACE_NUDM "NUDM"
-#define AUSF_CONFIG_STRING_INTERFACE_NAMF "NAMF"
+
+//#define AUSF_CONFIG_STRING_INTERFACE_NUDM "NUDM"
+//#define AUSF_CONFIG_STRING_INTERFACE_NAMF "NAMF"
+
 #define AUSF_CONFIG_STRING_INTERFACE_NAME "INTERFACE_NAME"
 #define AUSF_CONFIG_STRING_IPV4_ADDRESS "IPV4_ADDRESS"
 #define AUSF_CONFIG_STRING_PORT "PORT"
 #define AUSF_CONFIG_STRING_PPID "PPID"
+#define AUSF_CONFIG_STRING_API_VERSION "API_VERSION"
+
+#define AUSF_CONFIG_STRING_UDM "UDM"
+#define AUSF_CONFIG_STRING_UDM_IPV4_ADDRESS "IPV4_ADDRESS"
+#define AUSF_CONFIG_STRING_UDM_PORT "PORT"
+
+#define AUSF_CONFIG_STRING_AMF "AMF"
+#define AUSF_CONFIG_STRING_AMF_IPV4_ADDRESS "IPV4_ADDRESS"
+#define AUSF_CONFIG_STRING_AMF_PORT "PORT"
 
 using namespace libconfig;
 
@@ -80,11 +91,22 @@ class ausf_config {
 
   unsigned int instance;
   std::string pid_dir;
-  std::string AUSF_Name;
+  std::string ausf_name;
 
   interface_cfg_t sbi;
-  interface_cfg_t nudm;
-  interface_cfg_t namf;
+  // interface_cfg_t nudm;
+  //  interface_cfg_t namf;
+  struct {
+    struct in_addr ipv4_addr;
+    unsigned int port;
+    std::string api_version;
+  } udm_addr;
+
+  struct {
+    struct in_addr ipv4_addr;
+    unsigned int port;
+    std::string api_version;
+  } amf_addr;
 };
 
 }  // namespace config
