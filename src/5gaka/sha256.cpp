@@ -19,9 +19,8 @@
  *      contact@openairinterface.org
  */
 
-/*! \file rijndael.cpp
+/*! \file sha256.cpp
  \brief
- \brief Based on https://github.com/OPENAIRINTERFACE/openair-hss
  \author Jian Yang, Fengjiao He, Hongxin Wang
  \company
  \date 2020

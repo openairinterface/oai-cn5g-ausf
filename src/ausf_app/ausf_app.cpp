@@ -23,7 +23,7 @@
  \brief
  \author  Tien-Thinh NGUYEN
  \company Eurecom
- \date 2020
+ \date 2021
  \email: Tien-Thinh.Nguyen@eurecom.fr
  */
 
@@ -50,11 +50,11 @@ ausf_client* ausf_client_inst = nullptr;
 
 //------------------------------------------------------------------------------
 ausf_app::ausf_app(const std::string& config_file) {
-  // logger::ausf_server().startup("Starting...");
+  Logger::ausf_app().startup("Starting...");
 
-  // logger::ausf_server().startup("Started");
+  Logger::ausf_app().startup("Started");
 }
 
 ausf_app::~ausf_app() {
-  // logger::ausf_server().debug("Delete AUSF_APP instance...");
+  Logger::ausf_app().debug("Delete AUSF_APP instance...");
 }

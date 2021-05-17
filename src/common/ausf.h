@@ -70,6 +70,7 @@ static const std::vector<std::string> patch_op_type_e2str = {
     "ADD", "REMOVE", "REPLACE", "MOVE", "COPY", "TEST", "UNKNOWN"};
 
 #define NF_CURL_TIMEOUT_MS 1000L
+#define CURL_TIMEOUT_MS 100L
 
 #define MAX_WAIT_MSECS 20000  // 1 second
 

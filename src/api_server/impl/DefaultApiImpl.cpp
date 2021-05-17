@@ -49,7 +49,7 @@
 #include <typeinfo>
 #include <map>
 #include "ausf_config.hpp"
-#include "curl.hpp"
+#include "ausf_client.hpp"
 #include "ProblemDetails.h"
 
 using namespace config;
@@ -223,7 +223,7 @@ void DefaultApiImpl::ue_authentications_auth_ctx_id5g_aka_confirmation_put(
       confirmResultInfo["authRemovalInd"] = false;
 
       cout << confirmResultInfo.dump() << endl;
-      Curl::curl_http_client(
+      ausf_client::curl_http_client(
           udmUri, Method, confirmResultInfo.dump(), Response);
     }
   }
@@ -304,7 +304,7 @@ void DefaultApiImpl::ue_authentications_post(
     Logger::ausf_server().info("received normal authInfo from amf");
   }
 
-  Curl::curl_http_client(udmUri, Method, AuthInfo.dump(), Response);
+  ausf_client::curl_http_client(udmUri, Method, AuthInfo.dump(), Response);
 
   Logger::ausf_server().error("response: %s", Response.c_str());
 

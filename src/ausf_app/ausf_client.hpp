@@ -34,6 +34,9 @@
 
 #include <curl/curl.h>
 
+#include "logger.hpp"
+#include "ausf_config.hpp"
+
 namespace oai {
 namespace ausf {
 namespace app {
@@ -45,6 +48,10 @@ class ausf_client {
   virtual ~ausf_client();
 
   ausf_client(ausf_client const&) = delete;
+
+  static void curl_http_client(
+      std::string remoteUri, std::string Method, std::string msgBody,
+      std::string& Response);
 };
 }  // namespace app
 }  // namespace ausf

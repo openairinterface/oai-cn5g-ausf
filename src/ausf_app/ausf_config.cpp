@@ -46,7 +46,6 @@ extern "C" {
 }
 
 using namespace libconfig;
-// using namespace amf_application;
 
 namespace config {
 
