@@ -19,12 +19,14 @@
  *      contact@openairinterface.org
  */
 
-/*! file
-brief
-author  Jian Yang,Fengjiao He,Hongxin Wang
-date 2020
-email: contact@openairinterface.org
-*/
+/*! \file rijndael.cpp
+ \brief
+ \brief Based on https://github.com/OPENAIRINTERFACE/openair-hss
+ \author Jian Yang, Fengjiao He, Hongxin Wang
+ \company
+ \date 2020
+ \email: email: contact@openairinterface.org
+ */
 
 #include "sha256.hpp"
 

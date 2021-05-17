@@ -43,7 +43,6 @@
 #include "ausf_client.hpp"
 
 using namespace oai::ausf::app;
-// using namespace oai::ausf::model;
 using namespace std::chrono;
 
 extern ausf_app* ausf_app_inst;

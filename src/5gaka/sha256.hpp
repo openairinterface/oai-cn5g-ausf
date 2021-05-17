@@ -19,12 +19,13 @@
  *      contact@openairinterface.org
  */
 
-/*! file
-brief
-author  Jian Yang,Fengjiao He,Hongxin Wang
-date 2020
-email: contact@openairinterface.org
-*/
+/*! \file sha256.hpp
+ \brief
+ \author Jian Yang, Fengjiao He, Hongxin Wang
+ \company
+ \date 2020
+ \email: email: contact@openairinterface.org
+ */
 
 #ifndef Sha256_H
 #define Sha256_H

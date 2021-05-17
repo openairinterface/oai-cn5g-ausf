@@ -19,12 +19,14 @@
  *      contact@openairinterface.org
  */
 
-/*! file
-brief
-author  Jian Yang,Fengjiao He,Hongxin Wang
-date 2020
-email: contact@openairinterface.org
-*/
+/*! \file f12345.h
+ \brief Example algorithms f1, f1*, f2, f3, f4, f5, f5
+ \brief Based on https://github.com/OPENAIRINTERFACE/openair-hss
+ \author  Jian Yang, Fengjiao He, Hongxin Wang
+ \company
+ \date 2020
+ \email: email: contact@openairinterface.org
+ */
 
 /*-------------------------------------------------------------------
  *          Example algorithms f1, f1*, f2, f3, f4, f5, f5*

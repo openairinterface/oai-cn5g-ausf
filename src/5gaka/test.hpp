@@ -19,12 +19,13 @@
  *      contact@openairinterface.org
  */
 
-/*! file
-brief
-author  Jian Yang,Fengjiao He,Hongxin Wang
-date 2020
-email: contact@openairinterface.org
-*/
+/*! \file test.hpp
+ \brief
+ \author Jian Yang, Fengjiao He, Hongxin Wang
+ \company
+ \date 2020
+ \email: email: contact@openairinterface.org
+ */
 
 #ifndef _TEST_HPP_
 #define _TEST_HPP_
