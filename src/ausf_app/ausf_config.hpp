@@ -51,9 +51,6 @@
 #define AUSF_CONFIG_STRING_INTERFACES "INTERFACES"
 #define AUSF_CONFIG_STRING_INTERFACE_SBI_AUSF "SBI_AUSF"
 
-//#define AUSF_CONFIG_STRING_INTERFACE_NUDM "NUDM"
-//#define AUSF_CONFIG_STRING_INTERFACE_NAMF "NAMF"
-
 #define AUSF_CONFIG_STRING_INTERFACE_NAME "INTERFACE_NAME"
 #define AUSF_CONFIG_STRING_IPV4_ADDRESS "IPV4_ADDRESS"
 #define AUSF_CONFIG_STRING_PORT "PORT"
@@ -94,8 +91,6 @@ class ausf_config {
   std::string ausf_name;
 
   interface_cfg_t sbi;
-  // interface_cfg_t nudm;
-  //  interface_cfg_t namf;
   struct {
     struct in_addr ipv4_addr;
     unsigned int port;

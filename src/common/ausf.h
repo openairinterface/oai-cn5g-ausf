@@ -74,4 +74,11 @@ static const std::vector<std::string> patch_op_type_e2str = {
 
 #define MAX_WAIT_MSECS 20000  // 1 second
 
+typedef struct {
+  uint8_t rand[16];
+  uint8_t autn[16];
+  uint8_t hxresStar[16];
+  uint8_t kseaf[32];
+} AUSF_AV_s;
+
 #endif

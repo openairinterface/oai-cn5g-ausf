@@ -31,10 +31,16 @@
 #define FILE_AUSF_APP_HPP_SEEN
 
 #include <string>
+#include "AuthenticationInfo.h"
+#include "UEAuthenticationCtx.h"
+#include "ConfirmationData.h"
+#include "ausf.h"
 
 namespace oai {
 namespace ausf {
 namespace app {
+
+using namespace oai::ausf_server::model;
 
 // class ausf_config;
 class ausf_app {
@@ -45,7 +51,22 @@ class ausf_app {
 
   virtual ~ausf_app();
 
+  void handle_ue_authentications(
+      const AuthenticationInfo& authenticationInfo, nlohmann::json& json_data,
+      std::string& location, uint16_t& http_response_code);
+
+  void handle_ue_authentications_confirmation(
+      const std::string& authCtxId, const ConfirmationData& confirmation_data,
+      nlohmann::json& json_data, uint16_t& http_response_code);
+
  private:
+  AUSF_AV_s ausf_av_s;
+  // stored temporarily
+  uint8_t XRES_STAR[16];   // store xres*
+  std::string SUPI_AUSF;   // store supi
+  std::string AUTH_TYPE;   // store authType
+  std::string SERVING_NN;  // store serving network name
+  std::string KAUSF_TMP;   // store Kausf(string)
 };
 }  // namespace app
 }  // namespace ausf

@@ -48,9 +48,11 @@ random_state_t random_state;
 
 using namespace std;
 
+/*
 extern void print_buffer(
     const std::string app, const std::string commit, uint8_t* buf, int len);
 extern void hexStr2Byte(const char* src, unsigned char* dest, int len);
+*/
 /************ algorithm f1 **************/
 /*
   Computes network authentication code MAC-A from key K, random, challenge RAND,

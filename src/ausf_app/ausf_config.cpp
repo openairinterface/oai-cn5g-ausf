@@ -129,12 +129,6 @@ int ausf_config::load(const std::string& config_file) {
         new_if_cfg[AUSF_CONFIG_STRING_INTERFACE_SBI_AUSF];
     load_interface(sbi_ausf_cfg, sbi);
 
-    // const Setting& nudm_cfg = new_if_cfg[AUSF_CONFIG_STRING_INTERFACE_NUDM];
-    // load_interface(nudm_cfg, nudm);
-
-    // const Setting& namf_cfg = new_if_cfg[AUSF_CONFIG_STRING_INTERFACE_NAMF];
-    // load_interface(namf_cfg, namf);
-
   } catch (const SettingNotFoundException& nfex) {
     Logger::config().error(
         "%s : %s, using defaults", nfex.what(), nfex.getPath());
@@ -215,13 +209,6 @@ void ausf_config::display() {
   Logger::config().info("    ip ...................: %s", inet_ntoa(sbi.addr4));
   Logger::config().info("    port .................: %d", sbi.port);
 
-  // Logger::config().info("- Nudm Networking:");
-  // Logger::config().info("    iface ................: %s",
-  // nudm.if_name.c_str());
-  // Logger::config().info(
-  //    "    ip ...................: %s", inet_ntoa(udm_addr.addr4));
-  // Logger::config().info("    port .................: %d", udm_addr.port);
-
   Logger::config().info("- UDM:");
   Logger::config().info(
       "    IPv4 Addr ...........: %s",
@@ -229,13 +216,6 @@ void ausf_config::display() {
   Logger::config().info("    Port ................: %lu  ", udm_addr.port);
   Logger::config().info(
       "    API version .........: %s", udm_addr.api_version.c_str());
-
-  /*  Logger::config().info("- Namf Networking:");
-    Logger::config().info("    iface ................: %s",
-    namf.if_name.c_str()); Logger::config().info( "    ip ...................:
-    %s", inet_ntoa(namf.addr4)); Logger::config().info("    port
-    .................: %d", namf.port);
-    */
 
   Logger::config().info("- AMF:");
   Logger::config().info(
