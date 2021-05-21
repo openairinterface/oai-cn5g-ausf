@@ -132,7 +132,7 @@ void DefaultApiImpl::ue_authentications_post(
       authenticationInfo, UEAuthCtx_json, location, http_response_code);
 
   // nlohmann::json UEAuthCtx_json;
-  to_json(UEAuthCtx_json, ue_auth_ctx);
+  // to_json(UEAuthCtx_json, ue_auth_ctx);
   Logger::ausf_server().debug(
       "auth response:\n %s", UEAuthCtx_json.dump().c_str());
 

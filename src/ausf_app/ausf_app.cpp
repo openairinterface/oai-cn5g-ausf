@@ -64,26 +64,21 @@ extern ausf_app* ausf_app_inst;
 ausf_client* ausf_client_inst = nullptr;
 using namespace config;
 extern ausf_config ausf_cfg;
-/*
-AUSF_AV_s ausf_av_s = {};
-// stored temporarily
-uint8_t XRES_STAR[16];   // store xres*
-std::string SUPI_AUSF;   // store supi
-std::string AUTH_TYPE;   // store authType
-std::string SERVING_NN;  // store serving network name
-std::string KAUSF_TMP;   // store Kausf(string)
-*/
+
 //------------------------------------------------------------------------------
 ausf_app::ausf_app(const std::string& config_file) {
   Logger::ausf_app().startup("Starting...");
-
+  ausf_av_s             = {};
+  uint8_t XRES_STAR[16] = {};
   Logger::ausf_app().startup("Started");
 }
 
+//------------------------------------------------------------------------------
 ausf_app::~ausf_app() {
   Logger::ausf_app().debug("Delete AUSF_APP instance...");
 }
 
+//------------------------------------------------------------------------------
 void ausf_app::handle_ue_authentications(
     const AuthenticationInfo& authenticationInfo, nlohmann::json& json_data,
     std::string& location, uint16_t& http_response_code) {
@@ -287,6 +282,7 @@ void ausf_app::handle_ue_authentications(
   Logger::ausf_server().debug("auth response:\n %s", json_data.dump().c_str());
 }
 
+//------------------------------------------------------------------------------
 void ausf_app::handle_ue_authentications_confirmation(
     const std::string& authCtxId, const ConfirmationData& confirmationData,
     nlohmann::json& json_data, uint16_t& http_response_code) {
@@ -416,4 +412,8 @@ void ausf_app::handle_ue_authentications_confirmation(
           udmUri, Method, confirmResultInfo.dump(), Response);
     }
   }
+
+  // nlohmann::json confirmResponse_json;
+  to_json(json_data, confirmResponse);
+  http_response_code = 200;  // TODO
 }

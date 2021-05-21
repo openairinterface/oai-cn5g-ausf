@@ -64,6 +64,7 @@ ausf_client::~ausf_client() {
   Logger::ausf_app().debug("Delete AUSF Client instance...");
 }
 
+//------------------------------------------------------------------------------
 void ausf_client::curl_http_client(
     std::string remoteUri, std::string Method, std::string msgBody,
     std::string& Response) {

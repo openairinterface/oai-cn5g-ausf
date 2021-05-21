@@ -49,15 +49,7 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 
-extern "C" {
-//#include <arpa/inet.h>
-//#include <stdbool.h>
-//#include <stdlib.h>
-//#include <string.h>
-//#include <sys/types.h>
-//#include <unistd.h>
 #include "common_defs.h"
-}
 
 using namespace libconfig;
 
