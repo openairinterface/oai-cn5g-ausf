@@ -68,8 +68,8 @@ extern ausf_config ausf_cfg;
 //------------------------------------------------------------------------------
 ausf_app::ausf_app(const std::string& config_file) {
   Logger::ausf_app().startup("Starting...");
-  ausf_av_s             = {};
-  uint8_t XRES_STAR[16] = {};
+  //  ausf_av_s             = {};
+  //  uint8_t XRES_STAR[16] = {};
   Logger::ausf_app().startup("Started");
 }
 
@@ -96,6 +96,27 @@ void ausf_app::set_supi_2_security_context(
     const std::string& supi, std::shared_ptr<security_context> sc) {
   std::unique_lock lock(m_supi2security_context);
   supi2security_context[supi] = sc;
+}
+
+//------------------------------------------------------------------------------
+bool ausf_app::is_contextId_2_security_context(
+    const std::string& contextId) const {
+  std::shared_lock lock(m_contextId2security_context);
+  return bool{contextId2security_context.count(contextId) > 0};
+}
+
+//------------------------------------------------------------------------------
+std::shared_ptr<security_context> ausf_app::contextId_2_security_context(
+    const std::string& contextId) const {
+  std::shared_lock lock(m_contextId2security_context);
+  return contextId2security_context.at(contextId);
+}
+
+//------------------------------------------------------------------------------
+void ausf_app::set_contextId_2_security_context(
+    const std::string& contextId, std::shared_ptr<security_context> sc) {
+  std::unique_lock lock(m_contextId2security_context);
+  contextId2security_context[contextId] = sc;
 }
 
 //------------------------------------------------------------------------------
@@ -248,6 +269,7 @@ void ausf_app::handle_ue_authentications(
   Logger::ausf_server().debug(
       "kseaf calculated:\n %s", (conv::uint8_to_hex_string(kseaf, 32)).c_str());
 
+  /*
   memcpy(ausf_av_s.rand, rand_ausf, 16);  // store 5g av in ausf
   memcpy(ausf_av_s.autn, autn_ausf, 16);
   memcpy(ausf_av_s.hxresStar, hxresStar, 16);
@@ -258,41 +280,32 @@ void ausf_app::handle_ue_authentications(
   AUTH_TYPE  = authType_udm;                        // store authType in ausf
   KAUSF_TMP =
       conv::uint8_to_hex_string(kausf_ausf, 32);  // store kausf_tmp in ausf
-
+*/
   // Store the security context
   std::shared_ptr<security_context> sc = {};
   if (is_supi_2_security_context(supi)) {
-    Logger::ausf_app().debug("Update SMF context with SUPI: ", supi);
-    sc            = supi_2_security_context(supi);
-    sc->supi_ausf = supi;                       // TODO: setter/getter
-    memcpy(sc->ausf_av_s.rand, rand_ausf, 16);  // store 5g av in ausf
-    memcpy(sc->ausf_av_s.autn, autn_ausf, 16);
-    memcpy(sc->ausf_av_s.hxresStar, hxresStar, 16);
-    memcpy(sc->ausf_av_s.kseaf, kseaf, 32);
-    memcpy(sc->xres_star, xresStar, 16);                  // store xres* in ausf
-    sc->supi_ausf  = authenticationInfo.getSupiOrSuci();  // store supi in ausf
-    sc->serving_nn = snn;                                 // store snn in ausf
-    sc->auth_type  = authType_udm;  // store authType in ausf
-    sc->kausf_tmp =
-        conv::uint8_to_hex_string(kausf_ausf, 32);  // store kausf_tmp in ausf
+    Logger::ausf_app().debug(
+        "Update security context with SUPI: ", supi.c_str());
+    sc = supi_2_security_context(supi);
   } else {
-    Logger::ausf_app().debug("Create a new security context with SUPI ", supi);
-    // sc = std::shared_ptr<security_context>(new security_context());
-    sc            = std::make_shared<security_context>();
-    sc->supi_ausf = supi;                       // TODO: setter/getter
-    memcpy(sc->ausf_av_s.rand, rand_ausf, 16);  // store 5g av in ausf
-    memcpy(sc->ausf_av_s.autn, autn_ausf, 16);
-    memcpy(sc->ausf_av_s.hxresStar, hxresStar, 16);
-    memcpy(sc->ausf_av_s.kseaf, kseaf, 32);
-    memcpy(sc->xres_star, xresStar, 16);                  // store xres* in ausf
-    sc->supi_ausf  = authenticationInfo.getSupiOrSuci();  // store supi in ausf
-    sc->serving_nn = snn;                                 // store snn in ausf
-    sc->auth_type  = authType_udm;  // store authType in ausf
-    sc->kausf_tmp =
-        conv::uint8_to_hex_string(kausf_ausf, 32);  // store kausf_tmp in ausf
-
+    Logger::ausf_app().debug(
+        "Create a new security context with SUPI ", supi.c_str());
+    sc = std::make_shared<security_context>();
     set_supi_2_security_context(supi, sc);
   }
+
+  // Update information
+  sc->supi_ausf = supi;                       // TODO: setter/getter
+  memcpy(sc->ausf_av_s.rand, rand_ausf, 16);  // store 5g av in ausf
+  memcpy(sc->ausf_av_s.autn, autn_ausf, 16);
+  memcpy(sc->ausf_av_s.hxresStar, hxresStar, 16);
+  memcpy(sc->ausf_av_s.kseaf, kseaf, 32);
+  memcpy(sc->xres_star, xresStar, 16);                  // store xres* in ausf
+  sc->supi_ausf  = authenticationInfo.getSupiOrSuci();  // store supi in ausf
+  sc->serving_nn = snn;                                 // store snn in ausf
+  sc->auth_type  = authType_udm;  // store authType in ausf
+  sc->kausf_tmp =
+      conv::uint8_to_hex_string(kausf_ausf, 32);  // store kausf_tmp in ausf
 
   /*----------------ausf --> seaf-----------*/
   //---form UEAuthenticationCtx
@@ -311,6 +324,8 @@ void ausf_app::handle_ue_authentications(
 
   std::string authCtxId_s;
   authCtxId_s = autn_s;  // authCtxId = autn
+  // Store the security context
+  set_contextId_2_security_context(authCtxId_s, sc);
 
   resourceURI =
       "http://" +
@@ -347,6 +362,32 @@ void ausf_app::handle_ue_authentications_confirmation(
   nlohmann::json problemDetails_json = {};
   Logger::ausf_server().debug("Handling 5g-aka-confirmation-put...");
 
+  // Get the security context
+  std::shared_ptr<security_context> sc = {};
+  if (is_contextId_2_security_context(authCtxId)) {
+    Logger::ausf_app().debug(
+        "Retrieve security context with authCtxId: ", authCtxId.c_str());
+    sc = contextId_2_security_context(authCtxId);
+  } else {
+    Logger::ausf_app().debug(
+        "Security context with authCtxId  ", authCtxId.c_str(),
+        "does not exist");
+
+    problemDetails.setCause("SERVING_NETWORK_NOT_AUTHORIZED");
+    problemDetails.setStatus(403);
+    problemDetails.setDetail("Serving Network Not Authorized");
+    to_json(problemDetails_json, problemDetails);
+
+    Logger::ausf_server().error("Serving Network Not Authorized");
+    Logger::ausf_server().info("Send 403 Forbidden response to AUSF");
+    http_response_code = 403;  // TODO:Pistache::Http::Code::Forbidden
+    json_data          = problemDetails_json;
+    return;
+  }
+
+  /*
+
+
   if (SUPI_AUSF.empty())  // no ue-authentications request ever
   {
     problemDetails.setCause("SERVING_NETWORK_NOT_AUTHORIZED");
@@ -362,6 +403,7 @@ void ausf_app::handle_ue_authentications_confirmation(
     // problemDetails_json.dump());
     return;
   }
+  */
 
   // getting params
   Logger::ausf_server().info(
@@ -381,17 +423,17 @@ void ausf_app::handle_ue_authentications_confirmation(
 
   Logger::ausf_server().debug(
       "authCtxId in ausf: %s",
-      (conv::uint8_to_hex_string(ausf_av_s.autn, 16)).c_str());
+      (conv::uint8_to_hex_string(sc->ausf_av_s.autn, 16)).c_str());
 
   bool is_auth_vectors_present =
-      Authentication_5gaka::equal_uint8(ausf_av_s.autn, authCtxId_seaf, 16);
+      Authentication_5gaka::equal_uint8(sc->ausf_av_s.autn, authCtxId_seaf, 16);
   if (!is_auth_vectors_present)  // AV expired
   {
     Logger::ausf_server().error(
         "Authentication failure by home network with authCtxId %s: AV expired",
         authCtxId.c_str());
     confirmResponse.setAuthResult(is_auth_vectors_present);
-    KAUSF_TMP = "invalid";
+    sc->kausf_tmp = "invalid";
   } else  // AV valid
   {
     Logger::ausf_server().info("AV is up to date, handling received res*...");
@@ -399,7 +441,8 @@ void ausf_app::handle_ue_authentications_confirmation(
     // store Kausf
     // get stored xres* -----
     uint8_t xresStar[16] = {0};
-    memcpy(xresStar, XRES_STAR, 16);  // xres* stored for 5g-aka-confirmation
+    memcpy(
+        xresStar, sc->xres_star, 16);  // xres* stored for 5g-aka-confirmation
     Logger::ausf_server().debug(
         "xres* in ausf: %s", (conv::uint8_to_hex_string(xresStar, 16)).c_str());
     Logger::ausf_server().debug(
@@ -421,12 +464,12 @@ void ausf_app::handle_ue_authentications_confirmation(
       // 4.send KSEAF to SEAF
       string kseaf_s;
       kseaf_s = conv::uint8_to_hex_string(
-          ausf_av_s.kseaf, 32);  // convert uint8_t to string
+          sc->ausf_av_s.kseaf, 32);  // convert uint8_t to string
       confirmResponse.setKseaf(kseaf_s);
 
       // 5.send supi when supi_ausf exists
-      if (!SUPI_AUSF.empty()) {
-        confirmResponse.setSupi(SUPI_AUSF);
+      if (!sc->supi_ausf.empty()) {
+        confirmResponse.setSupi(sc->supi_ausf);
       }
 
       // 6. send authResult to udm
@@ -441,7 +484,7 @@ void ausf_app::handle_ue_authentications_confirmation(
                std::string(inet_ntoa(
                    *((struct in_addr*) &ausf_cfg.udm_addr.ipv4_addr))) +
                ":" + std::to_string(ausf_cfg.udm_addr.port) + "/nudm-ueau/v1/" +
-               SUPI_AUSF + "/auth-events";
+               sc->supi_ausf + "/auth-events";
       cout << udmUri.c_str() << endl;
       Logger::ausf_server().debug("POST Request:" + udmUri);
       Method = "POST";
@@ -458,9 +501,9 @@ void ausf_app::handle_ue_authentications_confirmation(
       strftime(buf, sizeof(buf), "%FT%TZ", gmtime(&rawtime));
       confirmResultInfo["timeStamp"] = buf;  // timestamp generated
 
-      confirmResultInfo["authType"] = AUTH_TYPE;  // authType stored in ausf
+      confirmResultInfo["authType"] = sc->auth_type;  // authType stored in ausf
       confirmResultInfo["servingNetworkName"] =
-          SERVING_NN;  // snn stored in ausf
+          sc->serving_nn;  // snn stored in ausf
       confirmResultInfo["authRemovalInd"] = false;
 
       cout << confirmResultInfo.dump() << endl;

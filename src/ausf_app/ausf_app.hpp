@@ -87,21 +87,31 @@ class ausf_app {
   void set_supi_2_security_context(
       const std::string& supi, std::shared_ptr<security_context> sc);
 
- private:
-  AUSF_AV_s ausf_av_s;
-  // stored temporarily
-  uint8_t XRES_STAR[16];   // store xres*
-  std::string SUPI_AUSF;   // store supi
-  std::string AUTH_TYPE;   // store authType
-  std::string SERVING_NN;  // store serving network name
-  std::string KAUSF_TMP;   // store Kausf(string)
+  bool is_contextId_2_security_context(const std::string& contextId) const;
+  std::shared_ptr<security_context> contextId_2_security_context(
+      const std::string& contextId) const;
+  void set_contextId_2_security_context(
+      const std::string& contextId, std::shared_ptr<security_context> sc);
 
+ private:
+  /*  AUSF_AV_s ausf_av_s;
+    // stored temporarily
+    uint8_t XRES_STAR[16];   // store xres*
+    std::string SUPI_AUSF;   // store supi
+    std::string AUTH_TYPE;   // store authType
+    std::string SERVING_NN;  // store serving network name
+    std::string KAUSF_TMP;   // store Kausf(string)
+  */
   std::map<supi64_t, std::shared_ptr<security_context>> imsi2security_context;
   mutable std::shared_mutex m_imsi2security_context;
 
   std::map<std::string, std::shared_ptr<security_context>>
       supi2security_context;
   mutable std::shared_mutex m_supi2security_context;
+
+  std::map<std::string, std::shared_ptr<security_context>>
+      contextId2security_context;
+  mutable std::shared_mutex m_contextId2security_context;
 };
 }  // namespace app
 }  // namespace ausf
