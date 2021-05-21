@@ -199,3 +199,13 @@ void conv::hex_str_to_uint8(const char* string, uint8_t* des) {
     index++;
   }
 }
+
+uint64_t supi_to_u64(std::string& supi) {
+  uint64_t uint_supi;
+
+  try {
+    uint_supi = std::stoull(supi, nullptr, 10);
+  } catch (const std::exception& e) {
+  }
+  return uint_supi;
+}

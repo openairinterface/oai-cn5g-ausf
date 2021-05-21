@@ -81,4 +81,6 @@ typedef struct {
   uint8_t kseaf[32];
 } AUSF_AV_s;
 
+typedef uint64_t supi64_t;
+
 #endif

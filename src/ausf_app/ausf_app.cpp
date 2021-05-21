@@ -79,6 +79,26 @@ ausf_app::~ausf_app() {
 }
 
 //------------------------------------------------------------------------------
+bool ausf_app::is_supi_2_security_context(const std::string& supi) const {
+  std::shared_lock lock(m_supi2security_context);
+  return bool{supi2security_context.count(supi) > 0};
+}
+
+//------------------------------------------------------------------------------
+std::shared_ptr<security_context> ausf_app::supi_2_security_context(
+    const std::string& supi) const {
+  std::shared_lock lock(m_supi2security_context);
+  return supi2security_context.at(supi);
+}
+
+//------------------------------------------------------------------------------
+void ausf_app::set_supi_2_security_context(
+    const std::string& supi, std::shared_ptr<security_context> sc) {
+  std::unique_lock lock(m_supi2security_context);
+  supi2security_context[supi] = sc;
+}
+
+//------------------------------------------------------------------------------
 void ausf_app::handle_ue_authentications(
     const AuthenticationInfo& authenticationInfo, nlohmann::json& json_data,
     std::string& location, uint16_t& http_response_code) {
@@ -93,6 +113,7 @@ void ausf_app::handle_ue_authentications(
   std::string snn =
       authenticationInfo.getServingNetworkName();  // serving network name
   std::string supi = authenticationInfo.getSupiOrSuci();  // supi
+  // TODO: supi64_t supi64 = {};
 
   Logger::ausf_server().info("servingNetworkName %s", snn.c_str());
   Logger::ausf_server().info("supiOrSuci %s", supi.c_str());
@@ -237,6 +258,41 @@ void ausf_app::handle_ue_authentications(
   AUTH_TYPE  = authType_udm;                        // store authType in ausf
   KAUSF_TMP =
       conv::uint8_to_hex_string(kausf_ausf, 32);  // store kausf_tmp in ausf
+
+  // Store the security context
+  std::shared_ptr<security_context> sc = {};
+  if (is_supi_2_security_context(supi)) {
+    Logger::ausf_app().debug("Update SMF context with SUPI: ", supi);
+    sc            = supi_2_security_context(supi);
+    sc->supi_ausf = supi;                       // TODO: setter/getter
+    memcpy(sc->ausf_av_s.rand, rand_ausf, 16);  // store 5g av in ausf
+    memcpy(sc->ausf_av_s.autn, autn_ausf, 16);
+    memcpy(sc->ausf_av_s.hxresStar, hxresStar, 16);
+    memcpy(sc->ausf_av_s.kseaf, kseaf, 32);
+    memcpy(sc->xres_star, xresStar, 16);                  // store xres* in ausf
+    sc->supi_ausf  = authenticationInfo.getSupiOrSuci();  // store supi in ausf
+    sc->serving_nn = snn;                                 // store snn in ausf
+    sc->auth_type  = authType_udm;  // store authType in ausf
+    sc->kausf_tmp =
+        conv::uint8_to_hex_string(kausf_ausf, 32);  // store kausf_tmp in ausf
+  } else {
+    Logger::ausf_app().debug("Create a new security context with SUPI ", supi);
+    // sc = std::shared_ptr<security_context>(new security_context());
+    sc            = std::make_shared<security_context>();
+    sc->supi_ausf = supi;                       // TODO: setter/getter
+    memcpy(sc->ausf_av_s.rand, rand_ausf, 16);  // store 5g av in ausf
+    memcpy(sc->ausf_av_s.autn, autn_ausf, 16);
+    memcpy(sc->ausf_av_s.hxresStar, hxresStar, 16);
+    memcpy(sc->ausf_av_s.kseaf, kseaf, 32);
+    memcpy(sc->xres_star, xresStar, 16);                  // store xres* in ausf
+    sc->supi_ausf  = authenticationInfo.getSupiOrSuci();  // store supi in ausf
+    sc->serving_nn = snn;                                 // store snn in ausf
+    sc->auth_type  = authType_udm;  // store authType in ausf
+    sc->kausf_tmp =
+        conv::uint8_to_hex_string(kausf_ausf, 32);  // store kausf_tmp in ausf
+
+    set_supi_2_security_context(supi, sc);
+  }
 
   /*----------------ausf --> seaf-----------*/
   //---form UEAuthenticationCtx

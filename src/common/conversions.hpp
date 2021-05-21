@@ -57,5 +57,6 @@ class conv {
       const uint8_t digit1, const uint8_t digit2, const uint8_t digit3);
   static std::string uint8_to_hex_string(const uint8_t* v, const size_t s);
   static void hex_str_to_uint8(const char* string, uint8_t* des);
+  static uint64_t supi_to_u64(std::string& supi);
 };
 #endif /* FILE_CONVERSIONS_HPP_SEEN */
