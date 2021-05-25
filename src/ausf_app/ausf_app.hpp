@@ -35,6 +35,7 @@
 #include "UEAuthenticationCtx.h"
 #include "ConfirmationData.h"
 #include "ausf.h"
+#include <pistache/http.h>
 #include <map>
 #include <shared_mutex>
 
@@ -75,11 +76,11 @@ class ausf_app {
 
   void handle_ue_authentications(
       const AuthenticationInfo& authenticationInfo, nlohmann::json& json_data,
-      std::string& location, uint16_t& http_response_code);
+      std::string& location, Pistache::Http::Code& code);
 
   void handle_ue_authentications_confirmation(
       const std::string& authCtxId, const ConfirmationData& confirmation_data,
-      nlohmann::json& json_data, uint16_t& http_response_code);
+      nlohmann::json& json_data, Pistache::Http::Code& code);
 
   bool is_supi_2_security_context(const std::string& supi) const;
   std::shared_ptr<security_context> supi_2_security_context(

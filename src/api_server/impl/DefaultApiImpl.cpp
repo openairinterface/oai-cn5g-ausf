@@ -89,11 +89,11 @@ void DefaultApiImpl::rg_authentications_post(
 void DefaultApiImpl::ue_authentications_auth_ctx_id5g_aka_confirmation_put(
     const std::string& authCtxId, const ConfirmationData& confirmationData,
     Pistache::Http::ResponseWriter& response) {
-  uint16_t http_response_code = 0;
-  nlohmann::json json_data    = {};
+  Pistache::Http::Code code = {};
+  nlohmann::json json_data  = {};
 
   m_ausf_app->handle_ue_authentications_confirmation(
-      authCtxId, confirmationData, json_data, http_response_code);
+      authCtxId, confirmationData, json_data, code);
 
   // ausf --> seaf
   Logger::ausf_server().debug(
@@ -101,7 +101,7 @@ void DefaultApiImpl::ue_authentications_auth_ctx_id5g_aka_confirmation_put(
 
   Logger::ausf_server().info(
       "Send 5g-aka-confirmation response to SEAF (Code 200)");
-  response.send(Pistache::Http::Code(http_response_code), json_data.dump());
+  response.send(code, json_data.dump());
 }
 
 void DefaultApiImpl::ue_authentications_deregister_post(
@@ -121,21 +121,21 @@ void DefaultApiImpl::ue_authentications_post(
   // Getting params
   std::string reponse_from_udm;
   std::string location;
-  uint16_t http_response_code     = 0;
+  // uint16_t http_response_code     = 0;
   UEAuthenticationCtx ue_auth_ctx = {};
   nlohmann::json UEAuthCtx_json   = {};
+  Pistache::Http::Code code       = {};
 
   m_ausf_app->handle_ue_authentications(
-      authenticationInfo, UEAuthCtx_json, location, http_response_code);
+      authenticationInfo, UEAuthCtx_json, location, code);
 
   Logger::ausf_server().debug(
       "Auth response:\n %s", UEAuthCtx_json.dump().c_str());
 
   Logger::ausf_server().info("Send Auth response to SEAF (Code 201)");
   response.headers().add<Pistache::Http::Header::Location>(location);
-  response.send(
-      Pistache::Http::Code(http_response_code),  // Created
-      UEAuthCtx_json.dump());                    // Type: json object to string
+  response.send(code,
+                UEAuthCtx_json.dump());  // Type: json object to string
 }
 
 }  // namespace api
