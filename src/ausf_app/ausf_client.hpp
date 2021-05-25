@@ -49,7 +49,7 @@ class ausf_client {
 
   ausf_client(ausf_client const&) = delete;
 
-  static void curl_http_client(
+  void curl_http_client(
       std::string remoteUri, std::string Method, std::string msgBody,
       std::string& Response);
 };

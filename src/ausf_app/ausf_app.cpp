@@ -65,7 +65,13 @@ ausf_app::ausf_app(const std::string& config_file)
       supi2security_context(),
       imsi2security_context() {
   Logger::ausf_app().startup("Starting...");
-  // TODO: SBI instance
+  try {
+    ausf_client_inst = new ausf_client();
+  } catch (std::exception& e) {
+    Logger::ausf_app().error("Cannot create AUSF APP: %s", e.what());
+    throw;
+  }
+  // TODO: Register to NRF
   Logger::ausf_app().startup("Started");
 }
 
@@ -163,7 +169,7 @@ void ausf_app::handle_ue_authentications(
   }
 
   // Send request to UDM
-  ausf_client::curl_http_client(udmUri, Method, AuthInfo.dump(), Response);
+  ausf_client_inst->curl_http_client(udmUri, Method, AuthInfo.dump(), Response);
 
   Logger::ausf_server().error("Response from UDM: %s", Response.c_str());
 
@@ -454,7 +460,7 @@ void ausf_app::handle_ue_authentications_confirmation(
 
       Logger::ausf_server().debug(
           "confirmResultInfo: %s", confirmResultInfo.dump().c_str());
-      ausf_client::curl_http_client(
+      ausf_client_inst->curl_http_client(
           udmUri, Method, confirmResultInfo.dump(), Response);
     }
   }
