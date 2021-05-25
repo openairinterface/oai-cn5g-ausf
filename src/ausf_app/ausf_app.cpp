@@ -30,15 +30,6 @@
 #include "ausf_app.hpp"
 
 #include <unistd.h>
-#include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/date_time/posix_time/posix_time_types.hpp>
-#include <boost/date_time/posix_time/time_formatters.hpp>
-#include <boost/uuid/random_generator.hpp>
-#include <boost/uuid/uuid_io.hpp>
-#include <chrono>
-
 #include "logger.hpp"
 #include "ausf_client.hpp"
 #include "ProblemDetails.h"
@@ -54,7 +45,6 @@
 
 using namespace std;
 using namespace oai::ausf::app;
-using namespace std::chrono;
 
 extern ausf_app* ausf_app_inst;
 ausf_client* ausf_client_inst = nullptr;
