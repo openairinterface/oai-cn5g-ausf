@@ -49,8 +49,10 @@
 #include "ConfirmationDataResponse.h"
 #include "AuthenticationInfo.h"
 #include "authentication_algorithms_with_5gaka.hpp"
-#include "comUt.hpp"
+#include <string>
+#include "iostream"
 
+using namespace std;
 using namespace oai::ausf::app;
 using namespace std::chrono;
 

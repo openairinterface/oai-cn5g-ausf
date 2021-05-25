@@ -37,7 +37,16 @@ using namespace std;
 
 void print_buffer(
     const string app, const string commit, uint8_t* buf, int len) {
-  if (!app.compare("ausf_server")) cout << commit.c_str() << endl;
+  if (!app.compare("ausf_app")) cout << commit.c_str() << endl;
+  Logger::ausf_server().debug(commit.c_str());
+
+  for (int i = 0; i < len; i++) printf("%x ", buf[i]);
+  printf("\n");
+}
+
+void print_buffer(
+    const string app, const string commit, const uint8_t* buf, int len) {
+  if (!app.compare("ausf_app")) cout << commit.c_str() << endl;
   Logger::ausf_server().debug(commit.c_str());
 
   for (int i = 0; i < len; i++) printf("%x ", buf[i]);

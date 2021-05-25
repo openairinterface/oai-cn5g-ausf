@@ -36,7 +36,6 @@
 
 #include "OCTET_STRING.h"
 #include "authentication_algorithms_with_5gaka.hpp"
-//#include "comUt.hpp"
 #include "logger.hpp"
 #include <iostream>
 

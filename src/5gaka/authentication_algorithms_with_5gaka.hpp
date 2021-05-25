@@ -106,28 +106,63 @@ typedef enum {
 
 class Authentication_5gaka {
  public:
-  /****** sequence number functions ********/
-  // struct sqn_ue_s *sqn_exists(uint64_t imsi);
-  // void sqn_insert(struct sqn_ue_s *item);
-  // void sqn_init(struct sqn_ue_s *item);
-  // struct sqn_ue_s *sqn_new(uint64_t imsi);
-  // void sqn_list_init(void);
-  // void sqn_get(uint64_t imsi, uint8_t sqn[6]);
  public:
-  /****** random number functions *********/
-  // void random_init(void);
-  // void generate_random(uint8_t *random, ssize_t length);
- public:
-  /****** internal algorithms f1 f2 f3 f4 f5 ********/
+  /*
+   * f1: Computes network authentication code MAC-A from key K, random,
+  challenge RAND, sequence number SQN and authentication management field AMF.
+   * @param [const uint8_t[16]] opc
+   * @param [const uint8_t[16]] k
+   * @param [const uint8_t[16]] _rand
+   * @param [const uint8_t[6]] sqn
+   * @param [const uint8_t[2]] amf
+   * @param [uint8_t[8]] mac_a
+   * @return
+   */
   static void f1(
       const uint8_t opc[16], const uint8_t k[16], const uint8_t _rand[16],
       const uint8_t sqn[6], const uint8_t amf[2], uint8_t mac_a[8]);
+
+  /*
+   * f1star: Computes resynch authentication code MAC-S from key K, random
+     challenge RAND, sequence number SQN and authentication management
+     field AMF.
+   * @param [const uint8_t[16]] kP
+   * @param [const uint8_t[16]] k
+   * @param [const uint8_t[16]] _rand
+   * @param [const uint8_t[6]] sqn
+   * @param [const uint8_t[2]] amf
+   * @param [uint8_t[8]] mac_s
+   * @return
+   */
   static void f1star(
       const uint8_t kP[16], const uint8_t k[16], const uint8_t rand[16],
       const uint8_t sqn[6], const uint8_t amf[2], uint8_t mac_s[8]);
+
+  /*
+   * f2345: Takes key K and random challenge RAND, and returns response RES,
+     confidentiality key CK, integrity key IK and anonymity key AK
+   * @param [const uint8_t[16]] opc
+   * @param [const uint8_t[16]] k
+   * @param [const uint8_t[16]] _rand
+   * @param [const uint8_t[8]] res
+   * @param [const uint8_t[16]] ck
+   * @param [uint8_t[16]] ik
+   * @param [uint8_t[6]] ak
+   * @return
+   */
   static void f2345(
       const uint8_t opc[16], const uint8_t k[16], const uint8_t _rand[16],
       uint8_t res[8], uint8_t ck[16], uint8_t ik[16], uint8_t ak[6]);
+
+  /*
+   * F5star: Takes key K and random challenge RAND, and returns resynch
+     anonymity key AK
+   * @param [const uint8_t[16]] kP
+   * @param [const uint8_t[16]] k
+   * @param [const uint8_t[16]] rand
+   * @param [const uint8_t[6]] ak
+   * @return
+   */
   static void f5star(
       const uint8_t kP[16], const uint8_t k[16], const uint8_t rand[16],
       uint8_t ak[6]);
@@ -157,26 +192,45 @@ class Authentication_5gaka {
       const uint8_t opc[16], uint8_t* key, uint8_t* auts, uint8_t* rand);
 
  public:
-  /****** general functions ********/
+  /*
+   * ComputeOPc: Function to compute OPc from OP and K.
+   * @param [const uint8_t[16]] kP
+   * @param [const uint8_t[16]] opP
+   * @param [uint8_t[16]] opcP
+   * @return
+   */
   static void ComputeOPc(
       const uint8_t kP[16], const uint8_t opP[16], uint8_t opcP[16]);
+
+  // TODO
   static void generate_autn(
       const uint8_t sqn[6], const uint8_t ak[6], const uint8_t amf[2],
       const uint8_t mac_a[8], uint8_t autn[16]);
+
+  // TODO
   static int generate_vector(
       const uint8_t opc[16], uint64_t imsi, uint8_t key[16], uint8_t plmn[3],
       uint8_t sqn[6], auc_vector_t* vector);
+
+  // TODO
   static void annex_a_4_33501(
       uint8_t ck[16], uint8_t ik[16], uint8_t* input, uint8_t rand[16],
       std::string serving_network, uint8_t* output);
+
+  // TODO
   static void generate_random(uint8_t* random_p, ssize_t length);
 
+  // TODO
   static void sha256(
       unsigned char* message, int msg_len, unsigned char* output);
+
+  // TODO
   static void generate_Hxres(
       uint8_t rand[16], uint8_t xresStar[16], uint8_t* hxresStar);
   // static void generate_authCtxId(uint8_t autn[16],
   //                                           uint8_t *authCtxId);
+
+  // TODO
   static bool equal_uint8(uint8_t* oldVal, uint8_t* newVal, int msg_len);
 
  public:

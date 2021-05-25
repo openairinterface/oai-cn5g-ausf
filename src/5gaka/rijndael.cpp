@@ -76,6 +76,7 @@ u8 Xtime[256] = {
     251, 249, 255, 253, 243, 241, 247, 245, 235, 233, 239, 237, 227, 225, 231,
     229};
 
+//------------------------------------------------------------------------------
 void Authentication_5gaka::RijndaelKeySchedule(const uint8_t key[16]) {
   u8 roundConst;
   /******* first round key equals key ********/
@@ -120,12 +121,15 @@ void KeyAdd(u8 state[4][4], u8 roundKeys[11][4][4], int round) {
     for (int j = 0; j < 4; j++) state[i][j] ^= roundKeys[round][i][j];
   return;
 }
+
+//------------------------------------------------------------------------------
 int ByteSub(u8 state[4][4]) {
   for (int i = 0; i < 4; i++)
     for (int j = 0; j < 4; j++) state[i][j] = S[state[i][j]];
   return 0;
 }
 
+//------------------------------------------------------------------------------
 void ShiftRow(u8 state[4][4]) {
   u8 temp;
   /*
@@ -155,6 +159,8 @@ void ShiftRow(u8 state[4][4]) {
   state[3][1] = temp;
   return;
 }
+
+//------------------------------------------------------------------------------
 void MixColumn(u8 state[4][4]) {
   u8 temp, tmp, tmp0;
   for (int i = 0; i < 4; i++) {
@@ -174,6 +180,7 @@ void MixColumn(u8 state[4][4]) {
   }
   return;
 }
+
 /*-------------------------------------------------------------------
    Rijndael encryption function. Takes 16-byte input and creates
    16-byte output (using round keys already derived from 16-byte
