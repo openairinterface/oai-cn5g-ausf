@@ -37,7 +37,6 @@
 
 #include "string.hpp"
 
-// C includes
 #include <arpa/inet.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -56,11 +55,14 @@ using namespace libconfig;
 namespace config {
 
 //------------------------------------------------------------------------------
-ausf_config::ausf_config() {
+ausf_config::ausf_config() : sbi() {
   udm_addr.ipv4_addr.s_addr = INADDR_ANY;
   udm_addr.port             = 80;
   udm_addr.api_version      = "v1";
-  // TODO:
+
+  amf_addr.ipv4_addr.s_addr = INADDR_ANY;
+  amf_addr.port             = 80;
+  amf_addr.api_version      = "v1";
 }
 
 //------------------------------------------------------------------------------
@@ -117,9 +119,8 @@ int ausf_config::load(const std::string& config_file) {
   try {
     const Setting& new_if_cfg = ausf_cfg[AUSF_CONFIG_STRING_INTERFACES];
 
-    const Setting& sbi_ausf_cfg =
-        new_if_cfg[AUSF_CONFIG_STRING_INTERFACE_SBI_AUSF];
-    load_interface(sbi_ausf_cfg, sbi);
+    const Setting& sbi_cfg = new_if_cfg[AUSF_CONFIG_STRING_INTERFACE_SBI];
+    load_interface(sbi_cfg, sbi);
 
   } catch (const SettingNotFoundException& nfex) {
     Logger::config().error(
@@ -180,42 +181,37 @@ int ausf_config::load(const std::string& config_file) {
     Logger::ausf_app().error("%s : %s", nfex.what(), nfex.getPath());
     return RETURNerror;
   }
+  return RETURNok;
 }
 
 //------------------------------------------------------------------------------
 void ausf_config::display() {
-  Logger::config().info(
-      "======================    AUSF   =====================");
+  Logger::config().info("======== AUSF =======");
   Logger::config().info("Configuration AUSF:");
-  Logger::config().info(
-      "- Instance ...........................................: %d", instance);
-  Logger::config().info(
-      "- PID dir ............................................: %s",
-      pid_dir.c_str());
-  Logger::config().info(
-      "- AUSF NAME............................................: %s",
-      ausf_name.c_str());
+  Logger::config().info("- Instance................: %d", instance);
+  Logger::config().info("- PID dir.................: %s", pid_dir.c_str());
+  Logger::config().info("- AUSF NAME...............: %s", ausf_name.c_str());
 
   Logger::config().info("- SBI Networking:");
-  Logger::config().info("    iface ................: %s", sbi.if_name.c_str());
-  Logger::config().info("    ip ...................: %s", inet_ntoa(sbi.addr4));
-  Logger::config().info("    port .................: %d", sbi.port);
+  Logger::config().info("    Iface ................: %s", sbi.if_name.c_str());
+  Logger::config().info("    IP ...................: %s", inet_ntoa(sbi.addr4));
+  Logger::config().info("    Port .................: %d", sbi.port);
 
   Logger::config().info("- UDM:");
   Logger::config().info(
-      "    IPv4 Addr ...........: %s",
+      "    IPv4 Addr.............: %s",
       inet_ntoa(*((struct in_addr*) &udm_addr.ipv4_addr)));
-  Logger::config().info("    Port ................: %lu  ", udm_addr.port);
+  Logger::config().info("    Port..................: %lu  ", udm_addr.port);
   Logger::config().info(
-      "    API version .........: %s", udm_addr.api_version.c_str());
+      "    API version...........: %s", udm_addr.api_version.c_str());
 
   Logger::config().info("- AMF:");
   Logger::config().info(
-      "    IPv4 Addr ...........: %s",
+      "    IPv4 Addr.............: %s",
       inet_ntoa(*((struct in_addr*) &amf_addr.ipv4_addr)));
-  Logger::config().info("    Port ................: %lu  ", amf_addr.port);
+  Logger::config().info("    Port.................: %lu  ", amf_addr.port);
   Logger::config().info(
-      "    API version .........: %s", amf_addr.api_version.c_str());
+      "    API version..........: %s", amf_addr.api_version.c_str());
 }
 
 //------------------------------------------------------------------------------

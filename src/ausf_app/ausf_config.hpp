@@ -49,7 +49,7 @@
 #define AUSF_CONFIG_STRING_AUSF_NAME "AUSF_NAME"
 
 #define AUSF_CONFIG_STRING_INTERFACES "INTERFACES"
-#define AUSF_CONFIG_STRING_INTERFACE_SBI_AUSF "SBI_AUSF"
+#define AUSF_CONFIG_STRING_INTERFACE_SBI "SBI"
 
 #define AUSF_CONFIG_STRING_INTERFACE_NAME "INTERFACE_NAME"
 #define AUSF_CONFIG_STRING_IPV4_ADDRESS "IPV4_ADDRESS"
@@ -91,6 +91,7 @@ class ausf_config {
   std::string ausf_name;
 
   interface_cfg_t sbi;
+
   struct {
     struct in_addr ipv4_addr;
     unsigned int port;
