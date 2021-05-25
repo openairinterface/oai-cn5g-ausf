@@ -33,6 +33,7 @@
 
 #include "AuthenticationResultDeletionApi.h"
 #include "Helpers.h"
+#include "logger.hpp"
 #include <iostream>
 
 using namespace std;
@@ -124,12 +125,10 @@ void AuthenticationResultDeletionApi::
     authentication_result_deletion_api_default_handler(
         const Pistache::Rest::Request&,
         Pistache::Http::ResponseWriter response) {
-  cout << "----------authentication_result_deletion_api_default_handler--------"
-          "----"
-       << endl;
+  Logger::ausf_server().info(
+      "Authentication_result_deletion_api_default_handler");
   response.send(
-      Pistache::Http::Code::Not_Found,
-      "The requested method does not exist-resDel");
+      Pistache::Http::Code::Not_Found, "The requested method does not exist");
 }
 
 }  // namespace api

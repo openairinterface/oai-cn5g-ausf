@@ -96,15 +96,12 @@ void DefaultApiImpl::ue_authentications_auth_ctx_id5g_aka_confirmation_put(
       authCtxId, confirmationData, json_data, http_response_code);
 
   // ausf --> seaf
-  // Forming response
-  // nlohmann::json confirmResponse_json;
-  // to_json(confirmResponse_json, confirmResponse);
   Logger::ausf_server().debug(
       "5g-aka-confirmation response:\n %s", json_data.dump().c_str());
 
-  Logger::ausf_server().info("Send 5g-aka-confirmation 200 response to SEAF");
-
-  response.send(Pistache::Http::Code::Ok, json_data.dump());
+  Logger::ausf_server().info(
+      "Send 5g-aka-confirmation response to SEAF (Code 200)");
+  response.send(Pistache::Http::Code(http_response_code), json_data.dump());
 }
 
 void DefaultApiImpl::ue_authentications_deregister_post(
@@ -119,7 +116,7 @@ void DefaultApiImpl::ue_authentications_deregister_post(
 void DefaultApiImpl::ue_authentications_post(
     const AuthenticationInfo& authenticationInfo,
     Pistache::Http::ResponseWriter& response) {
-  Logger::ausf_server().debug("--ue_authentications_post--");
+  Logger::ausf_server().debug("ue_authentications_post");
 
   // Getting params
   std::string reponse_from_udm;
@@ -131,16 +128,14 @@ void DefaultApiImpl::ue_authentications_post(
   m_ausf_app->handle_ue_authentications(
       authenticationInfo, UEAuthCtx_json, location, http_response_code);
 
-  // nlohmann::json UEAuthCtx_json;
-  // to_json(UEAuthCtx_json, ue_auth_ctx);
   Logger::ausf_server().debug(
-      "auth response:\n %s", UEAuthCtx_json.dump().c_str());
+      "Auth response:\n %s", UEAuthCtx_json.dump().c_str());
 
-  Logger::ausf_server().info("Send 201 response to SEAF");
+  Logger::ausf_server().info("Send Auth response to SEAF (Code 201)");
   response.headers().add<Pistache::Http::Header::Location>(location);
   response.send(
-      Pistache::Http::Code::Created,
-      UEAuthCtx_json.dump());  // Type: json object to string
+      Pistache::Http::Code(http_response_code),  // Created
+      UEAuthCtx_json.dump());                    // Type: json object to string
 }
 
 }  // namespace api

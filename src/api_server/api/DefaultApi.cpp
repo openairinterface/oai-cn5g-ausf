@@ -135,7 +135,7 @@ void DefaultApi::rg_authentications_post_handler(
 void DefaultApi::ue_authentications_auth_ctx_id5g_aka_confirmation_put_handler(
     const Pistache::Rest::Request& request,
     Pistache::Http::ResponseWriter response) {
-  Logger::ausf_server().info("--Received 5g_aka_confirmation put Request");
+  Logger::ausf_server().info("Received 5g_aka_confirmation put Request");
   // Getting the path params
   auto authCtxId = request.param(":authCtxId").as<std::string>();
   Logger::ausf_server().info(
@@ -147,12 +147,12 @@ void DefaultApi::ue_authentications_auth_ctx_id5g_aka_confirmation_put_handler(
 
   try {
     nlohmann::json::parse(request.body()).get_to(confirmationData);
-    Logger::ausf_server().debug("json parsed");
+    Logger::ausf_server().debug("Json parsed");
     this->ue_authentications_auth_ctx_id5g_aka_confirmation_put(
         authCtxId, confirmationData, response);
   } catch (nlohmann::detail::exception& e) {
     // send a 400 error
-    Logger::ausf_server().error("**400 error");
+    Logger::ausf_server().error("Bad request (Code 400)");
     response.send(Pistache::Http::Code::Bad_Request, e.what());
     return;
   } catch (Pistache::Http::HttpError& e) {
@@ -160,7 +160,7 @@ void DefaultApi::ue_authentications_auth_ctx_id5g_aka_confirmation_put_handler(
     return;
   } catch (std::exception& e) {
     // send a 500 error
-    Logger::ausf_server().error("**500 error");
+    Logger::ausf_server().error("Internal Server Error (Code 500)");
     response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
     return;
   }
@@ -193,8 +193,7 @@ void DefaultApi::ue_authentications_deregister_post_handler(
 void DefaultApi::ue_authentications_post_handler(
     const Pistache::Rest::Request& request,
     Pistache::Http::ResponseWriter response) {
-
-	Logger::ausf_server().info("--Received ue-authentications post Request");
+  Logger::ausf_server().info("Received ue-authentications post Request");
 
   // Getting the body param
 
@@ -202,11 +201,11 @@ void DefaultApi::ue_authentications_post_handler(
 
   try {
     nlohmann::json::parse(request.body()).get_to(authenticationInfo);
-    Logger::ausf_server().debug("json parsed");
+    Logger::ausf_server().debug("Json parsed");
     this->ue_authentications_post(authenticationInfo, response);
   } catch (nlohmann::detail::exception& e) {
     // send a 400 error
-    Logger::ausf_server().error("**400 error");
+    Logger::ausf_server().error("Bad request (Code 400)");
     response.send(Pistache::Http::Code::Bad_Request, e.what());
     return;
   } catch (Pistache::Http::HttpError& e) {
@@ -214,7 +213,7 @@ void DefaultApi::ue_authentications_post_handler(
     return;
   } catch (std::exception& e) {
     // send a 500 error
-    Logger::ausf_server().error("**500 error");
+    Logger::ausf_server().error("Internal Server Error (Code 500)");
     response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
     return;
   }
@@ -222,10 +221,9 @@ void DefaultApi::ue_authentications_post_handler(
 
 void DefaultApi::default_api_default_handler(
     const Pistache::Rest::Request&, Pistache::Http::ResponseWriter response) {
-  Logger::ausf_server().info("--in default api handler--");
+  Logger::ausf_server().info("Default API Handler");
   response.send(
-      Pistache::Http::Code::Not_Found,
-      "The requested method does not exist-default");
+      Pistache::Http::Code::Not_Found, "The requested method does not exist");
 }
 
 }  // namespace api
