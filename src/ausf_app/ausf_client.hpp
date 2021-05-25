@@ -50,8 +50,8 @@ class ausf_client {
   ausf_client(ausf_client const&) = delete;
 
   void curl_http_client(
-      std::string remoteUri, std::string Method, std::string msgBody,
-      std::string& Response);
+      std::string remoteUri, std::string method, std::string msgBody,
+      std::string& response);
 };
 }  // namespace app
 }  // namespace ausf

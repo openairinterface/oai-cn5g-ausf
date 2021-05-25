@@ -136,14 +136,14 @@ void ausf_app::handle_ue_authentications(
 
   // 5g he av from udm
   // get authentication related info
-  std::string udmUri, Method, Response;
+  std::string udmUri, method, response;
   udmUri = "http://" +
            std::string(
                inet_ntoa(*((struct in_addr*) &ausf_cfg.udm_addr.ipv4_addr))) +
            ":" + std::to_string(ausf_cfg.udm_addr.port) + "/nudm-ueau/v1/" +
            supi + "/security-information/generate-auth-data";
   Logger::ausf_server().debug("UDM's URI %s", udmUri.c_str());
-  Method = "POST";
+  method = "POST";
 
   // form udm request body AuthInfo
   nlohmann::json AuthInfo =
@@ -169,16 +169,16 @@ void ausf_app::handle_ue_authentications(
   }
 
   // Send request to UDM
-  ausf_client_inst->curl_http_client(udmUri, Method, AuthInfo.dump(), Response);
+  ausf_client_inst->curl_http_client(udmUri, method, AuthInfo.dump(), response);
 
-  Logger::ausf_server().error("Response from UDM: %s", Response.c_str());
+  Logger::ausf_server().error("Response from UDM: %s", response.c_str());
 
   ProblemDetails problemDetails;
   nlohmann::json problemDetails_json = {};
 
   nlohmann::json response_data = {};
   try {
-    response_data = nlohmann::json::parse(Response.c_str());
+    response_data = nlohmann::json::parse(response.c_str());
   } catch (nlohmann::json::exception& e) {
     Logger::ausf_server().info(
         "Could not Parse Json content from UDM response");
@@ -429,9 +429,8 @@ void ausf_app::handle_ue_authentications_confirmation(
         confirmResponse.setSupi(sc->supi_ausf);
       }
 
-      // Send authResult to UDM
-      // send authentication result info
-      std::string udmUri, Method, Response;
+      // Send authResult to UDM (authentication result info)
+      std::string udmUri, method, response;
       udmUri = "http://" +
                std::string(inet_ntoa(
                    *((struct in_addr*) &ausf_cfg.udm_addr.ipv4_addr))) +
@@ -439,7 +438,7 @@ void ausf_app::handle_ue_authentications_confirmation(
                sc->supi_ausf + "/auth-events";
       cout << udmUri.c_str() << endl;
       Logger::ausf_server().debug("UDM's URI: %s", udmUri.c_str());
-      Method = "POST";
+      method = "POST";
 
       // form request body
       nlohmann::json confirmResultInfo = {};
@@ -461,7 +460,7 @@ void ausf_app::handle_ue_authentications_confirmation(
       Logger::ausf_server().debug(
           "confirmResultInfo: %s", confirmResultInfo.dump().c_str());
       ausf_client_inst->curl_http_client(
-          udmUri, Method, confirmResultInfo.dump(), Response);
+          udmUri, method, confirmResultInfo.dump(), response);
     }
   }
 

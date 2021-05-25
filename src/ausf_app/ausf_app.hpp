@@ -95,14 +95,6 @@ class ausf_app {
       const std::string& contextId, std::shared_ptr<security_context> sc);
 
  private:
-  /*  AUSF_AV_s ausf_av_s;
-    // stored temporarily
-    uint8_t XRES_STAR[16];   // store xres*
-    std::string SUPI_AUSF;   // store supi
-    std::string AUTH_TYPE;   // store authType
-    std::string SERVING_NN;  // store serving network name
-    std::string KAUSF_TMP;   // store Kausf(string)
-  */
   std::map<supi64_t, std::shared_ptr<security_context>> imsi2security_context;
   mutable std::shared_mutex m_imsi2security_context;
 
