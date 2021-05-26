@@ -154,8 +154,7 @@ std::string conv::toString(const struct in6_addr& in6addr) {
   return s;
 }
 
-//------------------------------from
-// udm------------------------------------------------
+// Convert data from UDM
 std::string conv::uint8_to_hex_string(const uint8_t* v, const size_t s) {
   std::stringstream ss;
 
