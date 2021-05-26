@@ -21,7 +21,7 @@
 
 /*! \file ausf_app.cpp
  \brief
- \author  Tien-Thinh NGUYEN
+ \author  Tien-Thinh NGUYEN, Jian Yang, Fengjiao He, Hongxin Wang
  \company Eurecom
  \date 2021
  \email: Tien-Thinh.Nguyen@eurecom.fr

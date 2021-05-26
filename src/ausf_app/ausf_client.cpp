@@ -21,7 +21,7 @@
 
 /*! \file ausf_client.cpp
  \brief
- \author  Tien-Thinh NGUYEN
+ \author  Tien-Thinh NGUYEN, Jian Yang, Fengjiao He, Hongxin Wang
  \company Eurecom
  \date 2020
  \email: Tien-Thinh.Nguyen@eurecom.fr
@@ -106,7 +106,7 @@ void ausf_client::curl_http_client(
     Logger::ausf_app().info(
         "Request sent by interface " + ausf_cfg.sbi.if_name);
 
-    // response information.
+    // Response information.
     long httpCode = {0};
     std::unique_ptr<std::string> httpData(new std::string());
     std::unique_ptr<std::string> httpHeaderData(new std::string());
@@ -124,9 +124,8 @@ void ausf_client::curl_http_client(
     res = curl_easy_perform(curl);
     curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
 
-    // get the response
+    // Process the response
     response            = *httpData.get();
-    std::string resMsg  = "";
     bool is_response_ok = true;
     Logger::ausf_app().info("Get response with httpcode (%d)", httpCode);
 

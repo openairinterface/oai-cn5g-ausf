@@ -243,31 +243,15 @@ void Authentication_5gaka::ComputeOPc(
 
   print_buffer("ausf_app", "ComputeOPc kP   : ", kP, 16);
 
-  // FPRINTF_DEBUG ("Compute
-  // opc:\n\tK:\t%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X\n",
-  // kP[0], kP[1], kP[2], kP[3], kP[4], kP[5], kP[6], kP[7], kP[8], kP[9],
-  // kP[10], kP[11], kP[12], kP[13], kP[14], kP[15]);
   RijndaelEncrypt(opP, opcP);
 
   print_buffer("ausf_app", "ComputeOPc opP   : ", opP, 16);
   print_buffer("ausf_app", "ComputeOPc opcP   : ", opcP, 16);
 
-  // FPRINTF_DEBUG
-  // ("\tIn:\t%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X\n\tRinj:\t%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X\n",
-  //        opP[0], opP[1], opP[2], opP[3], opP[4], opP[5], opP[6], opP[7],
-  //        opP[8], opP[9], opP[10], opP[11], opP[12], opP[13], opP[14],
-  //        opP[15], opcP[0], opcP[1], opcP[2], opcP[3], opcP[4], opcP[5],
-  //        opcP[6], opcP[7], opcP[8], opcP[9], opcP[10], opcP[11], opcP[12],
-  //        opcP[13], opcP[14], opcP[15]);
-
   for (i = 0; i < 16; i++) opcP[i] ^= opP[i];
 
   print_buffer("ausf_app", "ComputeOPc opcP   : ", opcP, 16);
-  // FPRINTF_DEBUG
-  // ("\tOut:\t%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X\n",
-  // opcP[0], opcP[1], opcP[2], opcP[3], opcP[4], opcP[5], opcP[6], opcP[7],
-  // opcP[8], opcP[9], opcP[10], opcP[11], opcP[12], opcP[13], opcP[14],
-  // opcP[15]);
+
   return;
 }
 
@@ -576,7 +560,7 @@ void Authentication_5gaka::annex_a_4_33501(
     oldS[32] = 0x00;
     oldS[33] = 0x08;
   */
-  // print_buffer("udm_ueau", "Input string: ", S, 31 + netName.size);
+
   uint8_t key[32];
   memcpy(&key[0], ck, 16);
   memcpy(&key[16], ik, 16);  // KEY
@@ -631,23 +615,6 @@ void Authentication_5gaka::generate_Hxres(
   Authentication_5gaka::sha256((unsigned char*) inputString, 32, sha256Out);
   for (int j = 0; j < 16; j++) hxresStar[j] = (uint8_t) sha256Out[j];
 }
-
-//------------------------------------------------------------------------------
-// may not be appropriate
-// void Authentication_5gaka::generate_authCtxId(uint8_t autn[16],
-//                                             uint8_t *authCtxId) {
-
-//     unsigned char sha256Out[Sha256::DIGEST_SIZE];
-
-//     Authentication_5gaka::sha256((unsigned char *)autn, 32, sha256Out);
-//     //note risk in type change for (int j = 0; j < 16; j++)
-//       authCtxId[j] = (uint8_t)sha256Out[j];
-
-//     cout << "authCtxId" << std::endl;
-//     for (int i = 0; i < 16; i++)printf("%x ", authCtxId[i]);
-//     cout << endl;
-
-// }
 
 //------------------------------------------------------------------------------
 bool Authentication_5gaka::equal_uint8(

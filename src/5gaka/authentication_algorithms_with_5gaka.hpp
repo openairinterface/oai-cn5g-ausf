@@ -168,7 +168,6 @@ class Authentication_5gaka {
       uint8_t ak[6]);
 
  public:
-  /****** key derive  ***********/
   static void kdf(
       uint8_t* key, uint16_t key_len, uint8_t* s, uint16_t s_len, uint8_t* out,
       uint16_t out_len);
@@ -234,7 +233,6 @@ class Authentication_5gaka {
   static bool equal_uint8(uint8_t* oldVal, uint8_t* newVal, int msg_len);
 
  public:
-  /****** Rijndael ********/
   static void RijndaelKeySchedule(const uint8_t key[16]);
   static void RijndaelEncrypt(const uint8_t in[16], uint8_t out[16]);
 
