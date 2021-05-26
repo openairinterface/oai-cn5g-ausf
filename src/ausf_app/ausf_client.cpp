@@ -125,10 +125,9 @@ void ausf_client::curl_http_client(
     curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
 
     // get the response
-    std::string response           = *httpData.get();
-    std::string json_data_response = "";
-    std::string resMsg             = "";
-    bool is_response_ok            = true;
+    response            = *httpData.get();
+    std::string resMsg  = "";
+    bool is_response_ok = true;
     Logger::ausf_app().info("Get response with httpcode (%d)", httpCode);
 
     if (httpCode == 0) {
@@ -160,7 +159,7 @@ void ausf_client::curl_http_client(
 
     if (!is_response_ok) {
       try {
-        response_data = nlohmann::json::parse(json_data_response);
+        response_data = nlohmann::json::parse(response);
       } catch (nlohmann::json::exception& e) {
         Logger::ausf_app().info("Could not get Json content from the response");
         // Set the default Cause
@@ -168,7 +167,7 @@ void ausf_client::curl_http_client(
       }
 
       Logger::ausf_app().info(
-          "Get response with jsonData: %s", json_data_response.c_str());
+          "Get response with jsonData: %s", response.c_str());
 
       std::string cause = response_data["error"]["cause"];
       Logger::ausf_app().info("Call Network Function services failure");
