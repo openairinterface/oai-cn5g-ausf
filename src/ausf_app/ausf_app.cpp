@@ -21,10 +21,10 @@
 
 /*! \file ausf_app.cpp
  \brief
- \author  Tien-Thinh NGUYEN, Jian Yang, Fengjiao He, Hongxin Wang
+ \author  Jian Yang, Fengjiao He, Hongxin Wang, Tien-Thinh NGUYEN
  \company Eurecom
  \date 2021
- \email: Tien-Thinh.Nguyen@eurecom.fr
+ \email: contact@openairinterface.org
  */
 
 #include "ausf_app.hpp"

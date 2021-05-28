@@ -21,10 +21,10 @@
 
 /*! \file ausf_client.cpp
  \brief
- \author  Tien-Thinh NGUYEN, Jian Yang, Fengjiao He, Hongxin Wang
+ \author  Jian Yang, Fengjiao He, Hongxin Wang, Tien-Thinh NGUYEN
  \company Eurecom
  \date 2020
- \email: Tien-Thinh.Nguyen@eurecom.fr
+ \email:
  */
 
 #include "ausf_client.hpp"

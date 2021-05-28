@@ -48,8 +48,8 @@
 #include "ausf_app.hpp"
 
 using namespace oai::ausf_server::api;
-// using namespace oai::ausf::api;
 using namespace oai::ausf::app;
+
 class AUSFApiServer {
  public:
   AUSFApiServer(Pistache::Address address, ausf_app* ausf_app_inst)

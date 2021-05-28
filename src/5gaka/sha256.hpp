@@ -67,6 +67,7 @@ std::string sha256(std::string input);
 #define Sha256_F2(x) (SHA2_ROTR(x, 6) ^ SHA2_ROTR(x, 11) ^ SHA2_ROTR(x, 25))
 #define Sha256_F3(x) (SHA2_ROTR(x, 7) ^ SHA2_ROTR(x, 18) ^ SHA2_SHFR(x, 3))
 #define Sha256_F4(x) (SHA2_ROTR(x, 17) ^ SHA2_ROTR(x, 19) ^ SHA2_SHFR(x, 10))
+
 #define SHA2_UNPACK32(x, str)                                                  \
   {                                                                            \
     *((str) + 3) = (uint8)((x));                                               \
@@ -74,6 +75,7 @@ std::string sha256(std::string input);
     *((str) + 1) = (uint8)((x) >> 16);                                         \
     *((str) + 0) = (uint8)((x) >> 24);                                         \
   }
+
 #define SHA2_PACK32(str, x)                                                    \
   {                                                                            \
     *(x) = ((uint32) * ((str) + 3)) | ((uint32) * ((str) + 2) << 8) |          \

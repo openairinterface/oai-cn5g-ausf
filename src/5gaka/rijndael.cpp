@@ -22,7 +22,7 @@
 /*! \file rijndael.cpp
  \brief
  \brief Based on https://github.com/OPENAIRINTERFACE/openair-hss
- \author Jian Yang, Fengjiao He, Hongxin Wang
+ \author Jian Yang, Fengjiao He, Hongxin Wang, Tien Thinh Nguyen
  \company
  \date 2020
  \email: email: contact@openairinterface.org
@@ -55,6 +55,7 @@ u8 S[256] = {
     140, 161, 137, 13,  191, 230, 66,  104, 65,  153, 45,  15,  176, 84,  187,
     22,
 };
+
 /*------- This array does the multiplication by x in GF(2^8) ------*/
 u8 Xtime[256] = {
     0,   2,   4,   6,   8,   10,  12,  14,  16,  18,  20,  22,  24,  26,  28,
@@ -115,7 +116,7 @@ void Authentication_5gaka::RijndaelKeySchedule(const uint8_t key[16]) {
   return;
 }
 
-/************ internal functions ******************/
+//------------------------------------------------------------------------------
 void KeyAdd(u8 state[4][4], u8 roundKeys[11][4][4], int round) {
   for (int i = 0; i < 4; i++)
     for (int j = 0; j < 4; j++) state[i][j] ^= roundKeys[round][i][j];

@@ -23,7 +23,7 @@
  \author  Tien-Thinh NGUYEN
  \company Eurecom
  \date 2020
- \email: Tien-Thinh.Nguyen@eurecom.fr
+ \email:
  */
 
 #ifndef FILE_AUSF_CLIENT_HPP_SEEN

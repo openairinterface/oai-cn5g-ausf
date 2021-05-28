@@ -135,7 +135,7 @@ void DefaultApi::rg_authentications_post_handler(
 void DefaultApi::ue_authentications_auth_ctx_id5g_aka_confirmation_put_handler(
     const Pistache::Rest::Request& request,
     Pistache::Http::ResponseWriter response) {
-  Logger::ausf_server().info("Received 5g_aka_confirmation put Request");
+  Logger::ausf_server().info("Received 5g_aka_confirmation Request");
   // Getting the path params
   auto authCtxId = request.param(":authCtxId").as<std::string>();
   Logger::ausf_server().info(
