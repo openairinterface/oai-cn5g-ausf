@@ -239,12 +239,15 @@ void ausf_app::handle_ue_authentications(
 
   // Getting params from UDM 5G HE AV
   // TODO: use std::copy instead of memcpy
-  // std::copy(std::begin(xresStar), std::end(xresStar),
-  // std::begin(xresStar_ausf));
-  memcpy(xresStar_ausf, xresStar, 16);  // xres*
-  memcpy(rand_ausf, rand, 16);          // rand
-  memcpy(autn_ausf, autn, 16);          // autn
-  memcpy(kausf_ausf, kausf, 32);        // kausf
+  // memcpy(xresStar_ausf, xresStar, 16);  // xres*
+  // memcpy(rand_ausf, rand, 16);          // rand
+  // memcpy(autn_ausf, autn, 16);          // autn
+  // memcpy(kausf_ausf, kausf, 32);        // kausf
+  std::copy(
+      std::begin(xresStar), std::end(xresStar), std::begin(xresStar_ausf));
+  std::copy(std::begin(rand), std::end(rand), std::begin(rand_ausf));
+  std::copy(std::begin(autn), std::end(autn), std::begin(autn_ausf));
+  std::copy(std::begin(kausf), std::end(kausf), std::begin(kausf_ausf));
 
   // Generate_Hxres*
   Authentication_5gaka::generate_Hxres(rand_ausf, xresStar_ausf, hxresStar);
@@ -271,12 +274,27 @@ void ausf_app::handle_ue_authentications(
   }
 
   // Update information
-  sc->supi_ausf = supi;                       // TODO: setter/getter
-  memcpy(sc->ausf_av_s.rand, rand_ausf, 16);  // store 5g av in ausf
-  memcpy(sc->ausf_av_s.autn, autn_ausf, 16);
-  memcpy(sc->ausf_av_s.hxresStar, hxresStar, 16);
-  memcpy(sc->ausf_av_s.kseaf, kseaf, 32);
-  memcpy(sc->xres_star, xresStar, 16);                  // store xres* in ausf
+  sc->supi_ausf = supi;  // TODO: setter/getter
+  // memcpy(sc->ausf_av_s.rand, rand_ausf, 16);  // store 5g av in ausf
+  std::copy(
+      std::begin(rand_ausf), std::end(rand_ausf),
+      std::begin(sc->ausf_av_s.rand));
+  // memcpy(sc->ausf_av_s.autn, autn_ausf, 16);
+  std::copy(
+      std::begin(autn_ausf), std::end(autn_ausf),
+      std::begin(sc->ausf_av_s.autn));
+  // memcpy(sc->ausf_av_s.hxresStar, hxresStar, 16);
+  std::copy(
+      std::begin(hxresStar), std::end(hxresStar),
+      std::begin(sc->ausf_av_s.hxresStar));
+  // memcpy(sc->ausf_av_s.kseaf, kseaf, 32);
+  std::copy(
+      std::begin(kseaf), std::end(kseaf), std::begin(sc->ausf_av_s.kseaf));
+  // memcpy(sc->xres_star, xresStar, 16);                  // store xres* in
+  // ausf
+  std::copy(
+      std::begin(xresStar), std::end(xresStar), std::begin(sc->xres_star));
+
   sc->supi_ausf  = authenticationInfo.getSupiOrSuci();  // store supi in ausf
   sc->serving_nn = snn;                                 // store snn in ausf
   sc->auth_type  = authType_udm;  // store authType in ausf
@@ -386,8 +404,13 @@ void ausf_app::handle_ue_authentications_confirmation(
     Logger::ausf_server().info("AV is up to date, handling received res*...");
     // Get stored xres* and compare with res*
     uint8_t xresStar[16] = {0};
-    memcpy(
-        xresStar, sc->xres_star, 16);  // xres* stored for 5g-aka-confirmation
+    // memcpy(
+    //     xresStar, sc->xres_star, 16);  // xres* stored for
+    //     5g-aka-confirmation
+    std::copy(
+        std::begin(sc->xres_star), std::end(sc->xres_star),
+        std::begin(xresStar));
+
     Logger::ausf_server().debug(
         "xres* in AUSF: %s", (conv::uint8_to_hex_string(xresStar, 16)).c_str());
     Logger::ausf_server().debug(
