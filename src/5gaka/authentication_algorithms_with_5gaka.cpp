@@ -300,7 +300,7 @@ void Authentication_5gaka::derive_kseaf(
 void Authentication_5gaka::derive_kausf(
     uint8_t ck[16], uint8_t ik[16], std::string serving_network, uint8_t sqn[6],
     uint8_t ak[6], uint8_t kausf[32]) {
-  Logger::ausf_server().debug("derive_kausf ...");
+  Logger::ausf_app().debug("derive_kausf ...");
 
   OCTET_STRING_t netName;
   OCTET_STRING_fromBuf(
@@ -328,7 +328,7 @@ void Authentication_5gaka::derive_kausf(
 //------------------------------------------------------------------------------
 void Authentication_5gaka::derive_kamf(
     std::string imsi, uint8_t* kseaf, uint8_t* kamf, uint16_t abba) {
-  Logger::ausf_server().debug("derive_kamf ...");
+  Logger::ausf_app().debug("derive_kamf ...");
   std::string ueSupi = imsi;  // OK
 
   OCTET_STRING_t supi;
@@ -354,7 +354,7 @@ void Authentication_5gaka::derive_kamf(
 void Authentication_5gaka::derive_knas(
     algorithm_type_dist_t nas_alg_type, uint8_t nas_alg_id, uint8_t kamf[32],
     uint8_t* knas) {
-  Logger::ausf_server().debug("derive_knas ...");
+  Logger::ausf_app().debug("derive_knas ...");
 
   uint8_t S[20];
   uint8_t out[32] = {0};
@@ -371,13 +371,13 @@ void Authentication_5gaka::derive_knas(
   // memcpy (knas, &out[31 - 16 + 1], 16);
   for (int i = 0; i < 16; i++) knas[i] = out[16 + i];
   print_buffer("ausf_app", "derive_knas knas", knas, 16);
-  // Logger::ausf_server().debug("derive knas finished!");
+  // Logger::ausf_app().debug("derive knas finished!");
 }
 
 //------------------------------------------------------------------------------
 void Authentication_5gaka::derive_kgnb(
     uint32_t uplinkCount, uint8_t accessType, uint8_t kamf[32], uint8_t* kgnb) {
-  Logger::ausf_server().debug("derive_kgnb ...");
+  Logger::ausf_app().debug("derive_kgnb ...");
   uint8_t S[20];
   S[0]                 = 0x6E;
   *(uint32_t*) (S + 1) = htonl(uplinkCount);

@@ -44,6 +44,7 @@ void print_buffer(
   printf("\n");
 }
 
+//------------------------------------------------------------------------------
 void print_buffer(
     const string app, const string commit, const uint8_t* buf, int len) {
   if (!app.compare("ausf_app")) cout << commit.c_str() << endl;

@@ -42,6 +42,8 @@
 #include "authentication_algorithms_with_5gaka.hpp"
 #include <string>
 #include "iostream"
+#include <algorithm>
+#include <iterator>
 
 using namespace std;
 using namespace oai::ausf::app;
@@ -236,7 +238,9 @@ void ausf_app::handle_ue_authentications(
   uint8_t hxresStar[16]     = {0};
 
   // Getting params from UDM 5G HE AV
-  // TODO: may be simplified
+  // TODO: use std::copy instead of memcpy
+  // std::copy(std::begin(xresStar), std::end(xresStar),
+  // std::begin(xresStar_ausf));
   memcpy(xresStar_ausf, xresStar, 16);  // xres*
   memcpy(rand_ausf, rand, 16);          // rand
   memcpy(autn_ausf, autn, 16);          // autn

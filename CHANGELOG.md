@@ -1,10 +1,9 @@
-# RELEASE NOTES: #
+#RELEASE NOTES : #
 
 <<<<<<< HEAD
-## v1.0.0 -- May 2021 ##
+##v1 .0.0 --Jun 2021##
 =======
-## vX.X.X -- YYY 2021 ##
+##vX.X.X-- YYY 2021##
 >>>>>>> Initial Commit
 
-* Initial release
-
+    * Initial release

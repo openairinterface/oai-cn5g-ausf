@@ -22,7 +22,7 @@
 /*! \file rijndael.cpp
  \brief
  \brief Based on https://github.com/OPENAIRINTERFACE/openair-hss
- \author Jian Yang, Fengjiao He, Hongxin Wang, Tien Thinh Nguyen
+ \author Jian Yang, Fengjiao He, Hongxin Wang
  \company
  \date 2020
  \email: email: contact@openairinterface.org
