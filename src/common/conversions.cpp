@@ -129,6 +129,7 @@ struct in_addr conv::fromString(const std::string addr4) {
   struct in_addr* ia = (struct in_addr*) buf;
   return *ia;
 }
+
 //------------------------------------------------------------------------------
 std::string conv::toString(const struct in_addr& inaddr) {
   std::string s              = {};
@@ -142,6 +143,7 @@ std::string conv::toString(const struct in_addr& inaddr) {
   return s;
 }
 
+//------------------------------------------------------------------------------
 std::string conv::toString(const struct in6_addr& in6addr) {
   std::string s              = {};
   char str[INET6_ADDRSTRLEN] = {};
@@ -154,6 +156,7 @@ std::string conv::toString(const struct in6_addr& in6addr) {
   return s;
 }
 
+//------------------------------------------------------------------------------
 // Convert data from UDM
 std::string conv::uint8_to_hex_string(const uint8_t* v, const size_t s) {
   std::stringstream ss;
@@ -167,6 +170,7 @@ std::string conv::uint8_to_hex_string(const uint8_t* v, const size_t s) {
   return ss.str();
 }
 
+//------------------------------------------------------------------------------
 void conv::hex_str_to_uint8(const char* string, uint8_t* des) {
   if (string == NULL) return;
 
@@ -199,6 +203,7 @@ void conv::hex_str_to_uint8(const char* string, uint8_t* des) {
   }
 }
 
+//------------------------------------------------------------------------------
 uint64_t supi_to_u64(std::string& supi) {
   uint64_t uint_supi;
 
