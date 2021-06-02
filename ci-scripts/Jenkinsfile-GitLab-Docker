@@ -34,10 +34,10 @@ def rem_u18_host = ""
 def rem_u18_host_user = ""
 
 // Location of the Remote RHEL CN executor
-//def rem_rhel_host_flag = false
-//def rem_rhel_host = ""
-//def rem_rhel_host_user = ""
-//def rem_rhel8_resource = params.PodmanContainers
+def rem_rhel_host_flag = false
+def rem_rhel_host = ""
+def rem_rhel_host_user = ""
+def rem_rhel8_resource = params.PodmanContainers
 
 // Tags/Branches to use
 def ausf_tag = "develop"
@@ -121,10 +121,11 @@ pipeline {
         script {
           sh "git clean -x -d -f > /dev/null 2>&1"
           if ("MERGE".equals(env.gitlabActionType)) {
-            gitlabMergeRequestLink = sh "curl --silent \"https://gitlab.eurecom.fr/api/v4/projects/oai%2Fcn5g%2Foai-cn5g-ausf/merge_requests/${env.gitlabMergeRequestIid}\" | jq .web_url | sed 's#\"##g'"
+            // Need a public repo
+            //gitlabMergeRequestLink = sh "curl --silent \"https://gitlab.eurecom.fr/api/v4/projects/oai%2Fcn5g%2Foai-cn5g-ausf/merge_requests/${env.gitlabMergeRequestIid}\" | jq .web_url | sed 's#\"##g'"
             echo "========= THIS IS A MERGE REQUEST =========="
             echo "MR ID       is ${env.gitlabMergeRequestIid}"
-            echo "MR LINK     is ${gitlabMergeRequestLink}"
+            //echo "MR LINK     is ${gitlabMergeRequestLink}"
             echo "MR TITLE    is ${env.gitlabMergeRequestTitle}"
             gitCommitAuthorEmailAddr = env.gitlabUserEmail
             echo "GitLab Usermail is ${gitCommitAuthorEmailAddr}"
