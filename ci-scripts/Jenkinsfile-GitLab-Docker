@@ -219,6 +219,7 @@ pipeline {
           steps {
             script {
               gitlabCommitStatus(name: "Static Code Analysis") {
+                myShCmd('docker rm -f ci-cn-cppcheck || true', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
                 // Running on xenial to have 1.72 version of cppcheck
                 myShCmd('docker run --name ci-cn-cppcheck -d ubuntu:xenial /bin/bash -c "sleep infinity"', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
                 myShCmd('docker exec ci-cn-cppcheck /bin/bash -c "apt-get update && apt-get upgrade --yes" > archives/cppcheck_install.log', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
@@ -255,6 +256,7 @@ pipeline {
           steps {
             script {
               gitlabCommitStatus(name: "Code Formatting Checker") {
+                myShCmd('docker rm -f ci-cn-clang-formatter || true', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
                 myShCmd('docker run --name ci-cn-clang-formatter -d ubuntu:bionic /bin/bash -c "sleep infinity"', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
                 myShCmd('docker exec ci-cn-clang-formatter /bin/bash -c "apt-get update && apt-get upgrade --yes" > archives/clang_format_install.log', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
                 myShCmd('docker exec ci-cn-clang-formatter /bin/bash -c "apt-get install --yes git tree bzip2" >> archives/clang_format_install.log', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
