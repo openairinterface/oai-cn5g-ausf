@@ -129,7 +129,8 @@ pipeline {
             echo "MR TITLE    is ${env.gitlabMergeRequestTitle}"
             gitCommitAuthorEmailAddr = env.gitlabUserEmail
             echo "GitLab Usermail is ${gitCommitAuthorEmailAddr}"
-            sh "git fetch --prune --unshallow"
+            // Need a public repo
+            //sh "git fetch --prune --unshallow"
             shortenShaOne = sh returnStdout: true, script: 'git log -1 --pretty=format:"%h" ' + env.gitlabMergeRequestLastCommit
             shortenShaOne = shortenShaOne.trim()
             sh "./ci-scripts/doGitLabMerge.sh --src-branch ${env.gitlabSourceBranch} --src-commit ${env.gitlabMergeRequestLastCommit} --target-branch ${env.gitlabTargetBranch} --target-commit ${GIT_COMMIT}"
@@ -353,16 +354,16 @@ pipeline {
         }
 
         // Generating the HTML report
-//        if ("MERGE".equals(env.gitlabActionType)) {
-//          sh "python3 ci-scripts/generateHtmlReport.py --job_name=${JOB_NAME} --job_id=${BUILD_ID} --job_url=${BUILD_URL} --git_url=${GIT_URL} --git_src_branch=${env.gitlabSourceBranch} --git_src_commit=${env.gitlabMergeRequestLastCommit} --git_pull_request=True --git_target_branch=${env.gitlabTargetBranch} --git_target_commit=${GIT_COMMIT}"
-//          if (fileExists('test_results_oai_ausf.html')) {
-//            sh "sed -i -e 's#TEMPLATE_MERGE_REQUEST_LINK#${gitlabMergeRequestLink}#g' test_results_oai_ausf.html"
-//            sh "sed -i -e 's#TEMPLATE_MERGE_REQUEST_TEMPLATE#${env.gitlabMergeRequestTitle}#' test_results_oai_ausf.html"
-//          }
-//        } else {
-//          sh "python3 ci-scripts/generateHtmlReport.py --job_name=${JOB_NAME} --job_id=${BUILD_ID} --job_url=${BUILD_URL} --git_url=${GIT_URL} --git_src_branch=${GIT_BRANCH} --git_src_commit=${GIT_COMMIT}"
-//        }
-//        sh "sed -i -e 's#TEMPLATE_TIME#${JOB_TIMESTAMP}#' test_results_oai_ausf.html"
+        if ("MERGE".equals(env.gitlabActionType)) {
+          sh "python3 ci-scripts/generateHtmlReport.py --job_name=${JOB_NAME} --job_id=${BUILD_ID} --job_url=${BUILD_URL} --git_url=${GIT_URL} --git_src_branch=${env.gitlabSourceBranch} --git_src_commit=${env.gitlabMergeRequestLastCommit} --git_pull_request=True --git_target_branch=${env.gitlabTargetBranch} --git_target_commit=${GIT_COMMIT}"
+          if (fileExists('test_results_oai_ausf.html')) {
+            sh "sed -i -e 's#TEMPLATE_MERGE_REQUEST_LINK#${gitlabMergeRequestLink}#g' test_results_oai_ausf.html"
+            sh "sed -i -e 's#TEMPLATE_MERGE_REQUEST_TEMPLATE#${env.gitlabMergeRequestTitle}#' test_results_oai_ausf.html"
+          }
+        } else {
+          sh "python3 ci-scripts/generateHtmlReport.py --job_name=${JOB_NAME} --job_id=${BUILD_ID} --job_url=${BUILD_URL} --git_url=${GIT_URL} --git_src_branch=${GIT_BRANCH} --git_src_commit=${GIT_COMMIT}"
+        }
+        sh "sed -i -e 's#TEMPLATE_TIME#${JOB_TIMESTAMP}#' test_results_oai_ausf.html"
         if (fileExists('test_results_oai_ausf.html')) {
           sh "sed -i -e 's#TEMPLATE_TIME#${JOB_TIMESTAMP}#' test_results_oai_ausf.html"
           archiveArtifacts artifacts: 'test_results_oai_ausf.html'
