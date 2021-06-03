@@ -57,7 +57,7 @@ bool mime_parser::parse(const std::string& str) {
         str.substr(content_type_pos + 14, crlf_pos - (content_type_pos + 14));
     Logger::ausf_server().debug("Content Type: %s", p.content_type.c_str());
 
-    crlf_pos     = str.find(CRLF + CRLF, content_type_pos);  // beginning of content
+    crlf_pos = str.find(CRLF + CRLF, content_type_pos);  // beginning of content
     boundary_pos = str.find(boundary_full, crlf_pos);
     if (boundary_pos == std::string::npos) {
       boundary_pos = str.find(last_boundary, crlf_pos);
