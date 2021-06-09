@@ -372,7 +372,7 @@ class HtmlReport():
 		self.file.write('		<th>Stage Name</th>\n')
 		self.file.write('		<th>Image Kind</th>\n')
 		self.file.write('		<th>OAI AUSF <font color="Gold">Ubuntu18</font> Image</th>\n')
-		#self.file.write('		<th>OAI AUSF <font color="Gold">RHEL8</font> Image</th>\n')
+		self.file.write('		<th>OAI AUSF <font color="Gold">RHEL8</font> Image</th>\n')
 		self.file.write('	  </tr>\n')
 
 	def buildSummaryFooter(self):
