@@ -224,7 +224,7 @@ install_nghttp2_from_git() {
     if [[ $OS_DISTRO == "ubuntu" ]]; then
       PACKAGE_LIST="\
       g++ \
-      cmake \
+      $CMAKE \
       binutils \
       autoconf \
       automake \
@@ -330,7 +330,7 @@ check_install_ausf_deps() {
       automake \
       bison \
       build-essential \
-      cmake \
+      $CMAKE \
       daemon \
       doxygen \
       flex \
@@ -340,6 +340,7 @@ check_install_ausf_deps() {
     PACKAGE_LIST="\
       autoconf \
       automake \
+      make \
       bison \
       $CMAKE \
       doxygen \

@@ -372,7 +372,7 @@ class HtmlReport():
 		self.file.write('		<th>Stage Name</th>\n')
 		self.file.write('		<th>Image Kind</th>\n')
 		self.file.write('		<th>OAI AUSF <font color="Gold">Ubuntu18</font> Image</th>\n')
-		#self.file.write('		<th>OAI AUSF <font color="Gold">RHEL8</font> Image</th>\n')
+		self.file.write('		<th>OAI AUSF <font color="Gold">RHEL8</font> Image</th>\n')
 		self.file.write('	  </tr>\n')
 
 	def buildSummaryFooter(self):
@@ -408,8 +408,7 @@ class HtmlReport():
 		self.file.write('      <td>Builder Image</td>\n')
 
 		cwd = os.getcwd()
-		#variants = ['docker', 'podman']
-		variants = ['docker']
+		variants = ['docker', 'podman']
 		for variant in variants:
 			logFileName = 'ausf_' + variant + '_image_build.log'
 			if os.path.isfile(cwd + '/archives/' + logFileName):
@@ -457,8 +456,7 @@ class HtmlReport():
 		self.file.write('      <td>Builder Image</td>\n')
 
 		cwd = os.getcwd()
-		#variants = ['docker', 'podman']
-		variants = ['docker']
+		variants = ['docker', 'podman']
 		for variant in variants:
 			logFileName = 'ausf_' + variant + '_image_build.log'
 			if os.path.isfile(cwd + '/archives/' + logFileName):
@@ -568,8 +566,7 @@ class HtmlReport():
 		if imageKind:
 			self.file.write('      <td>Builder Image</td>\n')
 		cwd = os.getcwd()
-		#variants = ['docker', 'podman']
-		variants = ['docker']
+		variants = ['docker', 'podman']
 		for variant in variants:
 			logFileName = 'ausf_' + variant + '_image_build.log'
 
@@ -577,7 +574,7 @@ class HtmlReport():
 				status = False
 				if nfType == 'AUSF':
 					section_start_pattern = 'build_ausf --clean --Verbose --build-type Release --jobs'
-					section_end_pattern = 'FROM ubuntu:bionic as oai-ausf$'
+					section_end_pattern = '[aA][sS] oai-ausf$'
 					pass_pattern = 'ausf installed'
 				section_status = False
 				with open(cwd + '/archives/' + logFileName, 'r') as logfile:
@@ -619,8 +616,7 @@ class HtmlReport():
 			self.file.write('      <td>Builder Image</td>\n')
 
 		cwd = os.getcwd()
-		#variants = ['docker', 'podman']
-		variants = ['docker']
+		variants = ['docker', 'podman']
 		for variant in variants:
 			logFileName = 'ausf_' + variant + '_image_build.log'
 			nb_errors = 0
@@ -628,7 +624,7 @@ class HtmlReport():
 			if os.path.isfile(cwd + '/archives/' + logFileName):
 				if nfType == 'AUSF':
 					section_start_pattern = 'build_ausf --clean --Verbose --build-type Release --jobs'
-					section_end_pattern = 'FROM ubuntu:bionic as oai-ausf$'
+					section_end_pattern = '[aA][sS] oai-ausf$'
 				section_status = False
 				with open(cwd + '/archives/' + logFileName, 'r') as logfile:
 					for line in logfile:
@@ -687,12 +683,11 @@ class HtmlReport():
 		self.file.write('      <td>Target Image</td>\n')
 
 		cwd = os.getcwd()
-		#variants = ['docker', 'podman']
-		variants = ['docker']
+		variants = ['docker', 'podman']
 		for variant in variants:
 			logFileName = 'ausf_' + variant + '_image_build.log'
 			if os.path.isfile(cwd + '/archives/' + logFileName):
-				section_start_pattern = 'FROM ubuntu:bionic as oai-ausf$'
+				section_start_pattern = '[aA][sS] oai-ausf$'
 				section_end_pattern = 'WORKDIR /openair-ausf/etc'
 				section_status = False
 				status = False
@@ -734,8 +729,7 @@ class HtmlReport():
 		self.file.write('      <td>Target Image</td>\n')
 
 		cwd = os.getcwd()
-		#variants = ['docker', 'podman']
-		variants = ['docker']
+		variants = ['docker', 'podman']
 		for variant in variants:
 			logFileName = 'ausf_' + variant + '_image_build.log'
 			if os.path.isfile(cwd + '/archives/' + logFileName):
@@ -786,8 +780,7 @@ class HtmlReport():
 			self.file.write('      <td>Target Image</td>\n')
 
 		cwd = os.getcwd()
-		#variants = ['docker', 'podman']
-		variants = ['docker']
+		variants = ['docker', 'podman']
 		for variant in variants:
 			logFileName = 'ausf_' + variant + '_image_build.log'
 			if os.path.isfile(cwd + '/archives/' + logFileName):
