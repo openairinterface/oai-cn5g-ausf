@@ -80,6 +80,7 @@ RUN yum update -y && \
       procps-ng \
       psmisc \
       net-tools \
+      nettle \
       libubsan \
       libasan \
       liblsan \
@@ -96,7 +97,6 @@ COPY --from=oai-ausf-builder /openair-ausf/scripts/entrypoint.sh .
 
 WORKDIR /usr/local/lib64
 COPY --from=oai-ausf-builder /usr/local/lib64/libpistache.so.0 .
-COPY --from=oai-ausf-builder /lib64/libnettle.so.6 .
 COPY --from=oai-ausf-builder /lib64/libboost_system.so.1.66.0 .
 COPY --from=oai-ausf-builder /lib64/libboost_thread.so.1.66.0 .
 COPY --from=oai-ausf-builder /lib64/libboost_date_time.so.1.66.0 .
