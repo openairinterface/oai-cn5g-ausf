@@ -103,8 +103,6 @@ void ausf_client::curl_http_client(
     curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, CURL_TIMEOUT_MS);
     curl_easy_setopt(curl, CURLOPT_TCP_KEEPALIVE, 1);
     curl_easy_setopt(curl, CURLOPT_INTERFACE, ausf_cfg.sbi.if_name.c_str());
-    Logger::ausf_app().info(
-        "Request sent by interface " + ausf_cfg.sbi.if_name);
 
     // Response information.
     long httpCode = {0};
@@ -152,10 +150,6 @@ void ausf_client::curl_http_client(
       return;
     }
 
-    else {  // httpCode = 200 || httpCode = 201 || httpCode = 204
-      response = *httpData.get();
-    }
-
     if (!is_response_ok) {
       try {
         response_data = nlohmann::json::parse(response);
@@ -182,5 +176,6 @@ void ausf_client::curl_http_client(
     free(body_data);
     body_data = NULL;
   }
-  fflush(stdout);
+  // fflush(stdout);
+  return;
 }
