@@ -130,14 +130,15 @@ void ausf_app::handle_ue_authentications(
 
   // 5g he av from udm
   // get authentication related info
-  std::string udmUri, method, response;
-  udmUri = "http://" +
-           std::string(
-               inet_ntoa(*((struct in_addr*) &ausf_cfg.udm_addr.ipv4_addr))) +
-           ":" + std::to_string(ausf_cfg.udm_addr.port) + "/nudm-ueau/v1/" +
-           supi + "/security-information/generate-auth-data";
-  Logger::ausf_app().debug("UDM's URI %s", udmUri.c_str());
-  method = "POST";
+  std::string udm_uri  = {};
+  std::string method   = "POST";
+  std::string response = {};
+  udm_uri              = "http://" +
+            std::string(
+                inet_ntoa(*((struct in_addr*) &ausf_cfg.udm_addr.ipv4_addr))) +
+            ":" + std::to_string(ausf_cfg.udm_addr.port) + "/nudm-ueau/v1/" +
+            supi + "/security-information/generate-auth-data";
+  Logger::ausf_app().debug("UDM's URI %s", udm_uri.c_str());
 
   // Create AuthInfo to send to UDM
   nlohmann::json AuthInfo =
@@ -163,7 +164,8 @@ void ausf_app::handle_ue_authentications(
   }
 
   // Send request to UDM
-  ausf_client_inst->curl_http_client(udmUri, method, AuthInfo.dump(), response);
+  ausf_client_inst->curl_http_client(
+      udm_uri, method, AuthInfo.dump(), response);
 
   Logger::ausf_app().info("Response from UDM: %s", response.c_str());
 
@@ -171,8 +173,12 @@ void ausf_app::handle_ue_authentications(
   nlohmann::json problemDetails_json = {};
 
   nlohmann::json response_data = {};
-  std::string authType_udm, autn_udm, avType_udm, kausf_udm, rand_udm,
-      xresStar_udm;
+  std::string authType_udm     = {};
+  std::string autn_udm         = {};
+  std::string avType_udm       = {};
+  std::string kausf_udm        = {};
+  std::string rand_udm         = {};
+  std::string xresStar_udm     = {};
   try {
     response_data = nlohmann::json::parse(response.c_str());
     // Get security context
@@ -424,15 +430,16 @@ void ausf_app::handle_ue_authentications_confirmation(
         confirmResponse.setSupi(sc->supi_ausf);
       }
       // Send authResult to UDM (authentication result info)
-      std::string udmUri, method, response;
-      udmUri = "http://" +
-               std::string(inet_ntoa(
-                   *((struct in_addr*) &ausf_cfg.udm_addr.ipv4_addr))) +
-               ":" + std::to_string(ausf_cfg.udm_addr.port) + "/nudm-ueau/v1/" +
-               sc->supi_ausf + "/auth-events";
+      std::string udm_uri  = {};
+      std::string method   = "POST";
+      std::string response = {};
+      udm_uri              = "http://" +
+                std::string(inet_ntoa(
+                    *((struct in_addr*) &ausf_cfg.udm_addr.ipv4_addr))) +
+                ":" + std::to_string(ausf_cfg.udm_addr.port) +
+                "/nudm-ueau/v1/" + sc->supi_ausf + "/auth-events";
 
-      Logger::ausf_app().debug("UDM's URI: %s", udmUri.c_str());
-      method = "POST";
+      Logger::ausf_app().debug("UDM's URI: %s", udm_uri.c_str());
 
       // Form request body
       nlohmann::json confirmResultInfo = {};
@@ -456,7 +463,7 @@ void ausf_app::handle_ue_authentications_confirmation(
       Logger::ausf_app().debug(
           "confirmResultInfo: %s", confirmResultInfo.dump().c_str());
       ausf_client_inst->curl_http_client(
-          udmUri, method, confirmResultInfo.dump(), response);
+          udm_uri, method, confirmResultInfo.dump(), response);
     }
   }
 
