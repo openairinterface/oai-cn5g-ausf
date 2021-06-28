@@ -55,7 +55,7 @@ using namespace libconfig;
 namespace config {
 
 //------------------------------------------------------------------------------
-ausf_config::ausf_config() : sbi() {
+ausf_config::ausf_config() : sbi(), ausf_name(), pid_dir(), instance() {
   udm_addr.ipv4_addr.s_addr = INADDR_ANY;
   udm_addr.port             = 80;
   udm_addr.api_version      = "v1";

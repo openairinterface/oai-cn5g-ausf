@@ -138,8 +138,9 @@ void ausf_client::curl_http_client(
 
     nlohmann::json response_data = {};
 
-    if (httpCode != 200 && httpCode != 201 &&
-        httpCode != 204) {  // TODO: remove hardcoded values
+    if (httpCode != HTTP_RESPONSE_CODE_OK &&
+        httpCode != HTTP_RESPONSE_CODE_CREATED &&
+        httpCode != HTTP_RESPONSE_CODE_NO_CONTENT) {
       is_response_ok = false;
       if (response.size() < 1) {
         Logger::ausf_app().info("There's no content in the response");
@@ -176,6 +177,5 @@ void ausf_client::curl_http_client(
     free(body_data);
     body_data = NULL;
   }
-  // fflush(stdout);
   return;
 }
