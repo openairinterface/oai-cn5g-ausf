@@ -136,8 +136,9 @@ void ausf_app::handle_ue_authentications(
   udm_uri              = "http://" +
             std::string(
                 inet_ntoa(*((struct in_addr*) &ausf_cfg.udm_addr.ipv4_addr))) +
-            ":" + std::to_string(ausf_cfg.udm_addr.port) + "/nudm-ueau/v1/" +
-            supi + "/security-information/generate-auth-data";
+            ":" + std::to_string(ausf_cfg.udm_addr.port) + "/nudm-ueau/" +
+            ausf_cfg.udm_addr.api_version + "/" + supi +
+            "/security-information/generate-auth-data";
   Logger::ausf_app().debug("UDM's URI %s", udm_uri.c_str());
 
   // Create AuthInfo to send to UDM
@@ -317,8 +318,7 @@ void ausf_app::handle_ue_authentications(
       std::string(inet_ntoa(*((struct in_addr*) &ausf_cfg.sbi.addr4))) + ":" +
       std::to_string(ausf_cfg.sbi.port) + "/nausf-auth/v1/ue-authentications/" +
       authCtxId_s + "/5g-aka-confirmation";
-  ausf_Href.setHref(
-      resourceURI);  //"/nausf-auth/v1/ue-authentications/640110987654321/5g-aka-confirmation"
+  ausf_Href.setHref(resourceURI);
 
   ausf_links["5G_AKA"] = ausf_Href;
   UEAuthCtx.setLinks(ausf_links);
@@ -433,11 +433,12 @@ void ausf_app::handle_ue_authentications_confirmation(
       std::string udm_uri  = {};
       std::string method   = "POST";
       std::string response = {};
-      udm_uri              = "http://" +
-                std::string(inet_ntoa(
-                    *((struct in_addr*) &ausf_cfg.udm_addr.ipv4_addr))) +
-                ":" + std::to_string(ausf_cfg.udm_addr.port) +
-                "/nudm-ueau/v1/" + sc->supi_ausf + "/auth-events";
+      udm_uri =
+          "http://" +
+          std::string(
+              inet_ntoa(*((struct in_addr*) &ausf_cfg.udm_addr.ipv4_addr))) +
+          ":" + std::to_string(ausf_cfg.udm_addr.port) + "/nudm-ueau/" +
+          ausf_cfg.udm_addr.api_version + "/" + sc->supi_ausf + "/auth-events";
 
       Logger::ausf_app().debug("UDM's URI: %s", udm_uri.c_str());
 
