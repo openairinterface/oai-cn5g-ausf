@@ -99,8 +99,8 @@ void DefaultApiImpl::ue_authentications_auth_ctx_id5g_aka_confirmation_put(
       "5g-aka-confirmation response:\n %s", json_data.dump().c_str());
 
   Logger::ausf_server().info(
-      "Send 5g-aka-confirmation response to SEAF (Code 200)");
-  response.send(code, json_data.dump());
+      "Send 5g-aka-confirmation response to SEAF (Code %d)", code);
+  response.send(code, json_data.dump().c_str());
 }
 
 void DefaultApiImpl::ue_authentications_deregister_post(
@@ -115,12 +115,9 @@ void DefaultApiImpl::ue_authentications_deregister_post(
 void DefaultApiImpl::ue_authentications_post(
     const AuthenticationInfo& authenticationInfo,
     Pistache::Http::ResponseWriter& response) {
-  Logger::ausf_server().debug("ue_authentications_post");
-
   // Getting params
-  std::string reponse_from_udm;
-  std::string location;
-  // uint16_t http_response_code     = 0;
+  std::string reponse_from_udm    = {};
+  std::string location            = {};
   UEAuthenticationCtx ue_auth_ctx = {};
   nlohmann::json UEAuthCtx_json   = {};
   Pistache::Http::Code code       = {};
@@ -131,10 +128,9 @@ void DefaultApiImpl::ue_authentications_post(
   Logger::ausf_server().debug(
       "Auth response:\n %s", UEAuthCtx_json.dump().c_str());
 
-  Logger::ausf_server().info("Send Auth response to SEAF (Code 201)");
+  Logger::ausf_server().info("Send Auth response to SEAF (Code %d)", code);
   response.headers().add<Pistache::Http::Header::Location>(location);
-  response.send(code,
-                UEAuthCtx_json.dump());  // Type: json object to string
+  response.send(code, UEAuthCtx_json.dump().c_str());
 }
 
 }  // namespace api

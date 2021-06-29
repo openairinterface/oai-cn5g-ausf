@@ -103,8 +103,6 @@ void ausf_client::curl_http_client(
     curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, CURL_TIMEOUT_MS);
     curl_easy_setopt(curl, CURLOPT_TCP_KEEPALIVE, 1);
     curl_easy_setopt(curl, CURLOPT_INTERFACE, ausf_cfg.sbi.if_name.c_str());
-    Logger::ausf_app().info(
-        "Request sent by interface " + ausf_cfg.sbi.if_name);
 
     // Response information.
     long httpCode = {0};
@@ -140,8 +138,9 @@ void ausf_client::curl_http_client(
 
     nlohmann::json response_data = {};
 
-    if (httpCode != 200 && httpCode != 201 &&
-        httpCode != 204) {  // TODO: remove hardcoded values
+    if (httpCode != HTTP_RESPONSE_CODE_OK &&
+        httpCode != HTTP_RESPONSE_CODE_CREATED &&
+        httpCode != HTTP_RESPONSE_CODE_NO_CONTENT) {
       is_response_ok = false;
       if (response.size() < 1) {
         Logger::ausf_app().info("There's no content in the response");
@@ -150,10 +149,6 @@ void ausf_client::curl_http_client(
       }
       Logger::ausf_app().warn("Receive response with Http Code %d", httpCode);
       return;
-    }
-
-    else {  // httpCode = 200 || httpCode = 201 || httpCode = 204
-      response = *httpData.get();
     }
 
     if (!is_response_ok) {
@@ -182,5 +177,5 @@ void ausf_client::curl_http_client(
     free(body_data);
     body_data = NULL;
   }
-  fflush(stdout);
+  return;
 }

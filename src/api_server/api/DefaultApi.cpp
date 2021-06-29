@@ -147,7 +147,6 @@ void DefaultApi::ue_authentications_auth_ctx_id5g_aka_confirmation_put_handler(
 
   try {
     nlohmann::json::parse(request.body()).get_to(confirmationData);
-    Logger::ausf_server().debug("Json parsed");
     this->ue_authentications_auth_ctx_id5g_aka_confirmation_put(
         authCtxId, confirmationData, response);
   } catch (nlohmann::detail::exception& e) {
@@ -193,15 +192,13 @@ void DefaultApi::ue_authentications_deregister_post_handler(
 void DefaultApi::ue_authentications_post_handler(
     const Pistache::Rest::Request& request,
     Pistache::Http::ResponseWriter response) {
-  Logger::ausf_server().info("Received ue-authentications post Request");
-
+  Logger::ausf_server().info("Received ue_authentications_post Request");
   // Getting the body param
 
   AuthenticationInfo authenticationInfo;
 
   try {
     nlohmann::json::parse(request.body()).get_to(authenticationInfo);
-    Logger::ausf_server().debug("Json parsed");
     this->ue_authentications_post(authenticationInfo, response);
   } catch (nlohmann::detail::exception& e) {
     // send a 400 error

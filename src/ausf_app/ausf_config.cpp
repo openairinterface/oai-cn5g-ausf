@@ -55,7 +55,7 @@ using namespace libconfig;
 namespace config {
 
 //------------------------------------------------------------------------------
-ausf_config::ausf_config() : sbi() {
+ausf_config::ausf_config() : sbi(), ausf_name(), pid_dir(), instance() {
   udm_addr.ipv4_addr.s_addr = INADDR_ANY;
   udm_addr.port             = 80;
   udm_addr.api_version      = "v1";
@@ -186,7 +186,7 @@ int ausf_config::load(const std::string& config_file) {
 
 //------------------------------------------------------------------------------
 void ausf_config::display() {
-  Logger::config().info("======== AUSF =======");
+  Logger::config().info("================= AUSF =================");
   Logger::config().info("Configuration AUSF:");
   Logger::config().info("- Instance................: %d", instance);
   Logger::config().info("- PID dir.................: %s", pid_dir.c_str());

@@ -130,14 +130,16 @@ void ausf_app::handle_ue_authentications(
 
   // 5g he av from udm
   // get authentication related info
-  std::string udmUri, method, response;
-  udmUri = "http://" +
-           std::string(
-               inet_ntoa(*((struct in_addr*) &ausf_cfg.udm_addr.ipv4_addr))) +
-           ":" + std::to_string(ausf_cfg.udm_addr.port) + "/nudm-ueau/v1/" +
-           supi + "/security-information/generate-auth-data";
-  Logger::ausf_server().debug("UDM's URI %s", udmUri.c_str());
-  method = "POST";
+  std::string udm_uri  = {};
+  std::string method   = "POST";
+  std::string response = {};
+  udm_uri              = "http://" +
+            std::string(
+                inet_ntoa(*((struct in_addr*) &ausf_cfg.udm_addr.ipv4_addr))) +
+            ":" + std::to_string(ausf_cfg.udm_addr.port) + "/nudm-ueau/" +
+            ausf_cfg.udm_addr.api_version + "/" + supi +
+            "/security-information/generate-auth-data";
+  Logger::ausf_app().debug("UDM's URI %s", udm_uri.c_str());
 
   // Create AuthInfo to send to UDM
   nlohmann::json AuthInfo =
@@ -155,46 +157,50 @@ void ausf_app::handle_ue_authentications(
 
     AuthInfo["resynchronizationInfo"]["rand"] = resynInfo.getRand();
     AuthInfo["resynchronizationInfo"]["auts"] = resynInfo.getAuts();
-    Logger::ausf_server().info(
+    Logger::ausf_app().info(
         "Received authInfo from AMF with ResynchronizationInfo IE");
   } else {
-    Logger::ausf_server().info(
+    Logger::ausf_app().info(
         "Received authInfo from AMF without ResynchronizationInfo IE");
   }
 
   // Send request to UDM
-  ausf_client_inst->curl_http_client(udmUri, method, AuthInfo.dump(), response);
+  ausf_client_inst->curl_http_client(
+      udm_uri, method, AuthInfo.dump(), response);
 
-  Logger::ausf_server().error("Response from UDM: %s", response.c_str());
+  Logger::ausf_app().info("Response from UDM: %s", response.c_str());
 
   ProblemDetails problemDetails;
   nlohmann::json problemDetails_json = {};
 
   nlohmann::json response_data = {};
-  std::string authType_udm, autn_udm, avType_udm, kausf_udm, rand_udm,
-      xresStar_udm;
+  std::string authType_udm     = {};
+  std::string autn_udm         = {};
+  std::string avType_udm       = {};
+  std::string kausf_udm        = {};
+  std::string rand_udm         = {};
+  std::string xresStar_udm     = {};
   try {
     response_data = nlohmann::json::parse(response.c_str());
     // Get security context
     authType_udm = response_data.at("authType");  // AuthType
-    Logger::ausf_server().debug("authType %s", authType_udm.c_str());
+    Logger::ausf_app().debug("authType %s", authType_udm.c_str());
     autn_udm = response_data["authenticationVector"].at("autn");  // autn
-    Logger::ausf_server().debug("autn_udm %s", autn_udm.c_str());
+    Logger::ausf_app().debug("autn_udm %s", autn_udm.c_str());
     avType_udm = response_data["authenticationVector"].at("avType");  // avType
-    Logger::ausf_server().debug("avType_udm %s", avType_udm.c_str());
+    Logger::ausf_app().debug("avType_udm %s", avType_udm.c_str());
     kausf_udm = response_data["authenticationVector"].at("kausf");  // kausf
-    Logger::ausf_server().debug("kausf_udm %s", kausf_udm.c_str());
+    Logger::ausf_app().debug("kausf_udm %s", kausf_udm.c_str());
     rand_udm = response_data["authenticationVector"].at("rand");  // rand
-    Logger::ausf_server().debug("rand_udm %s", rand_udm.c_str());
+    Logger::ausf_app().debug("rand_udm %s", rand_udm.c_str());
     xresStar_udm =
         response_data["authenticationVector"].at("xresStar");  // xres*
-    Logger::ausf_server().debug("xres*_udm %s", xresStar_udm.c_str());
+    Logger::ausf_app().debug("xres*_udm %s", xresStar_udm.c_str());
 
   } catch (nlohmann::json::exception& e) {
     // TODO: Catch parse_error exception
     // TODO: Catch out_of_range exception
-    Logger::ausf_server().info(
-        "Could not Parse Json content from UDM response");
+    Logger::ausf_app().info("Could not Parse Json content from UDM response");
 
     // TODO: error handling
     problemDetails.setCause("CONTEXT_NOT_FOUND");
@@ -203,9 +209,9 @@ void ausf_app::handle_ue_authentications(
         "Resource corresponding to User " + supi + " not found in UDM");
     to_json(problemDetails_json, problemDetails);
 
-    Logger::ausf_server().error(
+    Logger::ausf_app().error(
         "Resource corresponding to User " + supi + " not found in UDM");
-    Logger::ausf_server().info("Send 404 Not_Found response to AUSF");
+    Logger::ausf_app().info("Send 404 Not_Found response to AUSF");
     code      = Pistache::Http::Code::Not_Found;
     json_data = problemDetails_json;
     return;
@@ -228,7 +234,7 @@ void ausf_app::handle_ue_authentications(
   //  5G HE AV HXRES* XRES*，KSEAF KAUSF
   //  KSEAF，SEAF 5G SE AV（RAND, AUTN, HXRES*）
   //  A.5, 3gpp ts33.501
-  Logger::ausf_server().debug("Generating 5G AV");
+  Logger::ausf_app().debug("Generating 5G AV");
 
   // Generating hxres*
   uint8_t rand_ausf[16]     = {0};
@@ -246,13 +252,13 @@ void ausf_app::handle_ue_authentications(
 
   // Generate_Hxres*
   Authentication_5gaka::generate_Hxres(rand_ausf, xresStar_ausf, hxresStar);
-  Logger::ausf_server().debug(
+  Logger::ausf_app().debug(
       "HXresStar calculated:\n %s",
       (conv::uint8_to_hex_string(hxresStar, 16)).c_str());
 
   uint8_t kseaf[32] = {0};
   Authentication_5gaka::derive_kseaf(snn, kausf, kseaf);
-  Logger::ausf_server().debug(
+  Logger::ausf_app().debug(
       "Kseaf calculated:\n %s", (conv::uint8_to_hex_string(kseaf, 32)).c_str());
 
   // Store the security context
@@ -312,8 +318,7 @@ void ausf_app::handle_ue_authentications(
       std::string(inet_ntoa(*((struct in_addr*) &ausf_cfg.sbi.addr4))) + ":" +
       std::to_string(ausf_cfg.sbi.port) + "/nausf-auth/v1/ue-authentications/" +
       authCtxId_s + "/5g-aka-confirmation";
-  ausf_Href.setHref(
-      resourceURI);  //"/nausf-auth/v1/ue-authentications/640110987654321/5g-aka-confirmation"
+  ausf_Href.setHref(resourceURI);
 
   ausf_links["5G_AKA"] = ausf_Href;
   UEAuthCtx.setLinks(ausf_links);
@@ -327,7 +332,7 @@ void ausf_app::handle_ue_authentications(
 
   to_json(json_data, UEAuthCtx);
   code = Pistache::Http::Code::Created;
-  Logger::ausf_server().debug("Auth Response:\n %s", json_data.dump().c_str());
+  Logger::ausf_app().debug("Auth Response:\n %s", json_data.dump().c_str());
   return;
 }
 
@@ -338,7 +343,7 @@ void ausf_app::handle_ue_authentications_confirmation(
   // SEAF-> AUSF
   ProblemDetails problemDetails;
   nlohmann::json problemDetails_json = {};
-  Logger::ausf_server().debug("Handling 5g-aka-confirmation");
+  Logger::ausf_app().debug("Handling 5g-aka-confirmation");
 
   // Get the security context
   std::shared_ptr<security_context> sc = {};
@@ -356,16 +361,16 @@ void ausf_app::handle_ue_authentications_confirmation(
     problemDetails.setDetail("Serving Network Not Authorized");
     to_json(problemDetails_json, problemDetails);
 
-    Logger::ausf_server().error("Serving Network Not Authorized");
-    Logger::ausf_server().info("Send 403 Forbidden response to AUSF");
+    Logger::ausf_app().error("Serving Network Not Authorized");
+    Logger::ausf_app().info("Send 403 Forbidden response to AUSF");
     code      = Pistache::Http::Code::Forbidden;
     json_data = problemDetails_json;
     return;
   }
 
-  Logger::ausf_server().info(
+  Logger::ausf_app().info(
       "Received authCtxId %s", authCtxId.c_str());  // authCtxId
-  Logger::ausf_server().info(
+  Logger::ausf_app().info(
       "Received res* %s", confirmationData.getResStar().c_str());
 
   uint8_t resStar[16] = {0};
@@ -376,7 +381,7 @@ void ausf_app::handle_ue_authentications_confirmation(
   conv::hex_str_to_uint8(
       authCtxId.c_str(), authCtxId_seaf);  // authCtxId in SEAF
 
-  Logger::ausf_server().debug(
+  Logger::ausf_app().debug(
       "authCtxId in AUSF: %s",
       (conv::uint8_to_hex_string(sc->ausf_av_s.autn, 16)).c_str());
 
@@ -384,14 +389,14 @@ void ausf_app::handle_ue_authentications_confirmation(
       Authentication_5gaka::equal_uint8(sc->ausf_av_s.autn, authCtxId_seaf, 16);
   if (!is_auth_vectors_present)  // AV expired
   {
-    Logger::ausf_server().error(
+    Logger::ausf_app().error(
         "Authentication failure by home network with authCtxId %s: AV expired",
         authCtxId.c_str());
     confirmResponse.setAuthResult(is_auth_vectors_present);
     sc->kausf_tmp = "invalid";
   } else  // AV valid
   {
-    Logger::ausf_server().info("AV is up to date, handling received res*...");
+    Logger::ausf_app().info("AV is up to date, handling received res*...");
     // Get stored xres* and compare with res*
     uint8_t xresStar[16] = {0};
     // xres* stored for 5g-aka-confirmation
@@ -399,9 +404,9 @@ void ausf_app::handle_ue_authentications_confirmation(
         std::begin(sc->xres_star), std::end(sc->xres_star),
         std::begin(xresStar));
 
-    Logger::ausf_server().debug(
+    Logger::ausf_app().debug(
         "xres* in AUSF: %s", (conv::uint8_to_hex_string(xresStar, 16)).c_str());
-    Logger::ausf_server().debug(
+    Logger::ausf_app().debug(
         "xres in AMF: %s", (conv::uint8_to_hex_string(resStar, 16)).c_str());
 
     bool authResult = Authentication_5gaka::equal_uint8(xresStar, resStar, 16);
@@ -409,13 +414,13 @@ void ausf_app::handle_ue_authentications_confirmation(
 
     if (!authResult)  // Authentication failed
     {
-      Logger::ausf_server().error(
+      Logger::ausf_app().error(
           "Authentication failure by home network with authCtxId %s: res* != "
           "xres*",
           authCtxId.c_str());
     } else  // Authentication success
     {
-      Logger::ausf_server().info("Authentication successful by home network!");
+      Logger::ausf_app().info("Authentication successful by home network!");
       // Send Kseaf to SEAF
       string kseaf_s;
       kseaf_s = conv::uint8_to_hex_string(sc->ausf_av_s.kseaf, 32);
@@ -425,15 +430,17 @@ void ausf_app::handle_ue_authentications_confirmation(
         confirmResponse.setSupi(sc->supi_ausf);
       }
       // Send authResult to UDM (authentication result info)
-      std::string udmUri, method, response;
-      udmUri = "http://" +
-               std::string(inet_ntoa(
-                   *((struct in_addr*) &ausf_cfg.udm_addr.ipv4_addr))) +
-               ":" + std::to_string(ausf_cfg.udm_addr.port) + "/nudm-ueau/v1/" +
-               sc->supi_ausf + "/auth-events";
+      std::string udm_uri  = {};
+      std::string method   = "POST";
+      std::string response = {};
+      udm_uri =
+          "http://" +
+          std::string(
+              inet_ntoa(*((struct in_addr*) &ausf_cfg.udm_addr.ipv4_addr))) +
+          ":" + std::to_string(ausf_cfg.udm_addr.port) + "/nudm-ueau/" +
+          ausf_cfg.udm_addr.api_version + "/" + sc->supi_ausf + "/auth-events";
 
-      Logger::ausf_server().debug("UDM's URI: %s", udmUri.c_str());
-      method = "POST";
+      Logger::ausf_app().debug("UDM's URI: %s", udm_uri.c_str());
 
       // Form request body
       nlohmann::json confirmResultInfo = {};
@@ -454,10 +461,10 @@ void ausf_app::handle_ue_authentications_confirmation(
       confirmResultInfo["servingNetworkName"] = sc->serving_nn;
       confirmResultInfo["authRemovalInd"]     = false;
 
-      Logger::ausf_server().debug(
+      Logger::ausf_app().debug(
           "confirmResultInfo: %s", confirmResultInfo.dump().c_str());
       ausf_client_inst->curl_http_client(
-          udmUri, method, confirmResultInfo.dump(), response);
+          udm_uri, method, confirmResultInfo.dump(), response);
     }
   }
 
