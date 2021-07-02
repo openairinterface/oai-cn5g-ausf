@@ -487,24 +487,26 @@ class HtmlReport():
 							result = re.search('AUSF deps installation successful', line)
 							if result is not None:
 								status = True
-							result = re.search('Install spdlog from https://github.com/gabime/spdlog.git', line)
+							result = re.search('distro libs installation complete', line)
 							if result is not None:
 								package_install = True
-								spdlog_build_start = True
-							result = re.search('Branch \'master\' set up to track remote branch \'master\' from \'origin\'', line)
+							result = re.search('Starting to install spdlog', line)
 							if result is not None:
+								spdlog_build_start = True
+							result = re.search('spdlog installation complete', line)
+							if result is not None and spdlog_build_start:
 								spdlog_build_status = True
-							result = re.search('Install Pistache from', line)
+							result = re.search('Starting to install pistache', line)
 							if result is not None:
 								pistache_build_start = True
-							result = re.search('Installing: /usr/local/lib/libpistache.a', line)
-							if result is not None:
+							result = re.search('pistache installation complete', line)
+							if result is not None and pistache_build_start:
 								pistache_build_status = True
-							result = re.search('Install Nlohmann Json', line)
+							result = re.search('Starting to install Nlohmann Json', line)
 							if result is not None:
 								json_build_status = True
-							result = re.search('Installing: /usr/local/lib/cmake/nlohmann_json/nlohmann_jsonTargets.cmake', line)
-							if result is not None:
+							result = re.search('Nlohmann Json installation complete', line)
+							if result is not None and json_build_status:
 								json_build_status = True
 					logfile.close()
 				if base_image:
