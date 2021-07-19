@@ -161,22 +161,22 @@ int ausf_config::load(const std::string& config_file) {
 void ausf_config::display() {
   Logger::config().info("================= AUSF =================");
   Logger::config().info("Configuration AUSF:");
-  Logger::config().info("- Instance................: %d", instance);
-  Logger::config().info("- PID dir.................: %s", pid_dir.c_str());
-  Logger::config().info("- AUSF NAME...............: %s", ausf_name.c_str());
+  Logger::config().info("- Instance ...............: %d", instance);
+  Logger::config().info("- PID dir ................: %s", pid_dir.c_str());
+  Logger::config().info("- AUSF NAME ..............: %s", ausf_name.c_str());
 
   Logger::config().info("- SBI Networking:");
   Logger::config().info("    Iface ................: %s", sbi.if_name.c_str());
-  Logger::config().info("    IP ...................: %s", inet_ntoa(sbi.addr4));
+  Logger::config().info("    IPv4 Addr ............: %s", inet_ntoa(sbi.addr4));
   Logger::config().info("    Port .................: %d", sbi.port);
 
   Logger::config().info("- UDM:");
   Logger::config().info(
-      "    IPv4 Addr.............: %s",
+      "    IPv4 Addr ............: %s",
       inet_ntoa(*((struct in_addr*) &udm_addr.ipv4_addr)));
-  Logger::config().info("    Port..................: %lu  ", udm_addr.port);
+  Logger::config().info("    Port .................: %lu  ", udm_addr.port);
   Logger::config().info(
-      "    API version...........: %s", udm_addr.api_version.c_str());
+      "    API version ..........: %s", udm_addr.api_version.c_str());
 }
 
 //------------------------------------------------------------------------------
