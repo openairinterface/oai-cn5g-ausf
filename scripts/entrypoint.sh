@@ -5,7 +5,6 @@ set -euo pipefail
 CONFIG_DIR="/openair-ausf/etc"
 SBI_PORT=${SBI_PORT:-80}
 UDM_PORT=${UDM_PORT:-80}
-AMF_PORT=${AMF_PORT:-80}
 
 for c in ${CONFIG_DIR}/*.conf; do
     # grep variable names (format: ${VAR}) from template to be rendered

@@ -61,10 +61,6 @@
 #define AUSF_CONFIG_STRING_UDM_IPV4_ADDRESS "IPV4_ADDRESS"
 #define AUSF_CONFIG_STRING_UDM_PORT "PORT"
 
-#define AUSF_CONFIG_STRING_AMF "AMF"
-#define AUSF_CONFIG_STRING_AMF_IPV4_ADDRESS "IPV4_ADDRESS"
-#define AUSF_CONFIG_STRING_AMF_PORT "PORT"
-
 using namespace libconfig;
 
 namespace config {
@@ -97,12 +93,6 @@ class ausf_config {
     unsigned int port;
     std::string api_version;
   } udm_addr;
-
-  struct {
-    struct in_addr ipv4_addr;
-    unsigned int port;
-    std::string api_version;
-  } amf_addr;
 };
 
 }  // namespace config

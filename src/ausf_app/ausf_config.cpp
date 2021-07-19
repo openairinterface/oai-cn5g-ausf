@@ -59,10 +59,6 @@ ausf_config::ausf_config() : sbi(), ausf_name(), pid_dir(), instance() {
   udm_addr.ipv4_addr.s_addr = INADDR_ANY;
   udm_addr.port             = 80;
   udm_addr.api_version      = "v1";
-
-  amf_addr.ipv4_addr.s_addr = INADDR_ANY;
-  amf_addr.port             = 80;
-  amf_addr.api_version      = "v1";
 }
 
 //------------------------------------------------------------------------------
@@ -154,29 +150,6 @@ int ausf_config::load(const std::string& config_file) {
     }
     udm_addr.api_version = udm_api_version;
 
-    // AMF
-    const Setting& amf_cfg = ausf_cfg[AUSF_CONFIG_STRING_AMF];
-    struct in_addr amf_ipv4_addr;
-    unsigned int amf_port = 0;
-    std::string amf_api_version;
-    amf_cfg.lookupValue(AUSF_CONFIG_STRING_AMF_IPV4_ADDRESS, astring);
-    IPV4_STR_ADDR_TO_INADDR(
-        util::trim(astring).c_str(), amf_ipv4_addr,
-        "BAD IPv4 ADDRESS FORMAT FOR AMF !");
-    amf_addr.ipv4_addr = amf_ipv4_addr;
-    if (!(amf_cfg.lookupValue(AUSF_CONFIG_STRING_AMF_PORT, amf_port))) {
-      Logger::ausf_app().error(AUSF_CONFIG_STRING_AMF_PORT "failed");
-      throw(AUSF_CONFIG_STRING_AMF_PORT "failed");
-    }
-    amf_addr.port = amf_port;
-
-    if (!(amf_cfg.lookupValue(
-            AUSF_CONFIG_STRING_API_VERSION, amf_api_version))) {
-      Logger::ausf_app().error(AUSF_CONFIG_STRING_API_VERSION "failed");
-      throw(AUSF_CONFIG_STRING_API_VERSION "failed");
-    }
-    amf_addr.api_version = amf_api_version;
-
   } catch (const SettingNotFoundException& nfex) {
     Logger::ausf_app().error("%s : %s", nfex.what(), nfex.getPath());
     return RETURNerror;
@@ -204,14 +177,6 @@ void ausf_config::display() {
   Logger::config().info("    Port..................: %lu  ", udm_addr.port);
   Logger::config().info(
       "    API version...........: %s", udm_addr.api_version.c_str());
-
-  Logger::config().info("- AMF:");
-  Logger::config().info(
-      "    IPv4 Addr.............: %s",
-      inet_ntoa(*((struct in_addr*) &amf_addr.ipv4_addr)));
-  Logger::config().info("    Port.................: %lu  ", amf_addr.port);
-  Logger::config().info(
-      "    API version..........: %s", amf_addr.api_version.c_str());
 }
 
 //------------------------------------------------------------------------------
