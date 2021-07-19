@@ -210,7 +210,7 @@ void ausf_app::handle_ue_authentications(
     to_json(problemDetails_json, problemDetails);
 
     Logger::ausf_app().error(
-        "Resource corresponding to User " + supi + " not found in UDM");
+        "Resource corresponding to User %s not found in UDM", supi.c_str());
     Logger::ausf_app().info("Send 404 Not_Found response to AUSF");
     code      = Pistache::Http::Code::Not_Found;
     json_data = problemDetails_json;

@@ -32,7 +32,7 @@
 #include <cstring>
 #include <fstream>
 
-Sha256::Sha256() {}
+Sha256::Sha256() : m_tot_len(), m_len(), m_block(), m_h() {}
 Sha256::~Sha256() {}
 
 const unsigned int Sha256::sha256_k[64] =  // UL = uint32
