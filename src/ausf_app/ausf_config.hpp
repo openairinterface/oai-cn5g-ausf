@@ -54,16 +54,11 @@
 #define AUSF_CONFIG_STRING_INTERFACE_NAME "INTERFACE_NAME"
 #define AUSF_CONFIG_STRING_IPV4_ADDRESS "IPV4_ADDRESS"
 #define AUSF_CONFIG_STRING_PORT "PORT"
-#define AUSF_CONFIG_STRING_PPID "PPID"
 #define AUSF_CONFIG_STRING_API_VERSION "API_VERSION"
 
 #define AUSF_CONFIG_STRING_UDM "UDM"
 #define AUSF_CONFIG_STRING_UDM_IPV4_ADDRESS "IPV4_ADDRESS"
 #define AUSF_CONFIG_STRING_UDM_PORT "PORT"
-
-#define AUSF_CONFIG_STRING_AMF "AMF"
-#define AUSF_CONFIG_STRING_AMF_IPV4_ADDRESS "IPV4_ADDRESS"
-#define AUSF_CONFIG_STRING_AMF_PORT "PORT"
 
 using namespace libconfig;
 
@@ -97,12 +92,6 @@ class ausf_config {
     unsigned int port;
     std::string api_version;
   } udm_addr;
-
-  struct {
-    struct in_addr ipv4_addr;
-    unsigned int port;
-    std::string api_version;
-  } amf_addr;
 };
 
 }  // namespace config

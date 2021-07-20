@@ -39,10 +39,11 @@ namespace ausf_server {
 namespace model {
 
 ConfirmationDataResponse::ConfirmationDataResponse() {
-  m_Supi       = "";
+  m_Supi       = {};
   m_SupiIsSet  = false;
-  m_Kseaf      = "";
+  m_Kseaf      = {};
   m_KseafIsSet = false;
+  m_AuthResult = false;
 }
 
 ConfirmationDataResponse::~ConfirmationDataResponse() {}
