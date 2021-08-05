@@ -69,9 +69,7 @@ typedef enum patch_op_type_s {
 static const std::vector<std::string> patch_op_type_e2str = {
     "ADD", "REMOVE", "REPLACE", "MOVE", "COPY", "TEST", "UNKNOWN"};
 
-#define NF_CURL_TIMEOUT_MS 1000L
-#define CURL_TIMEOUT_MS 100L
-
+#define CURL_TIMEOUT_MS 1000L
 #define MAX_WAIT_MSECS 20000  // 1 second
 
 typedef struct {
