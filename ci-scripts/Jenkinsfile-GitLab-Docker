@@ -339,7 +339,6 @@ pipeline {
         }
       }
     }
-  }
     stage('Testing whole 5g Core Network Functions') {
       parallel {
         stage ('Testing in CN-5G-FED Docker environment') {
