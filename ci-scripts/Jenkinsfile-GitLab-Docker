@@ -66,8 +66,8 @@ pipeline {
       "Build U18 AUSF Image",
       "Build RHEL8 AUSF Image",
       "Static Code Analysis",
-      "Code Formatting Checker" //,
-      //"Test with DsTester"
+      "Code Formatting Checker",
+      "Test with DsTester on Docker environment"
     ])
 
   }
@@ -121,16 +121,14 @@ pipeline {
         script {
           sh "git clean -x -d -f > /dev/null 2>&1"
           if ("MERGE".equals(env.gitlabActionType)) {
-            // Need a public repo
-            //gitlabMergeRequestLink = sh "curl --silent \"https://gitlab.eurecom.fr/api/v4/projects/oai%2Fcn5g%2Foai-cn5g-ausf/merge_requests/${env.gitlabMergeRequestIid}\" | jq .web_url | sed 's#\"##g'"
+            gitlabMergeRequestLink = sh returnStdout: true, script: "curl --silent 'https://gitlab.eurecom.fr/api/v4/projects/oai%2Fcn5g%2Foai-cn5g-ausf/merge_requests/${env.gitlabMergeRequestIid}' | jq .web_url | sed 's#\"##g'"
+            gitlabMergeRequestLink = gitlabMergeRequestLink.trim()
             echo "========= THIS IS A MERGE REQUEST =========="
             echo "MR ID       is ${env.gitlabMergeRequestIid}"
-            //echo "MR LINK     is ${gitlabMergeRequestLink}"
+            echo "MR LINK     is ${gitlabMergeRequestLink}"
             echo "MR TITLE    is ${env.gitlabMergeRequestTitle}"
             gitCommitAuthorEmailAddr = env.gitlabUserEmail
             echo "GitLab Usermail is ${gitCommitAuthorEmailAddr}"
-            // Need a public repo
-            //sh "git fetch --prune --unshallow"
             shortenShaOne = sh returnStdout: true, script: 'git log -1 --pretty=format:"%h" ' + env.gitlabMergeRequestLastCommit
             shortenShaOne = shortenShaOne.trim()
             sh "./ci-scripts/doGitLabMerge.sh --src-branch ${env.gitlabSourceBranch} --src-commit ${env.gitlabMergeRequestLastCommit} --target-branch ${env.gitlabTargetBranch} --target-commit ${GIT_COMMIT}"
@@ -335,6 +333,41 @@ pipeline {
                 copyFrom2ndServer('src/oai_rules*.*', 'src', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
                 // no need to keep the clang-formatter container
                 myShCmd('docker rm -f ci-cn-clang-formatter', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+    stage('Testing whole 5g Core Network Functions') {
+      parallel {
+        stage ('Testing in CN-5G-FED Docker environment') {
+          steps {
+            script {
+              gitlabCommitStatus(name: "Test with DsTester on Docker environment") {
+                localStatus = build job: params.CN5G_FED_PipelineName,
+                  parameters: [
+                    string(name: 'AUSF_TAG', value: String.valueOf(ausf_tag)),
+                    string(name: 'AUSF_BRANCH', value: String.valueOf(ausf_branch))
+                  ], propagate: false
+                localResult = localStatus.getResult()
+
+                if (localStatus.resultIsBetterOrEqualTo('SUCCESS')) {
+                  echo "Docker Federation Test Job is OK"
+                } else {
+                  echo "Docker Federation Test Job is KO"
+                  sh "ci-scripts/fail.sh"
+                }
+              }
+            }
+          }
+          post {
+            always {
+              script {
+                copyArtifacts(projectName: params.CN5G_FED_PipelineName,
+                              filter: '*_results_oai_cn5g.html',
+                              selector: lastCompleted())
               }
             }
           }
