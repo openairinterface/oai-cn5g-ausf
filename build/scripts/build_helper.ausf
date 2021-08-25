@@ -369,12 +369,21 @@ check_install_ausf_deps() {
   if [[ $OS_DISTRO == "ubuntu" ]]; then
     case "$(get_distribution_release)" in
       "ubuntu18.04")
+        # Currently Ubuntu18.04 has boost 1.65 as the latest
+        # We need at least 1.66
+        # PPA has 1.67
+        $SUDO add-apt-repository ppa:mhier/libboost-latest --yes
+        $SUDO $INSTALLER update
+        specific_packages="libconfig++-dev"        
+      ;;
+      *)
         specific_packages="libconfig++-dev libasio-dev libboost-all-dev"
       ;;
     esac
     # removed libspdlog-dev
     PACKAGE_LIST="\
       $specific_packages \
+      libboost1.67-dev \
       guile-2.0-dev \
       libcurl4-gnutls-dev \
       libevent-dev \
@@ -531,6 +540,7 @@ check_install_ausf_min_deps() {
   echo "Install networking tools"
   $SUDO $INSTALLER install $OPTION $PACKAGE_LIST
   ret=$?;[[ $ret -ne 0 ]] && return $ret
+  echo "networking tools installation complete"
 
   return 0
 }

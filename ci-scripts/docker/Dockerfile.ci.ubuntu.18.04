@@ -67,6 +67,7 @@ COPY --from=oai-ausf-builder /openair-ausf/scripts/entrypoint.sh .
 
 COPY --from=oai-ausf-builder /usr/local/lib/libpistache.so /usr/local/lib/
 COPY --from=oai-ausf-builder /usr/lib/x86_64-linux-gnu/libnettle.so.6 /usr/local/lib/
+COPY --from=oai-ausf-builder /usr/lib/libboost_system.so.1.67.0 /usr/local/lib/
 
 RUN ldconfig
 
