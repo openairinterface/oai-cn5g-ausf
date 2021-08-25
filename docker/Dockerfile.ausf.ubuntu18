@@ -68,6 +68,7 @@ RUN apt-get update && \
       tzdata \
       bc \
       tshark \
+      perl \
       libasan4 \
       libnettle6 \
       libnghttp2-14 \

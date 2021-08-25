@@ -53,6 +53,7 @@ RUN apt-get update && \
       tzdata \
       bc \
       tshark \
+      perl \
       libasan4 \
       libnghttp2-14 \
       libhogweed4 \
