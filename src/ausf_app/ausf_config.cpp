@@ -208,8 +208,8 @@ void ausf_config::display() {
   Logger::config().info("================= AUSF =================");
   Logger::config().info("Configuration AUSF:");
   Logger::config().info("- Instance ...............: %d", instance);
-  Logger::config().info("- PID dir ................: %s", pid_dir.c_str());
-  Logger::config().info("- AUSF NAME ..............: %s", ausf_name.c_str());
+  Logger::config().info("- PID Dir ................: %s", pid_dir.c_str());
+  Logger::config().info("- AUSF Name ..............: %s", ausf_name.c_str());
 
   Logger::config().info("- SBI Networking:");
   Logger::config().info("    Iface ................: %s", sbi.if_name.c_str());
@@ -223,6 +223,9 @@ void ausf_config::display() {
   Logger::config().info("    Port .................: %lu  ", udm_addr.port);
   Logger::config().info(
       "    API version ..........: %s", udm_addr.api_version.c_str());
+  if (use_fqdn_dns)
+    Logger::config().info(
+        "    FQDN .................: %s", udm_addr.fqdn.c_str());
 }
 
 //------------------------------------------------------------------------------
