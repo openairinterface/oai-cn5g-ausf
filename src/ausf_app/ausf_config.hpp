@@ -60,6 +60,10 @@
 #define AUSF_CONFIG_STRING_UDM_IPV4_ADDRESS "IPV4_ADDRESS"
 #define AUSF_CONFIG_STRING_UDM_PORT "PORT"
 
+#define AUSF_CONFIG_STRING_SUPPORT_FEATURES "SUPPORT_FEATURES"
+#define AUSF_CONFIG_STRING_SUPPORT_FEATURES_USE_FQDN_DNS "USE_FQDN_DNS"
+#define AUSF_CONFIG_STRING_FQDN_DNS "FQDN"
+
 using namespace libconfig;
 
 namespace config {
@@ -91,7 +95,10 @@ class ausf_config {
     struct in_addr ipv4_addr;
     unsigned int port;
     std::string api_version;
+    std::string fqdn;
   } udm_addr;
+
+  bool use_fqdn_dns;
 };
 
 }  // namespace config

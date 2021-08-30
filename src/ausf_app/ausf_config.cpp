@@ -34,6 +34,7 @@
 
 #include "logger.hpp"
 #include "if.hpp"
+#include "fqdn.hpp"
 
 #include "string.hpp"
 
@@ -59,6 +60,8 @@ ausf_config::ausf_config() : sbi(), ausf_name(), pid_dir(), instance() {
   udm_addr.ipv4_addr.s_addr = INADDR_ANY;
   udm_addr.port             = 80;
   udm_addr.api_version      = "v1";
+  udm_addr.fqdn             = {};
+  use_fqdn_dns              = false;
 }
 
 //------------------------------------------------------------------------------
@@ -90,7 +93,7 @@ int ausf_config::load(const std::string& config_file) {
     const Setting& ausf_cfg = root[AUSF_CONFIG_STRING_AUSF_CONFIG];
   } catch (const SettingNotFoundException& nfex) {
     Logger::config().error("%s : %s", nfex.what(), nfex.getPath());
-    return -1;
+    return RETURNerror;
   }
   const Setting& ausf_cfg = root[AUSF_CONFIG_STRING_AUSF_CONFIG];
   try {
@@ -112,6 +115,7 @@ int ausf_config::load(const std::string& config_file) {
     Logger::config().error(
         "%s : %s, using defaults", nfex.what(), nfex.getPath());
   }
+  // AUSF SBI interface
   try {
     const Setting& new_if_cfg = ausf_cfg[AUSF_CONFIG_STRING_INTERFACES];
 
@@ -121,39 +125,81 @@ int ausf_config::load(const std::string& config_file) {
   } catch (const SettingNotFoundException& nfex) {
     Logger::config().error(
         "%s : %s, using defaults", nfex.what(), nfex.getPath());
-    return -1;
+    return RETURNerror;
   }
 
+  // Support features
   try {
-    std::string astring;
+    const Setting& support_features =
+        ausf_cfg[AUSF_CONFIG_STRING_SUPPORT_FEATURES];
+    std::string opt = {};
 
-    // UDM
-    const Setting& udm_cfg = ausf_cfg[AUSF_CONFIG_STRING_UDM];
-    struct in_addr udm_ipv4_addr;
-    unsigned int udm_port = 0;
-    std::string udm_api_version;
-    udm_cfg.lookupValue(AUSF_CONFIG_STRING_UDM_IPV4_ADDRESS, astring);
-    IPV4_STR_ADDR_TO_INADDR(
-        util::trim(astring).c_str(), udm_ipv4_addr,
-        "BAD IPv4 ADDRESS FORMAT FOR UDM !");
-    udm_addr.ipv4_addr = udm_ipv4_addr;
-    if (!(udm_cfg.lookupValue(AUSF_CONFIG_STRING_UDM_PORT, udm_port))) {
-      Logger::ausf_app().error(AUSF_CONFIG_STRING_UDM_PORT "failed");
-      throw(AUSF_CONFIG_STRING_UDM_PORT "failed");
+    support_features.lookupValue(
+        AUSF_CONFIG_STRING_SUPPORT_FEATURES_USE_FQDN_DNS, opt);
+    if (boost::iequals(opt, "yes")) {
+      use_fqdn_dns = true;
+    } else {
+      use_fqdn_dns = false;
     }
-    udm_addr.port = udm_port;
 
-    if (!(udm_cfg.lookupValue(
-            AUSF_CONFIG_STRING_API_VERSION, udm_api_version))) {
-      Logger::ausf_app().error(AUSF_CONFIG_STRING_API_VERSION "failed");
-      throw(AUSF_CONFIG_STRING_API_VERSION "failed");
+  } catch (const SettingNotFoundException& nfex) {
+    Logger::ausf_app().error(
+        "%s : %s, using defaults", nfex.what(), nfex.getPath());
+    return RETURNerror;
+  }
+
+  // UDM
+  try {
+    std::string astring = {};
+
+    const Setting& udm_cfg       = ausf_cfg[AUSF_CONFIG_STRING_UDM];
+    struct in_addr udm_ipv4_addr = {};
+    unsigned int udm_port        = 0;
+    std::string udm_api_version  = {};
+
+    if (!use_fqdn_dns) {
+      udm_cfg.lookupValue(AUSF_CONFIG_STRING_UDM_IPV4_ADDRESS, astring);
+      IPV4_STR_ADDR_TO_INADDR(
+          util::trim(astring).c_str(), udm_ipv4_addr,
+          "BAD IPv4 ADDRESS FORMAT FOR UDM !");
+      udm_addr.ipv4_addr = udm_ipv4_addr;
+      if (!(udm_cfg.lookupValue(AUSF_CONFIG_STRING_UDM_PORT, udm_port))) {
+        Logger::ausf_app().error(AUSF_CONFIG_STRING_UDM_PORT "failed");
+        throw(AUSF_CONFIG_STRING_UDM_PORT "failed");
+      }
+      udm_addr.port = udm_port;
+
+      if (!(udm_cfg.lookupValue(
+              AUSF_CONFIG_STRING_API_VERSION, udm_api_version))) {
+        Logger::ausf_app().error(AUSF_CONFIG_STRING_API_VERSION "failed");
+        throw(AUSF_CONFIG_STRING_API_VERSION "failed");
+      }
+      udm_addr.api_version = udm_api_version;
+
+    } else {
+      udm_cfg.lookupValue(AUSF_CONFIG_STRING_FQDN_DNS, astring);
+      uint8_t addr_type   = {0};
+      std::string address = {};
+      fqdn::resolve(astring, address, udm_port, addr_type);
+      if (addr_type != 0) {  // IPv6
+        // TODO:
+        throw("DO NOT SUPPORT IPV6 ADDR FOR UDM!");
+      } else {  // IPv4
+        IPV4_STR_ADDR_TO_INADDR(
+            util::trim(address).c_str(), udm_ipv4_addr,
+            "BAD IPv4 ADDRESS FORMAT FOR NRF !");
+        udm_addr.ipv4_addr   = udm_ipv4_addr;
+        udm_addr.port        = udm_port;
+        udm_addr.api_version = "v1";  // TODO: to get API version from DNS
+        udm_addr.fqdn        = astring;
+      }
     }
-    udm_addr.api_version = udm_api_version;
 
   } catch (const SettingNotFoundException& nfex) {
     Logger::ausf_app().error("%s : %s", nfex.what(), nfex.getPath());
     return RETURNerror;
   }
+
   return RETURNok;
 }
 
@@ -162,8 +208,8 @@ void ausf_config::display() {
   Logger::config().info("================= AUSF =================");
   Logger::config().info("Configuration AUSF:");
   Logger::config().info("- Instance ...............: %d", instance);
-  Logger::config().info("- PID dir ................: %s", pid_dir.c_str());
-  Logger::config().info("- AUSF NAME ..............: %s", ausf_name.c_str());
+  Logger::config().info("- PID Dir ................: %s", pid_dir.c_str());
+  Logger::config().info("- AUSF Name ..............: %s", ausf_name.c_str());
 
   Logger::config().info("- SBI Networking:");
   Logger::config().info("    Iface ................: %s", sbi.if_name.c_str());
@@ -177,6 +223,9 @@ void ausf_config::display() {
   Logger::config().info("    Port .................: %lu  ", udm_addr.port);
   Logger::config().info(
       "    API version ..........: %s", udm_addr.api_version.c_str());
+  if (use_fqdn_dns)
+    Logger::config().info(
+        "    FQDN .................: %s", udm_addr.fqdn.c_str());
 }
 
 //------------------------------------------------------------------------------

@@ -36,6 +36,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get upgrade --yes && DEBIAN_FRONTEND=noninteractive apt-get install --yes \
     psmisc \
+    software-properties-common \
     git \
   && rm -rf /var/lib/apt/lists/*
 
@@ -68,6 +69,7 @@ RUN apt-get update && \
       tzdata \
       bc \
       tshark \
+      perl \
       libasan4 \
       libnettle6 \
       libnghttp2-14 \
@@ -82,6 +84,7 @@ COPY --from=oai-ausf-builder /openair-ausf/build/ausf/build/ausf oai_ausf
 COPY --from=oai-ausf-builder /openair-ausf/scripts/entrypoint.sh .
 
 COPY --from=oai-ausf-builder /usr/local/lib/libpistache.so /usr/local/lib/
+COPY --from=oai-ausf-builder /usr/lib/libboost_system.so.1.67.0 /usr/local/lib/
 
 RUN ldconfig
 
