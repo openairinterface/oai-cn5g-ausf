@@ -205,6 +205,8 @@ int ausf_config::load(const std::string& config_file) {
 
 //------------------------------------------------------------------------------
 void ausf_config::display() {
+  Logger::config().info(
+      "==== OAI-CN5G %s v%s ====", PACKAGE_NAME, PACKAGE_VERSION);
   Logger::config().info("================= AUSF =================");
   Logger::config().info("Configuration AUSF:");
   Logger::config().info("- Instance ...............: %d", instance);
