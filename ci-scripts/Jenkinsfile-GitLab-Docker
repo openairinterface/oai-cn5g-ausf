@@ -113,6 +113,10 @@ pipeline {
               error "Stopping pipeline!"
             }
           }
+          if (params.DockerHubCredentials == null) {
+            echo '\u26D4 \u001B[31mNo Credentials to push to DockerHub!\u001B[0m'
+            error "Stopping pipeline!"
+          }
         }
       }
     }
@@ -195,6 +199,10 @@ pipeline {
                   myShCmd('docker build --no-cache --target oai-ausf --tag oai-ausf:' + ausf_tag + ' --file ci-scripts/docker/Dockerfile.ci.ubuntu.18.04 . > archives/ausf_docker_image_build.log 2>&1', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
                 }
                 myShCmd('docker image ls >> archives/ausf_docker_image_build.log', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
+                // We will keep also the TMP image in U18 case.
+                if ("MERGE".equals(env.gitlabActionType)) {
+                  myShCmd('docker image tag oai-ausf:' + ausf_tag + ' oai-ausf:' + rhel_ausf_tag, rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
+                }
               }
             }
           }
@@ -398,6 +406,25 @@ pipeline {
                               filter: '*_results_oai_cn5g_oc.html',
                               selector: lastCompleted())
               }
+            }
+          }
+        }
+      }
+    }
+    // For the moment it is Docker-Hub, but we might have a new one internally.
+    stage ('Pushing Image to Official Registry') {
+      steps {
+        script {
+          // Only in case of push to target branch!
+          if ("PUSH".equals(env.gitlabActionType)) {
+            withCredentials([
+              [$class: 'UsernamePasswordMultiBinding', credentialsId: "${params.DockerHubCredentials}", usernameVariable: 'DH_Username', passwordVariable: 'DH_Password']
+            ]) {
+              myShCmd("echo ${DH_Password} | docker login --username ${DH_Username} --password-stdin", rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
+              myShCmd("docker image tag oai-ausf:develop ${DH_Username}/oai-ausf:develop", rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
+              myShCmd("docker push ${DH_Username}/oai-ausf:develop", rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
+              myShCmd("docker rmi ${DH_Username}/oai-ausf:develop", rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
+              myShCmd("docker logout", rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
             }
           }
         }
