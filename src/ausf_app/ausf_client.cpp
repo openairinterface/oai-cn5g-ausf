@@ -125,7 +125,7 @@ void ausf_client::curl_http_client(
     // Process the response
     response            = *httpData.get();
     bool is_response_ok = true;
-    Logger::ausf_app().info("Get response with httpcode (%d)", httpCode);
+    Logger::ausf_app().info("Got response with httpcode (%d)", httpCode);
 
     if (httpCode == 0) {
       Logger::ausf_app().info(

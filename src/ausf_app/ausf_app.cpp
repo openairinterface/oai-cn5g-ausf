@@ -28,6 +28,7 @@
  */
 
 #include "ausf_app.hpp"
+#include "ausf_nrf.hpp"
 
 #include <unistd.h>
 #include "logger.hpp"
@@ -52,6 +53,7 @@ extern ausf_app* ausf_app_inst;
 ausf_client* ausf_client_inst = nullptr;
 using namespace config;
 extern ausf_config ausf_cfg;
+ausf_nrf* ausf_nrf_inst = nullptr;
 
 //------------------------------------------------------------------------------
 ausf_app::ausf_app(const std::string& config_file)
@@ -65,7 +67,17 @@ ausf_app::ausf_app(const std::string& config_file)
     Logger::ausf_app().error("Cannot create AUSF APP: %s", e.what());
     throw;
   }
-  // TODO: Register to NRF
+  // Register to NRF
+  if (ausf_cfg.register_nrf) {
+    try {
+      ausf_nrf_inst = new ausf_nrf();
+      ausf_nrf_inst->register_to_nrf();
+      Logger::ausf_app().info("NRF TASK Created ");
+    } catch (std::exception& e) {
+      Logger::ausf_app().error("Cannot create NRF TASK: %s", e.what());
+      throw;
+    }
+  }
   Logger::ausf_app().startup("Started");
 }
 

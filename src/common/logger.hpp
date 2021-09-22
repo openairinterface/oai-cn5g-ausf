@@ -86,6 +86,7 @@ class Logger {
   static _Logger& config() { return *singleton().m_config; }
   static _Logger& system() { return *singleton().m_system; }
   static _Logger& ausf_app() { return *singleton().m_ausf_app; }
+  static _Logger& ausf_nrf() { return *singleton().m_ausf_nrf; }
   static _Logger& ausf_server() { return *singleton().m_ausf_server; }
 
  private:
@@ -107,6 +108,7 @@ class Logger {
   _Logger* m_config;
   _Logger* m_system;
   _Logger* m_ausf_app;
+  _Logger* m_ausf_nrf;
   _Logger* m_ausf_server;
 };
 
