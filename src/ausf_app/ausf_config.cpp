@@ -188,10 +188,17 @@ int ausf_config::load(const std::string& config_file) {
         IPV4_STR_ADDR_TO_INADDR(
             util::trim(address).c_str(), udm_ipv4_addr,
             "BAD IPv4 ADDRESS FORMAT FOR NRF !");
-        udm_addr.ipv4_addr   = udm_ipv4_addr;
-        udm_addr.port        = udm_port;
-        udm_addr.api_version = "v1";  // TODO: to get API version from DNS
-        udm_addr.fqdn        = astring;
+        udm_addr.ipv4_addr          = udm_ipv4_addr;
+        udm_addr.port               = udm_port;
+        std::string udm_api_version = {};
+        if (!(udm_cfg.lookupValue(
+                AUSF_CONFIG_STRING_API_VERSION, udm_api_version))) {
+          Logger::ausf_app().error(AUSF_CONFIG_STRING_API_VERSION "failed");
+          throw(AUSF_CONFIG_STRING_API_VERSION "failed");
+        }
+        udm_addr.api_version =
+            udm_api_version;  // TODO: to get API version from DNS
+        udm_addr.fqdn = astring;
       }
     }
 

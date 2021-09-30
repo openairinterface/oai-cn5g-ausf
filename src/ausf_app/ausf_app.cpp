@@ -200,18 +200,18 @@ void ausf_app::handle_ue_authentications(
   } catch (nlohmann::json::exception& e) {
     // TODO: Catch parse_error exception
     // TODO: Catch out_of_range exception
-    Logger::ausf_app().info("Could not Parse Json content from UDM response");
+    Logger::ausf_app().info("Could not Parse JSON content from UDM response");
 
     // TODO: error handling
     problemDetails.setCause("CONTEXT_NOT_FOUND");
     problemDetails.setStatus(404);
     problemDetails.setDetail(
-        "Resource corresponding to User " + supi + " not found in UDM");
+        "Resource corresponding to User " + supi + " not found");
     to_json(problemDetails_json, problemDetails);
 
     Logger::ausf_app().error(
-        "Resource corresponding to User %s not found in UDM", supi.c_str());
-    Logger::ausf_app().info("Send 404 Not_Found response to AUSF");
+        "Resource corresponding to User %s not found", supi.c_str());
+    Logger::ausf_app().info("Send 404 Not_Found response");
     code      = Pistache::Http::Code::Not_Found;
     json_data = problemDetails_json;
     return;
@@ -362,7 +362,7 @@ void ausf_app::handle_ue_authentications_confirmation(
     to_json(problemDetails_json, problemDetails);
 
     Logger::ausf_app().error("Serving Network Not Authorized");
-    Logger::ausf_app().info("Send 403 Forbidden response to AUSF");
+    Logger::ausf_app().info("Send 403 Forbidden response");
     code      = Pistache::Http::Code::Forbidden;
     json_data = problemDetails_json;
     return;

@@ -125,7 +125,7 @@ void ausf_client::curl_http_client(
     // Process the response
     response            = *httpData.get();
     bool is_response_ok = true;
-    Logger::ausf_app().info("Get response with httpcode (%d)", httpCode);
+    Logger::ausf_app().info("Get response with HTTP code (%d)", httpCode);
 
     if (httpCode == 0) {
       Logger::ausf_app().info(
@@ -147,7 +147,7 @@ void ausf_client::curl_http_client(
         // TODO: send context response error
         return;
       }
-      Logger::ausf_app().warn("Receive response with Http Code %d", httpCode);
+      Logger::ausf_app().warn("Receive response with HTTP code %d", httpCode);
       return;
     }
 
@@ -155,7 +155,7 @@ void ausf_client::curl_http_client(
       try {
         response_data = nlohmann::json::parse(response);
       } catch (nlohmann::json::exception& e) {
-        Logger::ausf_app().info("Could not get Json content from the response");
+        Logger::ausf_app().info("Could not get JSON content from the response");
         // Set the default Cause
         response_data["error"]["cause"] = "504 Gateway Timeout";
       }
