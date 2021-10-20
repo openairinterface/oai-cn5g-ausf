@@ -50,7 +50,6 @@ typedef struct s_nssai {
 typedef struct dnai_s {
 } dnai_t;
 
-
 typedef struct patch_item_s {
   std::string op;
   std::string path;

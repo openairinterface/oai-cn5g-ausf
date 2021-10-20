@@ -109,13 +109,13 @@ enum http_response_codes_e {
 };
 
 typedef struct supi_range_s {
-std::string start;
-std::string end;
-std::string pattern;
+  std::string start;
+  std::string end;
+  std::string pattern;
 } supi_range_t;
 
 typedef struct supi_range_ausf_info_item_s {
-supi_range_t supi_range;
+  supi_range_t supi_range;
 } supi_range_ausf_info_item_t;
 
 typedef struct ausf_info_s {
