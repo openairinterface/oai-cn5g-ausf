@@ -189,7 +189,7 @@ void DefaultApi::ue_authentications_deregister_post_handler(
   }
 }
 
-void DefaultApi::ue_authentications_post_handler(
+void DefaultApi:: ue_authentications_post_handler(
     const Pistache::Rest::Request& request,
     Pistache::Http::ResponseWriter response) {
   Logger::ausf_server().info("Received ue_authentications_post Request");

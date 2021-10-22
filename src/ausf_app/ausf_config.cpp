@@ -62,6 +62,7 @@ ausf_config::ausf_config() : sbi(), ausf_name(), pid_dir(), instance() {
   udm_addr.api_version      = "v1";
   udm_addr.fqdn             = {};
   use_fqdn_dns              = false;
+  use_http2                 = false;
 }
 
 //------------------------------------------------------------------------------
@@ -155,6 +156,14 @@ int ausf_config::load(const std::string& config_file) {
       use_fqdn_dns = false;
     }
 
+    support_features.lookupValue(
+        AUSF_CONFIG_STRING_SUPPORT_FEATURES_USE_HTTP2, opt);
+    if (boost::iequals(opt, "yes")) {
+      use_http2 = true;
+    } else {
+      use_http2 = false;
+    }
+
   } catch (const SettingNotFoundException& nfex) {
     Logger::ausf_app().error(
         "%s : %s, using defaults", nfex.what(), nfex.getPath());
@@ -240,6 +249,13 @@ void ausf_config::display() {
   Logger::config().info("    HTTP2 Port............: %d", sbi_http2_port);
   Logger::config().info(
       "    API Version...........: %s", sbi_api_version.c_str());
+  Logger::config().info("- Supported Features:");
+  Logger::config().info(
+      "    Use FQDN ..............: %s",
+      use_fqdn_dns ? "Yes" : "No");
+  Logger::config().info(
+      "    Use HTTP2..............: %s",
+      use_http2 ? "Yes" : "No");
 
   Logger::config().info("- UDM:");
   Logger::config().info(

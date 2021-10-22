@@ -63,6 +63,7 @@
 
 #define AUSF_CONFIG_STRING_SUPPORT_FEATURES "SUPPORT_FEATURES"
 #define AUSF_CONFIG_STRING_SUPPORT_FEATURES_USE_FQDN_DNS "USE_FQDN_DNS"
+#define AUSF_CONFIG_STRING_SUPPORT_FEATURES_USE_HTTP2 "USE_HTTP2"
 #define AUSF_CONFIG_STRING_FQDN_DNS "FQDN"
 
 using namespace libconfig;
@@ -102,6 +103,7 @@ class ausf_config {
   } udm_addr;
 
   bool use_fqdn_dns;
+  bool use_http2;
 };
 
 }  // namespace config
