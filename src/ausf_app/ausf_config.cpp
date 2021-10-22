@@ -121,6 +121,19 @@ int ausf_config::load(const std::string& config_file) {
 
     const Setting& sbi_cfg = new_if_cfg[AUSF_CONFIG_STRING_INTERFACE_SBI];
     load_interface(sbi_cfg, sbi);
+    // HTTP2 port
+    if (!(sbi_cfg.lookupValue(
+            AUSF_CONFIG_STRING_SBI_HTTP2_PORT, sbi_http2_port))) {
+      Logger::ausf_app().error(AUSF_CONFIG_STRING_SBI_HTTP2_PORT "failed");
+      throw(AUSF_CONFIG_STRING_SBI_HTTP2_PORT " failed");
+    }
+
+    // API Version
+    if (!(sbi_cfg.lookupValue(
+            AUSF_CONFIG_STRING_API_VERSION, sbi_api_version))) {
+      Logger::ausf_app().error(AUSF_CONFIG_STRING_API_VERSION " failed");
+      throw(AUSF_CONFIG_STRING_API_VERSION " failed");
+    }
 
   } catch (const SettingNotFoundException& nfex) {
     Logger::config().error(
@@ -223,7 +236,10 @@ void ausf_config::display() {
   Logger::config().info("- SBI Networking:");
   Logger::config().info("    Iface ................: %s", sbi.if_name.c_str());
   Logger::config().info("    IPv4 Addr ............: %s", inet_ntoa(sbi.addr4));
-  Logger::config().info("    Port .................: %d", sbi.port);
+  Logger::config().info("    HTTP1 Port ...........: %d", sbi.port);
+  Logger::config().info("    HTTP2 Port............: %d", sbi_http2_port);
+  Logger::config().info(
+      "    API Version...........: %s", sbi_api_version.c_str());
 
   Logger::config().info("- UDM:");
   Logger::config().info(
