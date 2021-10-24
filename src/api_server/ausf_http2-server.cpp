@@ -232,7 +232,7 @@ void ausf_http2_server::ue_authentications_post_handler(
   header_map h;
 
   m_ausf_app->handle_ue_authentications(
-      authenticationInfo, UEAuthCtx_json, location, code);
+      authenticationInfo, UEAuthCtx_json, location, code, 2);
 
   Logger::ausf_server().debug(
       "Auth response:\n %s", UEAuthCtx_json.dump().c_str());

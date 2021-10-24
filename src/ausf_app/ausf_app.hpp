@@ -76,7 +76,8 @@ class ausf_app {
 
   void handle_ue_authentications(
       const AuthenticationInfo& authenticationInfo, nlohmann::json& json_data,
-      std::string& location, Pistache::Http::Code& code);
+      std::string& location, Pistache::Http::Code& code,
+      uint8_t http_version = 1);
 
   void handle_ue_authentications_confirmation(
       const std::string& authCtxId, const ConfirmationData& confirmation_data,
