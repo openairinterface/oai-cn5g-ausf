@@ -36,7 +36,6 @@ RUN cp -Rf /openair-ausf-ext-ref /openair-ausf/build/ext
 
 # Building AUSF
 WORKDIR /openair-ausf/build/scripts
-RUN ./build_ausf --install-deps --force
 RUN ./build_ausf --clean --Verbose --build-type Release --jobs
 
 #---------------------------------------------------------------------
