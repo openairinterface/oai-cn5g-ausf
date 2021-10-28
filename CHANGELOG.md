@@ -1,5 +1,9 @@
 # RELEASE NOTES : #
 
+## v1.2.1 -- October 2021 ##
+
+* Fix build issue
+
 ## v1.2.0 -- September 2021 ##
 
 * Initial public release
