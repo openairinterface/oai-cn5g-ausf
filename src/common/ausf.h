@@ -108,4 +108,20 @@ enum http_response_codes_e {
   HTTP_RESPONSE_CODE_GATEWAY_TIMEOUT        = 504
 };
 
+typedef struct supi_range_s {
+  std::string start;
+  std::string end;
+  std::string pattern;
+} supi_range_t;
+
+typedef struct supi_range_ausf_info_item_s {
+  supi_range_t supi_range;
+} supi_range_ausf_info_item_t;
+
+typedef struct ausf_info_s {
+  std::string groupid;
+  std::vector<supi_range_ausf_info_item_t> supi_ranges;
+  std::vector<std::string> routing_indicators;
+} ausf_info_t;
+
 #endif
