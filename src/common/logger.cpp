@@ -69,6 +69,7 @@ void Logger::_init(
   m_config      = new _Logger("configurations", m_sinks, ss.str().c_str());
   m_system      = new _Logger("system", m_sinks, ss.str().c_str());
   m_ausf_app    = new _Logger("ausf_app", m_sinks, ss.str().c_str());
+  m_ausf_nrf    = new _Logger("ausf_nrf", m_sinks, ss.str().c_str());
   m_ausf_server = new _Logger("ausf_server", m_sinks, ss.str().c_str());
 }
 

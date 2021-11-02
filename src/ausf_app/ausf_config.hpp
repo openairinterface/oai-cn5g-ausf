@@ -61,9 +61,14 @@
 #define AUSF_CONFIG_STRING_UDM_IPV4_ADDRESS "IPV4_ADDRESS"
 #define AUSF_CONFIG_STRING_UDM_PORT "PORT"
 
+#define AUSF_CONFIG_STRING_NRF "NRF"
+#define AUSF_CONFIG_STRING_NRF_IPV4_ADDRESS "IPV4_ADDRESS"
+#define AUSF_CONFIG_STRING_NRF_PORT "PORT"
+
 #define AUSF_CONFIG_STRING_SUPPORT_FEATURES "SUPPORT_FEATURES"
 #define AUSF_CONFIG_STRING_SUPPORT_FEATURES_USE_FQDN_DNS "USE_FQDN_DNS"
 #define AUSF_CONFIG_STRING_SUPPORT_FEATURES_USE_HTTP2 "USE_HTTP2"
+#define AUSF_CONFIG_STRING_SUPPORTED_FEATURES_REGISTER_NRF "REGISTER_NRF"
 #define AUSF_CONFIG_STRING_FQDN_DNS "FQDN"
 
 using namespace libconfig;
@@ -102,6 +107,15 @@ class ausf_config {
     std::string fqdn;
   } udm_addr;
 
+  struct {
+    struct in_addr ipv4_addr;
+    unsigned int port;
+    std::string api_version;
+    std::string fqdn;
+  } nrf_addr;
+
+  bool register_nrf;
+  ;
   bool use_fqdn_dns;
   bool use_http2;
 };
