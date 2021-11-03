@@ -163,7 +163,7 @@ int ausf_config::load(const std::string& config_file) {
     } else {
       use_http2 = false;
     }
-      
+
     support_features.lookupValue(
         AUSF_CONFIG_STRING_SUPPORTED_FEATURES_REGISTER_NRF, opt);
     if (boost::iequals(opt, "yes")) {
