@@ -130,7 +130,7 @@ void ausf_app::set_contextId_2_security_context(
 //------------------------------------------------------------------------------
 void ausf_app::handle_ue_authentications(
     const AuthenticationInfo& authenticationInfo, nlohmann::json& json_data,
-    std::string& location, Pistache::Http::Code& code) {
+    std::string& location, Pistache::Http::Code& code, uint8_t http_version) {
   Logger::ausf_app().info("Handle UE Authentication Request");
   std::string snn =
       authenticationInfo.getServingNetworkName();  // serving network name
@@ -325,11 +325,14 @@ void ausf_app::handle_ue_authentications(
   // Store the security context
   set_contextId_2_security_context(authCtxId_s, sc);
 
+  std::string ausf_port = std::to_string(ausf_cfg.sbi.port);
+  if (http_version == 2) ausf_port = std::to_string(ausf_cfg.sbi_http2_port);
+
   resourceURI =
       "http://" +
       std::string(inet_ntoa(*((struct in_addr*) &ausf_cfg.sbi.addr4))) + ":" +
-      std::to_string(ausf_cfg.sbi.port) + "/nausf-auth/v1/ue-authentications/" +
-      authCtxId_s + "/5g-aka-confirmation";
+      ausf_port + "/nausf-auth/v1/ue-authentications/" + authCtxId_s +
+      "/5g-aka-confirmation";
   ausf_Href.setHref(resourceURI);
 
   ausf_links["5G_AKA"] = ausf_Href;

@@ -34,6 +34,7 @@ include_directories(${SRC_TOP_DIR}/../build/ext/spdlog/include)
 
 file(GLOB AUSF_API_SERVER_src_files
     ${AUSF_API_SERVER_DIR}/ausf-api-server.cpp
+    ${AUSF_API_SERVER_DIR}/ausf_http2-server.cpp
     ${AUSF_API_SERVER_DIR}/model/*.cpp
     ${AUSF_API_SERVER_DIR}/api/*.cpp
     ${AUSF_API_SERVER_DIR}/impl/*.cpp

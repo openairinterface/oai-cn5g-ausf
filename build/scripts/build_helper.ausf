@@ -277,7 +277,7 @@ install_nghttp2_from_git() {
 
     git clone $GIT_URL
     cd nghttp2
-    git checkout 43ba3125932c1d56addaeded2b7f62637af255cd
+    git checkout -f v3.10.3
     git submodule update --init
     ret=$?;[[ $ret -ne 0 ]] && popd && return $ret
     autoreconf -i
@@ -440,8 +440,8 @@ check_install_ausf_deps() {
   install_nlohmann_from_git $1 $2
   ret=$?;[[ $ret -ne 0 ]] && return $ret
 
-  #install_nghttp2_from_git $1 $2
-  #ret=$?;[[ $ret -ne 0 ]] && return $ret
+  install_nghttp2_from_git $1 $2
+  ret=$?;[[ $ret -ne 0 ]] && return $ret
   
   $SUDO ldconfig  
   return 0

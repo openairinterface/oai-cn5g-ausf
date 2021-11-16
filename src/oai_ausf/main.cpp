@@ -16,6 +16,7 @@
 
 #include "logger.hpp"
 #include "ausf-api-server.h"
+#include "ausf-http2-server.h"
 #include "ausf_config.hpp"
 #include "ausf_app.hpp"
 #include "options.hpp"
@@ -39,9 +40,9 @@ using namespace std;
 using namespace config;
 
 ausf_config ausf_cfg;
-ausf_app* ausf_app_inst   = nullptr;
-AUSFApiServer* api_server = nullptr;
-#include "ausf_config.hpp"
+ausf_app* ausf_app_inst              = nullptr;
+AUSFApiServer* api_server            = nullptr;
+ausf_http2_server* ausf_api_server_2 = nullptr;
 
 //------------------------------------------------------------------------------
 void my_app_signal_handler(int s) {
@@ -109,7 +110,15 @@ int main(int argc, char** argv) {
   api_server = new AUSFApiServer(addr, ausf_app_inst);
   api_server->init(2);
   std::thread ausf_manager(&AUSFApiServer::start, api_server);
+
+  // AUSF NGHTTP API server (HTTP2)
+  ausf_api_server_2 = new ausf_http2_server(
+      conv::toString(ausf_cfg.sbi.addr4), ausf_cfg.sbi_http2_port,
+      ausf_app_inst);
+  std::thread ausf_http2_manager(&ausf_http2_server::start, ausf_api_server_2);
+
   ausf_manager.join();
+  ausf_http2_manager.join();
 
   FILE* fp             = NULL;
   std::string filename = fmt::format("/tmp/ausf_{}.status", getpid());

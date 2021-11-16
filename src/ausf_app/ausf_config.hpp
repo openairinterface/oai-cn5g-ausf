@@ -50,6 +50,7 @@
 
 #define AUSF_CONFIG_STRING_INTERFACES "INTERFACES"
 #define AUSF_CONFIG_STRING_INTERFACE_SBI "SBI"
+#define AUSF_CONFIG_STRING_SBI_HTTP2_PORT "HTTP2_PORT"
 
 #define AUSF_CONFIG_STRING_INTERFACE_NAME "INTERFACE_NAME"
 #define AUSF_CONFIG_STRING_IPV4_ADDRESS "IPV4_ADDRESS"
@@ -66,6 +67,7 @@
 
 #define AUSF_CONFIG_STRING_SUPPORT_FEATURES "SUPPORT_FEATURES"
 #define AUSF_CONFIG_STRING_SUPPORT_FEATURES_USE_FQDN_DNS "USE_FQDN_DNS"
+#define AUSF_CONFIG_STRING_SUPPORT_FEATURES_USE_HTTP2 "USE_HTTP2"
 #define AUSF_CONFIG_STRING_SUPPORTED_FEATURES_REGISTER_NRF "REGISTER_NRF"
 #define AUSF_CONFIG_STRING_FQDN_DNS "FQDN"
 
@@ -95,6 +97,8 @@ class ausf_config {
   std::string ausf_name;
 
   interface_cfg_t sbi;
+  unsigned int sbi_http2_port;
+  std::string sbi_api_version;
 
   struct {
     struct in_addr ipv4_addr;
@@ -113,6 +117,7 @@ class ausf_config {
   bool register_nrf;
   ;
   bool use_fqdn_dns;
+  bool use_http2;
 };
 
 }  // namespace config
