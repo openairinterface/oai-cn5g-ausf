@@ -373,7 +373,7 @@ pipeline {
             always {
               script {
                 copyArtifacts(projectName: params.CN5G_FED_PipelineName,
-                              filter: '*_results_oai_cn5g.html',
+                              filter: '*_results_oai_cn5g*.html',
                               selector: lastCompleted())
               }
             }
@@ -403,7 +403,7 @@ pipeline {
             always {
               script {
                 copyArtifacts(projectName: params.CN5G_FED_OC_PipelineName,
-                              filter: '*_results_oai_cn5g_oc.html',
+                              filter: '*_results_oai_cn5g_oc*.html',
                               selector: lastCompleted())
               }
             }
@@ -493,33 +493,18 @@ pipeline {
         // Generating the HTML report
         if ("MERGE".equals(env.gitlabActionType)) {
           sh "python3 ci-scripts/generateHtmlReport.py --job_name=${JOB_NAME} --job_id=${BUILD_ID} --job_url=${BUILD_URL} --git_url=${GIT_URL} --git_src_branch=${env.gitlabSourceBranch} --git_src_commit=${env.gitlabMergeRequestLastCommit} --git_pull_request=True --git_target_branch=${env.gitlabTargetBranch} --git_target_commit=${GIT_COMMIT}"
-          if (fileExists('test_results_oai_ausf.html')) {
-            sh "sed -i -e 's#TEMPLATE_MERGE_REQUEST_LINK#${gitlabMergeRequestLink}#g' test_results_oai_ausf.html"
-            sh "sed -i -e 's#TEMPLATE_MERGE_REQUEST_TEMPLATE#${env.gitlabMergeRequestTitle}#' test_results_oai_ausf.html"
-          }
-          if (fileExists('test_results_oai_cn5g.html')) {
-            sh "sed -i -e 's#TEMPLATE_MERGE_REQUEST_LINK#${gitlabMergeRequestLink}#g' *_results_oai_cn5g.html"
-            sh "sed -i -e 's#TEMPLATE_MERGE_REQUEST_TEMPLATE#${env.gitlabMergeRequestTitle}#' *_results_oai_cn5g.html"
-          }
-          if (fileExists('test_results_oai_cn5g_oc.html')) {
-            sh "sed -i -e 's#TEMPLATE_MERGE_REQUEST_LINK#${gitlabMergeRequestLink}#g' *_results_oai_cn5g_oc.html"
-            sh "sed -i -e 's#TEMPLATE_MERGE_REQUEST_TEMPLATE#${env.gitlabMergeRequestTitle}#' *_results_oai_cn5g_oc.html"
-          }
         } else {
           sh "python3 ci-scripts/generateHtmlReport.py --job_name=${JOB_NAME} --job_id=${BUILD_ID} --job_url=${BUILD_URL} --git_url=${GIT_URL} --git_src_branch=${GIT_BRANCH} --git_src_commit=${GIT_COMMIT}"
         }
-        sh "sed -i -e 's#TEMPLATE_TIME#${JOB_TIMESTAMP}#' test_results_oai_ausf.html"
-        if (fileExists('test_results_oai_ausf.html')) {
-          sh "sed -i -e 's#TEMPLATE_TIME#${JOB_TIMESTAMP}#' test_results_oai_ausf.html"
-          archiveArtifacts artifacts: 'test_results_oai_ausf.html'
-        }
-        if (fileExists('test_results_oai_cn5g.html')) {
-          sh "sed -i -e 's#TEMPLATE_TIME#${JOB_TIMESTAMP}#' *_results_oai_cn5g.html"
-          archiveArtifacts artifacts: '*_results_oai_cn5g.html'
-        }
-        if (fileExists('test_results_oai_cn5g_oc.html')) {
-          sh "sed -i -e 's#TEMPLATE_TIME#${JOB_TIMESTAMP}#' *_results_oai_cn5g_oc.html"
-          archiveArtifacts artifacts: '*_results_oai_cn5g_oc.html'
+        listOfFiles = sh returnStdout: true, script: 'ls test_results*.html'
+        String[] htmlFiles = listOfFiles.split("\\n")
+        for (htmlFile in htmlFiles) {
+          if ("MERGE".equals(env.gitlabActionType)) {
+            sh "sed -i -e 's#TEMPLATE_MERGE_REQUEST_LINK#${gitlabMergeRequestLink}#g' ${htmlFile}"
+            sh "sed -i -e 's#TEMPLATE_MERGE_REQUEST_TEMPLATE#${env.gitlabMergeRequestTitle}#' ${htmlFile}"
+          }
+          sh "sed -i -e 's#TEMPLATE_TIME#${JOB_TIMESTAMP}#' ${htmlFile}"
+          archiveArtifacts artifacts: htmlFile
         }
 
         // Sending email to commiter
