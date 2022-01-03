@@ -64,9 +64,9 @@ COPY . /openair-ausf
 # Installing and Building AUSF
 WORKDIR /openair-ausf/build/scripts
 RUN ./build_ausf --install-deps --force
-RUN ./build_ausf --clean --Verbose --build-type Release --jobs
-
-RUN ldd /openair-ausf/build/ausf/build/ausf
+RUN ./build_ausf --clean --Verbose --build-type Release --jobs && \
+    ldd /openair-ausf/build/ausf/build/ausf && \
+    mv /openair-ausf/build/ausf/build/ausf /openair-ausf/build/ausf/build/oai_ausf
 
 #---------------------------------------------------------------------
 # TARGET IMAGE
@@ -92,20 +92,24 @@ RUN yum update -y && \
 
 # Copying executable and generated libraries
 WORKDIR /openair-ausf/bin
-COPY --from=oai-ausf-builder /openair-ausf/build/ausf/build/ausf oai_ausf
-COPY --from=oai-ausf-builder /openair-ausf/scripts/entrypoint.sh .
+COPY --from=oai-ausf-builder \
+    /openair-ausf/build/ausf/build/oai_ausf \
+    /openair-ausf/scripts/entrypoint.sh \
+    ./
 
 WORKDIR /usr/local/lib64
-COPY --from=oai-ausf-builder /usr/local/lib64/libpistache.so.0 .
-COPY --from=oai-ausf-builder /lib64/libboost_system.so.1.66.0 .
-COPY --from=oai-ausf-builder /lib64/libboost_thread.so.1.66.0 .
-COPY --from=oai-ausf-builder /lib64/libboost_date_time.so.1.66.0 .
-COPY --from=oai-ausf-builder /lib64/libconfig++.so.9 .
-COPY --from=oai-ausf-builder /lib64/libnghttp2.so.14 .
-COPY --from=oai-ausf-builder /usr/local/lib/libnghttp2_asio.so.1 /usr/lib64/
+COPY --from=oai-ausf-builder \
+    /usr/local/lib64/libpistache.so.0 \
+    /lib64/libboost_system.so.1.66.0 \
+    /lib64/libboost_thread.so.1.66.0 \
+    /lib64/libboost_date_time.so.1.66.0 \
+    /lib64/libconfig++.so.9 \
+    /lib64/libnghttp2.so.14 \
+    /usr/local/lib/libnghttp2_asio.so.1 \
+    ./
 
-RUN ldconfig -v
-RUN ldd /openair-ausf/bin/oai_ausf
+RUN ldconfig -v && \
+    ldd /openair-ausf/bin/oai_ausf
 
 WORKDIR /openair-ausf/etc
 COPY --from=oai-ausf-builder /openair-ausf/etc/ausf.conf .

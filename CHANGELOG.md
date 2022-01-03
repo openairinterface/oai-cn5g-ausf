@@ -1,8 +1,9 @@
 # RELEASE NOTES : #
 
-## v1.3.0 -- December 2021 ##
+## v1.3.0 -- January 2021 ##
 
 * HTTP2 Support
+* Docker optimization
 
 ## v1.2.1 -- October 2021 ##
 
