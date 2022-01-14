@@ -218,7 +218,13 @@ int ausf_config::load(const std::string& config_file) {
         IPV4_STR_ADDR_TO_INADDR(
             util::trim(address).c_str(), udm_ipv4_addr,
             "BAD IPv4 ADDRESS FORMAT FOR NRF !");
-        udm_addr.ipv4_addr          = udm_ipv4_addr;
+        udm_addr.ipv4_addr = udm_ipv4_addr;
+        // udm_addr.port               = udm_port;
+        // We hardcode udm port from config for the moment
+        if (!(udm_cfg.lookupValue(AUSF_CONFIG_STRING_UDM_PORT, udm_port))) {
+          Logger::ausf_app().error(AUSF_CONFIG_STRING_UDM_PORT "failed");
+          throw(AUSF_CONFIG_STRING_UDM_PORT "failed");
+        }
         udm_addr.port               = udm_port;
         std::string udm_api_version = {};
         if (!(udm_cfg.lookupValue(
@@ -278,10 +284,16 @@ int ausf_config::load(const std::string& config_file) {
           IPV4_STR_ADDR_TO_INADDR(
               util::trim(address).c_str(), nrf_ipv4_addr,
               "BAD IPv4 ADDRESS FORMAT FOR NRF !");
-          nrf_addr.ipv4_addr   = nrf_ipv4_addr;
-          nrf_addr.port        = nrf_port;
+          nrf_addr.ipv4_addr = nrf_ipv4_addr;
+          // nrf_addr.port        = nrf_port;
           nrf_addr.api_version = "v1";  // TODO: to get API version from DNS
           nrf_addr.fqdn        = astring;
+          // We hardcode nrf port from config for the moment
+          if (!(nrf_cfg.lookupValue(AUSF_CONFIG_STRING_NRF_PORT, nrf_port))) {
+            Logger::ausf_app().error(AUSF_CONFIG_STRING_NRF_PORT "failed");
+            throw(AUSF_CONFIG_STRING_NRF_PORT "failed");
+          }
+          nrf_addr.port = nrf_port;
         }
       }
     } catch (const SettingNotFoundException& nfex) {
@@ -310,6 +322,8 @@ void ausf_config::display() {
   Logger::config().info(
       "    API Version...........: %s", sbi_api_version.c_str());
   Logger::config().info("- Supported Features:");
+  Logger::config().info(
+      "    Register NRF ..........: %s", register_nrf ? "Yes" : "No");
   Logger::config().info(
       "    Use FQDN ..............: %s", use_fqdn_dns ? "Yes" : "No");
   Logger::config().info(
