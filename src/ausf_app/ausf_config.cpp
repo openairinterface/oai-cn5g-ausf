@@ -323,6 +323,8 @@ void ausf_config::display() {
       "    API Version...........: %s", sbi_api_version.c_str());
   Logger::config().info("- Supported Features:");
   Logger::config().info(
+      "    Register NRF ..........: %s", register_nrf ? "Yes" : "No");
+  Logger::config().info(
       "    Use FQDN ..............: %s", use_fqdn_dns ? "Yes" : "No");
   Logger::config().info(
       "    Use HTTP2..............: %s", use_http2 ? "Yes" : "No");
