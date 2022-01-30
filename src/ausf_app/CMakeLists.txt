@@ -31,6 +31,8 @@ add_library (AUSF STATIC
   ausf_app.cpp
   ausf_client.cpp 
   ausf_config.cpp 
+  task_manager.cpp
+  ausf_event.cpp
   ausf_profile.cpp
   ausf_nrf.cpp 
 )
