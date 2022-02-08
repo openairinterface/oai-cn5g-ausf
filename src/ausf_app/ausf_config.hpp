@@ -33,11 +33,11 @@
 
 #include <arpa/inet.h>
 #include <libconfig.h++>
-#include <netinet/in.h>
-#include <sys/socket.h>
 #include <mutex>
-#include <vector>
+#include <netinet/in.h>
 #include <string>
+#include <sys/socket.h>
+#include <vector>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/classification.hpp>
@@ -85,11 +85,11 @@ typedef struct interface_cfg_s {
 } interface_cfg_t;
 
 class ausf_config {
- public:
+public:
   ausf_config();
   ~ausf_config();
-  int load(const std::string& config_file);
-  int load_interface(const Setting& if_cfg, interface_cfg_t& cfg);
+  int load(const std::string &config_file);
+  int load_interface(const Setting &if_cfg, interface_cfg_t &cfg);
   void display();
 
   unsigned int instance;
@@ -120,6 +120,6 @@ class ausf_config {
   bool use_http2;
 };
 
-}  // namespace config
+} // namespace config
 
 #endif
