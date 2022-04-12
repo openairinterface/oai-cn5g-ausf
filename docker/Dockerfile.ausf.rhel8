@@ -90,7 +90,7 @@ RUN yum update -y && \
       liblsan \
       libevent && \
     yum clean all -y && \
-    rm -rf /var/cache/yum && \
+    rm -rf /var/cache/yum /var/cache/dnf && \
     echo "/usr/local/lib" > /etc/ld.so.conf.d/local-lib.conf && \
     echo "/usr/local/lib64" >> /etc/ld.so.conf.d/local-lib.conf
 
