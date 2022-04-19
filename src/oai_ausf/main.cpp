@@ -29,9 +29,9 @@
 #include <iostream>
 #include <signal.h>
 #include <stdint.h>
-#include <stdlib.h> // srand
+#include <stdlib.h>  // srand
 #include <thread>
-#include <unistd.h> // get_pid(), pause()
+#include <unistd.h>  // get_pid(), pause()
 
 using namespace oai::ausf::app;
 using namespace util;
@@ -40,9 +40,9 @@ using namespace std;
 using namespace config;
 
 ausf_config ausf_cfg;
-ausf_app *ausf_app_inst = nullptr;
-AUSFApiServer *api_server = nullptr;
-ausf_http2_server *ausf_api_server_2 = nullptr;
+ausf_app* ausf_app_inst              = nullptr;
+AUSFApiServer* api_server            = nullptr;
+ausf_http2_server* ausf_api_server_2 = nullptr;
 
 //------------------------------------------------------------------------------
 void my_app_signal_handler(int s) {
@@ -68,7 +68,7 @@ void my_app_signal_handler(int s) {
 }
 
 //------------------------------------------------------------------------------
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   srand(time(NULL));
 
   // Command line options
@@ -105,31 +105,31 @@ int main(int argc, char **argv) {
   // Currently hard-coded value. TODO: add as config option.
   string pid_file_name = get_exe_absolute_path("/var/run", ausf_cfg.instance);
   if (!is_pid_file_lock_success(pid_file_name.c_str())) {
-    Logger::ausf_server().error("Lock PID file %s failed\n",
-                                pid_file_name.c_str());
+    Logger::ausf_server().error(
+        "Lock PID file %s failed\n", pid_file_name.c_str());
     exit(-EDEADLK);
   }
 
   // AUSF Pistache API server (HTTP1)
   Pistache::Address addr(
-      std::string(inet_ntoa(*((struct in_addr *)&ausf_cfg.sbi.addr4))),
+      std::string(inet_ntoa(*((struct in_addr*) &ausf_cfg.sbi.addr4))),
       Pistache::Port(ausf_cfg.sbi.port));
   api_server = new AUSFApiServer(addr, ausf_app_inst);
   api_server->init(2);
   std::thread ausf_manager(&AUSFApiServer::start, api_server);
 
   // AUSF NGHTTP API server (HTTP2)
-  ausf_api_server_2 =
-      new ausf_http2_server(conv::toString(ausf_cfg.sbi.addr4),
-                            ausf_cfg.sbi_http2_port, ausf_app_inst);
+  ausf_api_server_2 = new ausf_http2_server(
+      conv::toString(ausf_cfg.sbi.addr4), ausf_cfg.sbi_http2_port,
+      ausf_app_inst);
   std::thread ausf_http2_manager(&ausf_http2_server::start, ausf_api_server_2);
 
   ausf_manager.join();
   ausf_http2_manager.join();
 
-  FILE *fp = NULL;
+  FILE* fp             = NULL;
   std::string filename = fmt::format("/tmp/ausf_{}.status", getpid());
-  fp = fopen(filename.c_str(), "w+");
+  fp                   = fopen(filename.c_str(), "w+");
   fprintf(fp, "STARTED\n");
   fflush(fp);
   fclose(fp);

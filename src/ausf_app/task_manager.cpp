@@ -38,15 +38,15 @@
 using namespace oai::ausf::app;
 
 //------------------------------------------------------------------------------
-task_manager::task_manager(ausf_event &ev) : event_sub_(ev) {
+task_manager::task_manager(ausf_event& ev) : event_sub_(ev) {
   struct itimerspec its;
 
   sfd = timerfd_create(CLOCK_MONOTONIC, 0);
 
   /* Start the timer */
-  its.it_value.tv_sec = 0;
-  its.it_value.tv_nsec = 1000 * 1000;
-  its.it_interval.tv_sec = its.it_value.tv_sec;
+  its.it_value.tv_sec     = 0;
+  its.it_value.tv_nsec    = 1000 * 1000;
+  its.it_interval.tv_sec  = its.it_value.tv_sec;
   its.it_interval.tv_nsec = its.it_value.tv_nsec;
 
   if (timerfd_settime(sfd, TFD_TIMER_ABSTIME, &its, NULL) == -1) {
@@ -55,7 +55,9 @@ task_manager::task_manager(ausf_event &ev) : event_sub_(ev) {
 }
 
 //------------------------------------------------------------------------------
-void task_manager::run() { manage_tasks(); }
+void task_manager::run() {
+  manage_tasks();
+}
 
 //------------------------------------------------------------------------------
 void task_manager::manage_tasks() {
