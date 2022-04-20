@@ -85,11 +85,11 @@ typedef struct interface_cfg_s {
 } interface_cfg_t;
 
 class ausf_config {
-public:
+ public:
   ausf_config();
   ~ausf_config();
-  int load(const std::string &config_file);
-  int load_interface(const Setting &if_cfg, interface_cfg_t &cfg);
+  int load(const std::string& config_file);
+  int load_interface(const Setting& if_cfg, interface_cfg_t& cfg);
   void display();
 
   unsigned int instance;
@@ -120,6 +120,6 @@ public:
   bool use_http2;
 };
 
-} // namespace config
+}  // namespace config
 
 #endif

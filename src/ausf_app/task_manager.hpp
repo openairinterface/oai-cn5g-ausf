@@ -43,8 +43,8 @@ namespace app {
 
 class ausf_event;
 class task_manager {
-public:
-  task_manager(ausf_event &ev);
+ public:
+  task_manager(ausf_event& ev);
 
   /*
    * Manage the tasks
@@ -60,7 +60,7 @@ public:
    */
   void run();
 
-private:
+ private:
   /*
    * Make sure that the task tick run every 1ms
    * @param [void]
@@ -68,11 +68,11 @@ private:
    */
   void wait_for_cycle();
 
-  ausf_event &event_sub_;
+  ausf_event& event_sub_;
   int sfd;
 };
-} // namespace app
-} // namespace ausf
-} // namespace oai
+}  // namespace app
+}  // namespace ausf
+}  // namespace oai
 
 #endif

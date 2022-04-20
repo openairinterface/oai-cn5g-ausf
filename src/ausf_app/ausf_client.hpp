@@ -42,17 +42,18 @@ namespace ausf {
 namespace app {
 
 class ausf_client {
-private:
-public:
+ private:
+ public:
   ausf_client();
   virtual ~ausf_client();
 
-  ausf_client(ausf_client const &) = delete;
+  ausf_client(ausf_client const&) = delete;
 
-  void curl_http_client(std::string remoteUri, std::string method,
-                        std::string msgBody, std::string &response);
+  void curl_http_client(
+      std::string remoteUri, std::string method, std::string msgBody,
+      std::string& response);
 };
-} // namespace app
-} // namespace ausf
-} // namespace oai
+}  // namespace app
+}  // namespace ausf
+}  // namespace oai
 #endif /* FILE_AUSF_CLIENT_HPP_SEEN */

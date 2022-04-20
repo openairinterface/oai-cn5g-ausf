@@ -47,15 +47,15 @@ namespace ausf {
 namespace app {
 
 class ausf_nrf {
-private:
-public:
-  ausf_profile ausf_nf_profile; // AUSF profile
-  std::string ausf_instance_id; // AUSF instance id
+ private:
+ public:
+  ausf_profile ausf_nf_profile;  // AUSF profile
+  std::string ausf_instance_id;  // AUSF instance id
   // timer_id_t timer_ausf_heartbeat;
 
-  ausf_nrf(ausf_event &ev);
-  ausf_nrf(ausf_nrf const &) = delete;
-  void operator=(ausf_nrf const &) = delete;
+  ausf_nrf(ausf_event& ev);
+  ausf_nrf(ausf_nrf const&) = delete;
+  void operator=(ausf_nrf const&) = delete;
 
   void generate_uuid();
   /*
@@ -63,7 +63,7 @@ public:
    * @param [void]
    * @return void
    */
-  void start_event_nf_heartbeat(std::string &remoteURI);
+  void start_event_nf_heartbeat(std::string& remoteURI);
   /*
    * Trigger NF heartbeat procedure
    * @param [void]
@@ -75,8 +75,8 @@ public:
    * @param [void]
    * @return void
    */
-  void generate_ausf_profile(ausf_profile &ausf_nf_profile,
-                             std::string &ausf_instance_id);
+  void generate_ausf_profile(
+      ausf_profile& ausf_nf_profile, std::string& ausf_instance_id);
 
   /*
    * Trigger NF instance registration to NRF
@@ -89,13 +89,13 @@ public:
    * @param [std::string& ] api_root: ausf's API Root
    * @return void
    */
-  void get_ausf_api_root(std::string &api_root);
+  void get_ausf_api_root(std::string& api_root);
 
-private:
-  ausf_event &m_event_sub;
+ private:
+  ausf_event& m_event_sub;
   bs2::connection task_connection;
 };
-} // namespace app
-} // namespace ausf
-} // namespace oai
+}  // namespace app
+}  // namespace ausf
+}  // namespace oai
 #endif /* FILE_AUSF_NRF_SEEN */
