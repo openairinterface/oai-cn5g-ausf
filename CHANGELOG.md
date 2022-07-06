@@ -1,6 +1,6 @@
 # RELEASE NOTES : #
 
-## v1.4.0 -- January 2021 ##
+## v1.4.0 -- July 2022 ##
 
 * Remove unused packages
 * HTTP/2 support for SBI interface
@@ -8,7 +8,7 @@
 * Official images produced by CI are pushed to `oaisoftwarealliance` Docker-Hub Team account
 * Reduce image size
 
-## v1.3.0 -- January 2021 ##
+## v1.3.0 -- January 2022 ##
 
 * HTTP2 Support
 * Docker optimization
