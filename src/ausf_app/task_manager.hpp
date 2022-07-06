@@ -19,41 +19,60 @@
  *      contact@openairinterface.org
  */
 
-/*! \file ausf_client.hpp
- \author  Tien-Thinh NGUYEN
+/*! \file task_manager.hpp
+ \brief
+ \author
  \company Eurecom
  \date 2020
- \email:
+ \email: Tien-Thinh.Nguyen@eurecom.fr
  */
 
-#ifndef FILE_AUSF_CLIENT_HPP_SEEN
-#define FILE_AUSF_CLIENT_HPP_SEEN
+#ifndef TASK_MANAGER_H_
+#define TASK_MANAGER_H_
 
-#include <map>
-#include <thread>
+#include "ausf_event.hpp"
 
-#include <curl/curl.h>
+#include <linux/types.h>
+#include <sys/timerfd.h>
 
-#include "ausf_config.hpp"
-#include "logger.hpp"
+using namespace oai::ausf::app;
 
 namespace oai {
 namespace ausf {
 namespace app {
 
-class ausf_client {
- private:
+class ausf_event;
+class task_manager {
  public:
-  ausf_client();
-  virtual ~ausf_client();
+  task_manager(ausf_event& ev);
 
-  ausf_client(ausf_client const&) = delete;
+  /*
+   * Manage the tasks
+   * @param [void]
+   * @return void
+   */
+  void manage_tasks();
 
-  void curl_http_client(
-      std::string remoteUri, std::string method, std::string msgBody,
-      std::string& response);
+  /*
+   * Run the tasks (for the moment, simply call function manage_tasks)
+   * @param [void]
+   * @return void
+   */
+  void run();
+
+ private:
+  /*
+   * Make sure that the task tick run every 1ms
+   * @param [void]
+   * @return void
+   */
+  void wait_for_cycle();
+
+  ausf_event& event_sub_;
+  int sfd;
 };
 }  // namespace app
 }  // namespace ausf
 }  // namespace oai
-#endif /* FILE_AUSF_CLIENT_HPP_SEEN */
+
+#endif

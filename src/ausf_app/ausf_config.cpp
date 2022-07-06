@@ -28,13 +28,13 @@
 
 #include "ausf_config.hpp"
 
+#include "string.hpp"
 #include <iostream>
 #include <libconfig.h++>
-#include "string.hpp"
 
-#include "logger.hpp"
-#include "if.hpp"
 #include "fqdn.hpp"
+#include "if.hpp"
+#include "logger.hpp"
 
 #include "string.hpp"
 
@@ -347,7 +347,7 @@ void ausf_config::display() {
 
   if (use_fqdn_dns)
     Logger::config().info(
-        "    FQDN .................: %s", udm_addr.fqdn.c_str());
+        "    FQDN .................: %s", nrf_addr.fqdn.c_str());
 }
 
 //------------------------------------------------------------------------------

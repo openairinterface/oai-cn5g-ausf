@@ -33,11 +33,11 @@
 
 #include <arpa/inet.h>
 #include <libconfig.h++>
-#include <netinet/in.h>
-#include <sys/socket.h>
 #include <mutex>
-#include <vector>
+#include <netinet/in.h>
 #include <string>
+#include <sys/socket.h>
+#include <vector>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/classification.hpp>

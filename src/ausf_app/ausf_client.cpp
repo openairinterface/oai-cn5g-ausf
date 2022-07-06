@@ -30,13 +30,13 @@
 #include "ausf_client.hpp"
 
 #include <curl/curl.h>
+#include <nlohmann/json.hpp>
 #include <pistache/http.h>
 #include <pistache/mime.h>
-#include <nlohmann/json.hpp>
 #include <stdexcept>
 
-#include "logger.hpp"
 #include "ausf.h"
+#include "logger.hpp"
 
 using namespace Pistache::Http;
 using namespace Pistache::Http::Mime;

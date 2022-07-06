@@ -50,6 +50,9 @@ def AUSF_BASE_IMAGE_TAG = params.AusfBaseImageTag
 // Merge Request Link
 def gitlabMergeRequestLink
 
+// Docker Hub account to push to
+def DH_Account = "oaisoftwarealliance"
+
 //-------------------------------------------------------------------------------
 // Pipeline start
 pipeline {
@@ -183,7 +186,7 @@ pipeline {
                     echo "Maybe a previous build went wrong"
                   }
                   // In case of push to `develop` branch we build from scratch
-                  myShCmd('docker build --no-cache --target oai-ausf --tag oai-ausf:' + ausf_tag + ' --file docker/Dockerfile.ausf.ubuntu18 --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" . > archives/ausf_docker_image_build.log 2>&1', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
+                  myShCmd('docker build --no-cache --target oai-ausf --tag oai-ausf:' + ausf_tag + ' --file docker/Dockerfile.ausf.ubuntu18 . > archives/ausf_docker_image_build.log 2>&1', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
                 }
                 if ("MERGE".equals(env.gitlabActionType)) {
                   try {
@@ -198,6 +201,9 @@ pipeline {
                   myShCmd('docker image tag oai-ausf-base:' + AUSF_BASE_IMAGE_TAG + ' oai-ausf-base:latest', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
                   myShCmd('docker build --no-cache --target oai-ausf --tag oai-ausf:' + ausf_tag + ' --file ci-scripts/docker/Dockerfile.ci.ubuntu.18.04 . > archives/ausf_docker_image_build.log 2>&1', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
                 }
+                // Putting a place holder to try out on the flattening of image.
+                // If not satisfactory, we can remove it.
+                myShCmd('python3 ./ci-scripts/flatten_image.py --tag oai-ausf:' + ausf_tag, rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
                 myShCmd('docker image ls >> archives/ausf_docker_image_build.log', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
                 // We will keep also the TMP image in U18 case.
                 if ("MERGE".equals(env.gitlabActionType)) {
@@ -240,10 +246,14 @@ pipeline {
                   }
                   myShCmd('sudo podman image prune --force', rem_rhel_host_flag, rem_rhel_host_user, rem_rhel_host)
                   // Copy the RHEL Host certificates for building
-                  myShCmd('mkdir -p tmp/ca tmp/entitlement', rem_rhel_host_flag, rem_rhel_host_user, rem_rhel_host)
-                  myShCmd('cp /etc/pki/entitlement/*pem tmp/entitlement', rem_rhel_host_flag, rem_rhel_host_user, rem_rhel_host)
-                  myShCmd('sudo cp /etc/rhsm/ca/redhat-uep.pem tmp/ca', rem_rhel_host_flag, rem_rhel_host_user, rem_rhel_host)
-                  myShCmd('sudo podman build --no-cache --target oai-ausf --tag oai-ausf:' + ausf_tag + ' --file docker/Dockerfile.ausf.rhel8 --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" . > archives/ausf_podman_image_build.log 2>&1', rem_rhel_host_flag, rem_rhel_host_user, rem_rhel_host)
+                  myShCmd('mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca', rem_rhel_host_flag, rem_rhel_host_user, rem_rhel_host)
+                  myShCmd('cp /etc/pki/entitlement/*pem ./etc-pki-entitlement', rem_rhel_host_flag, rem_rhel_host_user, rem_rhel_host)
+                  myShCmd('sudo cp /etc/rhsm/rhsm.conf ./rhsm-conf', rem_rhel_host_flag, rem_rhel_host_user, rem_rhel_host)
+                  myShCmd('sudo cp /etc/rhsm/ca/*.pem ./rhsm-ca', rem_rhel_host_flag, rem_rhel_host_user, rem_rhel_host)
+                  myShCmd('sudo podman build --no-cache --target oai-ausf --tag oai-ausf:' + ausf_tag + ' --file docker/Dockerfile.ausf.rhel8 . > archives/ausf_podman_image_build.log 2>&1', rem_rhel_host_flag, rem_rhel_host_user, rem_rhel_host)
+                  // Putting a place holder to try out on the flattening of image.
+                  // If not satisfactory, we can remove it.
+                  myShCmd('python3 ./ci-scripts/flatten_image.py --tag oai-ausf:' + ausf_tag, rem_rhel_host_flag, rem_rhel_host_user, rem_rhel_host)
                   myShCmd('sudo podman image ls >> archives/ausf_podman_image_build.log', rem_rhel_host_flag, rem_rhel_host_user, rem_rhel_host)
                   if ("MERGE".equals(env.gitlabActionType)) {
                     myShCmd('sudo podman image tag oai-ausf:' + ausf_tag + ' oai-ausf:' + rhel_ausf_tag, rem_rhel_host_flag, rem_rhel_host_user, rem_rhel_host)
@@ -409,6 +419,36 @@ pipeline {
             }
           }
         }
+        stage ('Testing the tutorials') {
+          steps {
+            script {
+              gitlabCommitStatus(name: "Test tutorials") {
+                localStatus = build job: 'OAI-CN5G-Tutorials-Check',
+                  parameters: [
+                    string(name: 'AUSF_TAG', value: String.valueOf(ausf_tag)),
+                    string(name: 'AUSF_BRANCH', value: String.valueOf(ausf_branch))
+                  ], propagate: false
+                localResult = localStatus.getResult()
+
+                if (localStatus.resultIsBetterOrEqualTo('SUCCESS')) {
+                  echo "Tutorials Test Job is OK"
+                } else {
+                  echo "Tutorials Test Job is KO"
+                  sh "ci-scripts/fail.sh"
+                }
+              }
+            }
+          }
+          post {
+            always {
+              script {
+                copyArtifacts(projectName: 'OAI-CN5G-Tutorials-Check',
+                              filter: '*_results_oai_cn5g*.html',
+                              selector: lastCompleted())
+              }
+            }
+          }
+        }
       }
     }
     // For the moment it is Docker-Hub, but we might have a new one internally.
@@ -421,9 +461,9 @@ pipeline {
               [$class: 'UsernamePasswordMultiBinding', credentialsId: "${params.DockerHubCredentials}", usernameVariable: 'DH_Username', passwordVariable: 'DH_Password']
             ]) {
               myShCmd("echo ${DH_Password} | docker login --username ${DH_Username} --password-stdin", rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
-              myShCmd("docker image tag oai-ausf:develop ${DH_Username}/oai-ausf:develop", rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
-              myShCmd("docker push ${DH_Username}/oai-ausf:develop", rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
-              myShCmd("docker rmi ${DH_Username}/oai-ausf:develop", rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
+              myShCmd("docker image tag oai-ausf:develop ${DH_Account}/oai-ausf:develop", rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
+              myShCmd("docker push ${DH_Account}/oai-ausf:develop", rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
+              myShCmd("docker rmi ${DH_Account}/oai-ausf:develop", rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
               myShCmd("docker logout", rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
             }
           }

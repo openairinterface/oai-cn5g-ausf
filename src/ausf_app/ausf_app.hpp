@@ -29,15 +29,16 @@
 
 #ifndef FILE_AUSF_APP_HPP_SEEN
 #define FILE_AUSF_APP_HPP_SEEN
+#include "ausf_event.hpp"
 
-#include <string>
 #include "AuthenticationInfo.h"
-#include "UEAuthenticationCtx.h"
 #include "ConfirmationData.h"
+#include "UEAuthenticationCtx.h"
 #include "ausf.h"
-#include <pistache/http.h>
 #include <map>
+#include <pistache/http.h>
 #include <shared_mutex>
+#include <string>
 
 namespace oai {
 namespace ausf {
@@ -68,7 +69,7 @@ class security_context {
 // class ausf_config;
 class ausf_app {
  public:
-  explicit ausf_app(const std::string& config_file);
+  explicit ausf_app(const std::string& config_file, ausf_event& ev);
   ausf_app(ausf_app const&) = delete;
   void operator=(ausf_app const&) = delete;
 
@@ -96,6 +97,7 @@ class ausf_app {
       const std::string& contextId, std::shared_ptr<security_context> sc);
 
  private:
+  ausf_event& event_sub;
   std::map<supi64_t, std::shared_ptr<security_context>> imsi2security_context;
   mutable std::shared_mutex m_imsi2security_context;
 

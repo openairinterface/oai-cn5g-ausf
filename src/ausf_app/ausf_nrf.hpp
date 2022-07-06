@@ -34,9 +34,13 @@
 
 #include <curl/curl.h>
 
-#include "logger.hpp"
+#include "PatchItem.h"
 #include "ausf_config.hpp"
+#include "ausf_event.hpp"
 #include "ausf_profile.hpp"
+#include "logger.hpp"
+
+using namespace oai::ausf_server::model;
 
 namespace oai {
 namespace ausf {
@@ -49,12 +53,23 @@ class ausf_nrf {
   std::string ausf_instance_id;  // AUSF instance id
   // timer_id_t timer_ausf_heartbeat;
 
-  ausf_nrf();
+  ausf_nrf(ausf_event& ev);
   ausf_nrf(ausf_nrf const&) = delete;
   void operator=(ausf_nrf const&) = delete;
 
   void generate_uuid();
-
+  /*
+   * Start event nf heartbeat procedure
+   * @param [void]
+   * @return void
+   */
+  void start_event_nf_heartbeat(std::string& remoteURI);
+  /*
+   * Trigger NF heartbeat procedure
+   * @param [void]
+   * @return void
+   */
+  void trigger_nf_heartbeat_procedure(uint64_t ms);
   /*
    * Generate a AUSF profile for this instance
    * @param [void]
@@ -75,6 +90,10 @@ class ausf_nrf {
    * @return void
    */
   void get_ausf_api_root(std::string& api_root);
+
+ private:
+  ausf_event& m_event_sub;
+  bs2::connection task_connection;
 };
 }  // namespace app
 }  // namespace ausf

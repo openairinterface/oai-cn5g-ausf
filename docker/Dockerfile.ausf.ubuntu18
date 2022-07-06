@@ -55,6 +55,7 @@ COPY . /openair-ausf
 WORKDIR /openair-ausf/build/scripts
 RUN ./build_ausf --install-deps --force
 RUN ./build_ausf --clean --Verbose --build-type Release --jobs && \
+    ldd /openair-ausf/build/ausf/build/ausf && \
     mv /openair-ausf/build/ausf/build/ausf /openair-ausf/build/ausf/build/oai_ausf
 
 #---------------------------------------------------------------------
@@ -71,13 +72,13 @@ RUN apt-get update && \
       net-tools \
       tzdata \
       bc \
-      tshark \
       perl \
       libasan4 \
       libnettle6 \
       libnghttp2-14 \
       libhogweed4 \
       libldap-2.4-2 \
+      libgssapi-krb5-2 \
       librtmp1 \
       libpsl5 \
       libconfig++9v5 \
@@ -97,7 +98,8 @@ COPY --from=oai-ausf-builder \
     /usr/lib/x86_64-linux-gnu/libcurl-gnutls.so.4 \
     /usr/local/lib/
 
-RUN ldconfig
+RUN ldconfig && \
+    ldd /openair-ausf/bin/oai_ausf
 
 WORKDIR /openair-ausf/etc
 COPY --from=oai-ausf-builder /openair-ausf/etc/ausf.conf .

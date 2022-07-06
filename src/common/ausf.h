@@ -26,6 +26,9 @@
 
 #define _unused(x) ((void) (x))
 
+#define NNRF_NFM_BASE "/nnrf-nfm/"
+#define AUSF_NF_REGISTER_URL "/nf-instances/"
+
 typedef enum nf_type_s {
   NF_TYPE_NRF     = 0,
   NF_TYPE_AMF     = 1,

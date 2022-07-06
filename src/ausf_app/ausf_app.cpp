@@ -30,21 +30,21 @@
 #include "ausf_app.hpp"
 #include "ausf_nrf.hpp"
 
-#include <unistd.h>
-#include "logger.hpp"
-#include "ausf_client.hpp"
 #include "ProblemDetails.h"
+#include "ausf_client.hpp"
+#include "logger.hpp"
+#include <unistd.h>
 
-#include "conversions.hpp"
-#include "sha256.hpp"
-#include "UEAuthenticationCtx.h"
-#include "ConfirmationDataResponse.h"
 #include "AuthenticationInfo.h"
+#include "ConfirmationDataResponse.h"
+#include "UEAuthenticationCtx.h"
 #include "authentication_algorithms_with_5gaka.hpp"
-#include <string>
+#include "conversions.hpp"
 #include "iostream"
+#include "sha256.hpp"
 #include <algorithm>
 #include <iterator>
+#include <string>
 
 using namespace std;
 using namespace oai::ausf::app;
@@ -56,8 +56,9 @@ extern ausf_config ausf_cfg;
 ausf_nrf* ausf_nrf_inst = nullptr;
 
 //------------------------------------------------------------------------------
-ausf_app::ausf_app(const std::string& config_file)
-    : contextId2security_context(),
+ausf_app::ausf_app(const std::string& config_file, ausf_event& ev)
+    : event_sub(ev),
+      contextId2security_context(),
       supi2security_context(),
       imsi2security_context() {
   Logger::ausf_app().startup("Starting...");
@@ -70,7 +71,7 @@ ausf_app::ausf_app(const std::string& config_file)
   // Register to NRF
   if (ausf_cfg.register_nrf) {
     try {
-      ausf_nrf_inst = new ausf_nrf();
+      ausf_nrf_inst = new ausf_nrf(ev);
       ausf_nrf_inst->register_to_nrf();
       Logger::ausf_app().info("NRF TASK Created ");
     } catch (std::exception& e) {
@@ -384,7 +385,8 @@ void ausf_app::handle_ue_authentications_confirmation(
   }
 
   Logger::ausf_app().info(
-      "Received authCtxId %s", authCtxId.c_str());  // authCtxId
+      "Received authCtxId %s",
+      authCtxId.c_str());  // authCtxId
   Logger::ausf_app().info(
       "Received res* %s", confirmationData.getResStar().c_str());
 
@@ -394,7 +396,8 @@ void ausf_app::handle_ue_authentications_confirmation(
   ConfirmationDataResponse confirmResponse;
   uint8_t authCtxId_seaf[16];
   conv::hex_str_to_uint8(
-      authCtxId.c_str(), authCtxId_seaf);  // authCtxId in SEAF
+      authCtxId.c_str(),
+      authCtxId_seaf);  // authCtxId in SEAF
 
   Logger::ausf_app().debug(
       "authCtxId in AUSF: %s",

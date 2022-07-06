@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-#include "logger.hpp"
 #include "ausf-api-server.h"
 #include "ausf-http2-server.h"
-#include "ausf_config.hpp"
 #include "ausf_app.hpp"
+#include "ausf_config.hpp"
+#include "logger.hpp"
 #include "options.hpp"
 #include "pid_file.hpp"
 
@@ -26,12 +26,12 @@
 #include "pistache/http.h"
 #include "pistache/router.h"
 
+#include <iostream>
 #include <signal.h>
 #include <stdint.h>
 #include <stdlib.h>  // srand
-#include <unistd.h>  // get_pid(), pause()
-#include <iostream>
 #include <thread>
+#include <unistd.h>  // get_pid(), pause()
 
 using namespace oai::ausf::app;
 using namespace util;
@@ -87,12 +87,19 @@ int main(int argc, char** argv) {
   sigIntHandler.sa_flags = 0;
   sigaction(SIGINT, &sigIntHandler, NULL);
 
+  // Event subsystem
+  ausf_event ev;
+
   // Config
   ausf_cfg.load(Options::getlibconfigConfig());
   ausf_cfg.display();
 
   // AUSF application layer
-  ausf_app_inst = new ausf_app(Options::getlibconfigConfig());
+  ausf_app_inst = new ausf_app(Options::getlibconfigConfig(), ev);
+
+  // Task Manager
+  task_manager tm(ev);
+  std::thread task_manager_thread(&task_manager::run, &tm);
 
   // PID file
   // Currently hard-coded value. TODO: add as config option.

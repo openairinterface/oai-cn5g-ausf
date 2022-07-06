@@ -36,9 +36,9 @@
 #include <shared_mutex>
 #include <vector>
 
-#include "logger.hpp"
 #include "3gpp_29.510.h"
 #include "ausf.h"
+#include "logger.hpp"
 
 namespace oai {
 namespace ausf {

@@ -28,6 +28,7 @@ bool fqdn::resolve(
     const std::string& host_name, std::string& address, uint32_t& port,
     uint8_t& addr_type, const std::string& protocol) {
   try {
+    Logger::ausf_app().debug("Resolving DNS:- %s", host_name.c_str());
     boost::asio::io_context io_context = {};
 
     boost::asio::ip::tcp::resolver resolver{io_context};

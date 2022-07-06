@@ -30,8 +30,8 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 
-#include "logger.hpp"
 #include "ausf_profile.hpp"
+#include "logger.hpp"
 #include "string.hpp"
 
 // using namespace ausf;
