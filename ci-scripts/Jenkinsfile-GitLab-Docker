@@ -186,7 +186,7 @@ pipeline {
                     echo "Maybe a previous build went wrong"
                   }
                   // In case of push to `develop` branch we build from scratch
-                  myShCmd('docker build --no-cache --target oai-ausf --tag oai-ausf:' + ausf_tag + ' --file docker/Dockerfile.ausf.ubuntu18 . > archives/ausf_docker_image_build.log 2>&1', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
+                  myShCmd('docker build --no-cache --target oai-ausf --tag oai-ausf:' + ausf_tag + ' --file docker/Dockerfile.ausf.ubuntu . > archives/ausf_docker_image_build.log 2>&1', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
                 }
                 if ("MERGE".equals(env.gitlabActionType)) {
                   try {

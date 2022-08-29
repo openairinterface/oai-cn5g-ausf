@@ -36,7 +36,7 @@ def _parse_args() -> argparse.Namespace:
         '--tag', '-t',
         action='store',
         required=True,
-        help='Image Tag in image-name:image tag format',
+        help='Image Tag in image-name:image-tag format',
     )
     return parser.parse_args()
 
@@ -49,6 +49,9 @@ def perform_flattening(tag):
     if re.search('podman', podman_check.strip()):
         cli = 'sudo podman'
         image_prefix = 'localhost/'
+        # since HEALTHCHECK is not supported by podman import
+        # we don't flatten
+        return 0
     if cli == '':
         cmd = 'which docker || true'
         docker_check = subprocess.check_output(cmd, shell=True, universal_newlines=True)
@@ -73,6 +76,7 @@ def perform_flattening(tag):
       cmd += ' --change "ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" '
     cmd += ' --change "WORKDIR /openair-ausf" '
     cmd += ' --change "EXPOSE 80/tcp" '
+    cmd += ' --change "HEALTHCHECK --interval=10s --timeout=15s --retries=6 CMD /openair-ausf/bin/healthcheck.sh" '
     cmd += ' --change "CMD [\\"/openair-ausf/bin/oai_ausf\\", \\"-c\\", \\"/openair-ausf/etc/ausf.conf\\", \\"-o\\"]" '
     cmd += ' --change "ENTRYPOINT [\\"/bin/bash\\", \\"/openair-ausf/bin/entrypoint.sh\\"]" '
     cmd += ' - ' + image_prefix + tag
