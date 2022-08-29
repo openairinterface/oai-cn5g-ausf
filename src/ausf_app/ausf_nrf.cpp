@@ -44,7 +44,7 @@
 #include "logger.hpp"
 
 using namespace config;
-// using namespace ausf;
+using namespace boost::placeholders;
 using namespace oai::ausf::app;
 
 using json = nlohmann::json;
