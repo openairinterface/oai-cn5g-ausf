@@ -80,13 +80,20 @@ RUN apt-get update && \
       iputils-ping \
       bc \
       tzdata \
+      netbase \
 # Ubuntu 18 --> libasan4
 # Ubuntu 20 --> libasan5
 # Ubuntu 22 --> libasan6
       libasan? \
       libconfig++9v5 \
-      libnettle6 \
-      libhogweed4 \
+# Ubuntu 18 --> libnettle6
+# Ubuntu 20 --> libnettle7
+# Ubuntu 22 --> libnettle8
+      libnettle? \
+# Ubuntu 18 --> libhogweed4
+# Ubuntu 20 --> libhogweed5
+# Ubuntu 22 --> libhogweed6
+      libhogweed? \
 # Ubuntu 18/20 --> libldap-2.4-2
 # Ubuntu 22 --> libldap-2.5-0
       libldap-2.?-? \

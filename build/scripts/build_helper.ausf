@@ -346,7 +346,6 @@ check_install_ausf_deps() {
       $specific_packages \
       libcurl4-gnutls-dev \
       libevent-dev \
-      libgcrypt11-dev \
       libgmp-dev \
       libhogweed? \
       libidn2-0-dev \
@@ -364,7 +363,6 @@ check_install_ausf_deps() {
   elif [[ "$OS_BASEDISTRO" == "fedora" ]]; then
     PACKAGE_LIST="\
       libconfig-devel \
-      libgcrypt-devel \
       gmp-devel \
       libidn-devel \
       openssl-devel \
