@@ -49,7 +49,7 @@ RUN git config --global https.postBuffer 123289600 && \
 WORKDIR /openair-ausf
 COPY . /openair-ausf
 
-# Installing all the needed libraries/packages to build and run NRF
+# Installing all the needed libraries/packages to build and run AUSF
 WORKDIR /openair-ausf/build/scripts
 RUN ./build_ausf --install-deps --force && \
     cp -Rf /openair-ausf/build/ext /openair-ausf-ext-ref
@@ -99,7 +99,7 @@ RUN apt-get update && \
       libldap-2.?-? \
       libkrb5-3 \
       libgssapi-krb5-2 \
-      libcurl4-gnutls-dev \
+      libcurl?-gnutls \
       librtmp1 \
       libpsl5 \
 # Ubuntu 18 --> boost62/65 -> will remove both

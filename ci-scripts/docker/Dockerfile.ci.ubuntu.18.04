@@ -78,7 +78,7 @@ RUN apt-get update && \
       libldap-2.?-? \
       libkrb5-3 \
       libgssapi-krb5-2 \
-      libcurl4-gnutls-dev \
+      libcurl?-gnutls \
       librtmp1 \
       libpsl5 \
 # Ubuntu 18 --> boost62/65 -> will remove both
