@@ -470,6 +470,8 @@ class HtmlReport():
 				pistache_build_status = False
 				json_build_start = False
 				json_build_status = False
+				nghttp2_build_start = False
+				nghttp2_build_status = False
 				base_image = False
 				with open(cwd + '/archives/' + logFileName, 'r') as logfile:
 					for line in logfile:
@@ -507,6 +509,12 @@ class HtmlReport():
 							result = re.search('Nlohmann Json installation complete', line)
 							if result is not None and json_build_status:
 								json_build_status = True
+							result = re.search('Starting to install nghttp2', line)
+							if result is not None:
+								nghttp2_build_status = True
+							result = re.search('nghttp2 installation complete', line)
+							if result is not None and nghttp2_build_status:
+								nghttp2_build_status = True
 					logfile.close()
 				if base_image:
 					cell_msg = '      <td bgcolor="LimeGreen"><pre style="border:none; background-color:LimeGreen"><b>'
@@ -542,6 +550,12 @@ class HtmlReport():
 					cell_msg += '   ** Nlohmann Json Installation: OK\n'
 				else:
 					cell_msg += '   ** Nlohmann Json Installation: KO\n'
+				if base_image:
+					cell_msg += '   ** nghttp2-asio Installation: N/A\n'
+				elif nghttp2_build_status:
+					cell_msg += '   ** nghttp2-asio Installation: OK\n'
+				else:
+					cell_msg += '   ** nghttp2-asio Installation: KO\n'
 				cell_msg += '</b></pre></td>\n'
 			else:
 				cell_msg = '	  <td bgcolor="Tomato"><pre style="border:none; background-color:Tomato"><b>'
