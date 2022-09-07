@@ -199,7 +199,7 @@ pipeline {
                   }
                   // "latest" is the tag used in the docker file.
                   myShCmd('docker image tag oai-ausf-base:' + AUSF_BASE_IMAGE_TAG + ' oai-ausf-base:latest', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
-                  myShCmd('docker build --no-cache --target oai-ausf --tag oai-ausf:' + ausf_tag + ' --file ci-scripts/docker/Dockerfile.ci.ubuntu.18.04 . > archives/ausf_docker_image_build.log 2>&1', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
+                  myShCmd('docker build --no-cache --target oai-ausf --tag oai-ausf:' + ausf_tag + ' --file ci-scripts/docker/Dockerfile.ci.ubuntu . > archives/ausf_docker_image_build.log 2>&1', rem_u18_host_flag, rem_u18_host_user, rem_u18_host)
                 }
                 // Putting a place holder to try out on the flattening of image.
                 // If not satisfactory, we can remove it.
