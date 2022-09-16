@@ -33,13 +33,14 @@
 ARG BASE_IMAGE=ubuntu:bionic
 FROM oai-ausf-base:latest as oai-ausf-builder
 
+RUN rm -Rf /openair-ausf
 WORKDIR /openair-ausf/
 COPY . /openair-ausf
-RUN cp -Rf /openair-ausf-ext-ref /openair-ausf/build/ext
 
 # Building AUSF
 WORKDIR /openair-ausf/build/scripts
 RUN ldconfig && \
+    cp -Rf /openair-ausf-ext-ref /openair-ausf/build/ext && \
     ./build_ausf --clean --Verbose --build-type Release --jobs && \
     ldd /openair-ausf/build/ausf/build/ausf && \
     mv /openair-ausf/build/ausf/build/ausf /openair-ausf/build/ausf/build/oai_ausf
