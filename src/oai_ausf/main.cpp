@@ -81,11 +81,8 @@ int main(int argc, char** argv) {
   Logger::init("ausf", Options::getlogStdout(), Options::getlogRotFilelog());
   Logger::ausf_server().startup("Options parsed");
 
-  struct sigaction sigIntHandler;
-  sigIntHandler.sa_handler = my_app_signal_handler;
-  sigemptyset(&sigIntHandler.sa_mask);
-  sigIntHandler.sa_flags = 0;
-  sigaction(SIGINT, &sigIntHandler, NULL);
+  std::signal(SIGTERM, my_app_signal_handler);
+  std::signal(SIGINT, my_app_signal_handler);
 
   // Event subsystem
   ausf_event ev;
