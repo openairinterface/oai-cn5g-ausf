@@ -55,6 +55,8 @@ ENV TZ=Europe/Paris
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get upgrade --yes && \
     DEBIAN_FRONTEND=noninteractive apt-get install --yes \
+      python3 \
+      python3-jinja2 \
       psmisc \
       net-tools \
       iputils-ping \
@@ -94,7 +96,7 @@ RUN apt-get update && \
 WORKDIR /openair-ausf/bin
 COPY --from=oai-ausf-builder \
     /openair-ausf/build/ausf/build/oai_ausf \
-    /openair-ausf/scripts/entrypoint.sh \
+    /openair-ausf/scripts/entrypoint.py \
     /openair-ausf/scripts/healthcheck.sh \
     ./
 
@@ -123,5 +125,5 @@ HEALTHCHECK --interval=10s \
             --retries=6 \
     CMD /openair-ausf/bin/healthcheck.sh
 
-ENTRYPOINT ["/bin/bash","/openair-ausf/bin/entrypoint.sh"]
+ENTRYPOINT ["python3","/openair-ausf/bin/entrypoint.py"]
 CMD ["/openair-ausf/bin/oai_ausf", "-c" , "/openair-ausf/etc/ausf.conf", "-o"]
