@@ -20,7 +20,7 @@
 # */
 #---------------------------------------------------------------------
 #
-FROM ubuntu:focal as nrf-cppcheck
+FROM ubuntu:focal as ausf-cppcheck
 
 RUN apt-get update && \
     apt-get upgrade -y && \

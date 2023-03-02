@@ -20,7 +20,7 @@
 # */
 #---------------------------------------------------------------------
 #
-FROM ubuntu:focal as nrf-clang-format-check
+FROM ubuntu:focal as ausf-clang-format-check
 ARG MERGE_REQUEST_CHECK
 ARG SOURCE_BRANCH
 ARG TARGET_BRANCH
