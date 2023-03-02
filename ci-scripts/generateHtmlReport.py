@@ -473,9 +473,18 @@ class HtmlReport():
 				nghttp2_build_start = False
 				nghttp2_build_status = False
 				base_image = False
+				build_stage_id = 'NotAcorrectBuildStageId'
 				with open(cwd + '/archives/' + logFileName, 'r') as logfile:
 					for line in logfile:
+						# old method
 						result = re.search('FROM oai-ausf-base:latest', line)
+						if result is not None:
+							base_image = True
+						# new method --> buildx may cache this stage
+						result = re.search('^#([0-9]+).* RUN ./build_ausf --install-deps', line)
+						if result is not None:
+							build_stage_id = result.group(1)
+						result = re.search(f'^#{build_stage_id} CACHED', line)
 						if result is not None:
 							base_image = True
 						result = re.search(section_start_pattern, line)
@@ -702,8 +711,8 @@ class HtmlReport():
 		for variant in variants:
 			logFileName = 'ausf_' + variant + '_image_build.log'
 			if os.path.isfile(cwd + '/archives/' + logFileName):
-				section_start_pattern = '[aA][sS] oai-ausf$'
-				section_end_pattern = 'WORKDIR /openair-ausf/etc'
+				section_start_pattern = 'COPY --from=oai-ausf-builder */openair-ausf/build/ausf/build/oai_ausf'
+				section_end_pattern = 'COPY --from=oai-ausf-builder */openair-ausf/etc/ausf.conf '
 				section_status = False
 				status = False
 				with open(cwd + '/archives/' + logFileName, 'r') as logfile:
@@ -750,7 +759,7 @@ class HtmlReport():
 			if os.path.isfile(cwd + '/archives/' + logFileName):
 				section_start_pattern = 'WORKDIR /openair-ausf/etc'
 				if variant == 'docker':
-					section_end_pattern = 'Successfully tagged oai-ausf'
+					section_end_pattern = 'naming to docker.io/library/oai-ausf:'
 				else:
 					section_end_pattern = 'COMMIT oai-ausf:'
 				section_status = False
@@ -801,34 +810,32 @@ class HtmlReport():
 			if os.path.isfile(cwd + '/archives/' + logFileName):
 				if nfType == 'AUSF':
 					if variant == 'docker':
-						section_start_pattern = 'Successfully tagged oai-ausf'
+						section_start_pattern = 'naming to docker.io/library/oai-ausf:'
 						section_end_pattern = 'OAI-AUSF DOCKER IMAGE BUILD'
 					else:
 						section_start_pattern = 'COMMIT oai-ausf:'
 						section_end_pattern = 'OAI-AUSF PODMAN RHEL8 IMAGE BUILD'
 				section_status = False
 				status = False
+				imageTag = 'notAcorrectTagForTheMoment'
 				with open(cwd + '/archives/' + logFileName, 'r') as logfile:
 					for line in logfile:
-						result = re.search(section_start_pattern, line)
+						result = re.search(f'{section_start_pattern}([0-9a-zA-Z\-\_\.]+)', line)
 						if result is not None:
 							section_status = True
+							imageTag = result.group(1)
 						result = re.search(section_end_pattern, line)
 						if result is not None:
 							section_status = False
 						if section_status:
 							if nfType == 'AUSF':
-								if self.git_pull_request:
-									result = re.search('oai-ausf *ci-tmp', line)
-								else:
-									result = re.search('oai-ausf *develop', line)
+								result = re.search(f'oai-ausf *{imageTag}', line)
 							if result is not None and not status:
-								if variant == 'docker':
-									result = re.search('ago *([0-9A-Z]+)', line)
-								else:
-									result = re.search('ago *([0-9]+ [A-Z]+)', line)
+								result = re.search('ago  *([0-9A-Z ]+)', line)
 								if result is not None:
 									size = result.group(1)
+									if variant == 'docker':
+										size = re.sub('MB', ' MB', size)
 									status = True
 					logfile.close()
 				if status:
