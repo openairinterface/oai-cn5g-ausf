@@ -42,6 +42,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include "logger.hpp"
 
 #define AUSF_CONFIG_STRING_AUSF_CONFIG "AUSF"
 #define AUSF_CONFIG_STRING_PID_DIRECTORY "PID_DIRECTORY"
@@ -71,6 +72,8 @@
 #define AUSF_CONFIG_STRING_SUPPORTED_FEATURES_REGISTER_NRF "REGISTER_NRF"
 #define AUSF_CONFIG_STRING_FQDN_DNS "FQDN"
 
+#define AUSF_CONFIG_STRING_LOG_LEVEL "LOG_LEVEL"
+
 using namespace libconfig;
 
 namespace config {
@@ -95,6 +98,7 @@ class ausf_config {
   unsigned int instance;
   std::string pid_dir;
   std::string ausf_name;
+  spdlog::level::level_enum log_level;
 
   interface_cfg_t sbi;
   unsigned int sbi_http2_port;

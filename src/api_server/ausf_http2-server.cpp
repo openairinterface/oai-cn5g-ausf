@@ -211,7 +211,7 @@ void ausf_http2_server::
       "5g-aka-confirmation response:\n %s", json_data.dump().c_str());
 
   Logger::ausf_server().info(
-      "Send 5g-aka-confirmation response to SEAF (Code %d)", code);
+      "Send 5g-aka-confirmation response to SEAF (Code %d)", (int) code);
   if (code == Pistache::Http::Code::Ok)
     response.write_head(HTTP_STATUS_CODE_200_OK, h);
   else
@@ -237,7 +237,8 @@ void ausf_http2_server::ue_authentications_post_handler(
   Logger::ausf_server().debug(
       "Auth response:\n %s", UEAuthCtx_json.dump().c_str());
 
-  Logger::ausf_server().info("Send Auth response to SEAF (Code %d)", code);
+  Logger::ausf_server().info(
+      "Send Auth response to SEAF (Code %d)", (int) code);
   if (code == Pistache::Http::Code::Created)
     response.write_head(HTTP_STATUS_CODE_201_CREATED, h);
   else

@@ -238,19 +238,22 @@ void Authentication_5gaka::f5star(
 void Authentication_5gaka::ComputeOPc(
     const uint8_t kP[16], const uint8_t opP[16], uint8_t opcP[16]) {
   uint8_t i;
+  bool should_log = Logger::should_log(spdlog::level::debug);
 
   RijndaelKeySchedule(kP);
 
-  print_buffer("ausf_app", "ComputeOPc kP   : ", kP, 16);
+  if (should_log) print_buffer("ausf_app", "ComputeOPc kP   : ", kP, 16);
 
   RijndaelEncrypt(opP, opcP);
 
-  print_buffer("ausf_app", "ComputeOPc opP   : ", opP, 16);
-  print_buffer("ausf_app", "ComputeOPc opcP   : ", opcP, 16);
+  if (should_log) {
+    print_buffer("ausf_app", "ComputeOPc opP   : ", opP, 16);
+    print_buffer("ausf_app", "ComputeOPc opcP   : ", opcP, 16);
+  }
 
   for (i = 0; i < 16; i++) opcP[i] ^= opP[i];
 
-  print_buffer("ausf_app", "ComputeOPc opcP   : ", opcP, 16);
+  if (should_log) print_buffer("ausf_app", "ComputeOPc opcP   : ", opcP, 16);
 
   return;
 }
@@ -286,14 +289,15 @@ void Authentication_5gaka::derive_kseaf(
   OCTET_STRING_fromBuf(
       &netName, serving_network.c_str(), serving_network.length());
   uint8_t S[100];
-  S[0] = 0x6C;  // FC
+  bool should_log = Logger::should_log(spdlog::level::debug);
+  S[0]            = 0x6C;  // FC
   memcpy(&S[1], netName.buf, netName.size);
   S[1 + netName.size] = (uint8_t)((netName.size & 0xff00) >> 8);
   S[2 + netName.size] = (uint8_t)(netName.size & 0x00ff);
 
-  print_buffer("ausf_app", "derive_kseaf Kausf", kausf, 32);
+  if (should_log) print_buffer("ausf_app", "derive_kseaf Kausf", kausf, 32);
   kdf(kausf, 32, S, 3 + netName.size, kseaf, 32);
-  print_buffer("ausf_app", "derive_kseaf Kseaf", kseaf, 32);
+  if (should_log) print_buffer("ausf_app", "derive_kseaf Kseaf", kseaf, 32);
 }
 
 //------------------------------------------------------------------------------
@@ -308,6 +312,7 @@ void Authentication_5gaka::derive_kausf(
 
   uint8_t S[100];
   uint8_t key[32];
+  bool should_log = Logger::should_log(spdlog::level::debug);
   memcpy(&key[0], ck, 16);
   memcpy(&key[16], ik, 16);  // KEY
   S[0] = 0x6A;
@@ -320,9 +325,9 @@ void Authentication_5gaka::derive_kausf(
   S[9 + netName.size]  = 0x00;
   S[10 + netName.size] = 0x06;
 
-  print_buffer("ausf_app", "derive_kausf key", key, 32);
+  if (should_log) print_buffer("ausf_app", "derive_kausf key", key, 32);
   kdf(key, 32, S, 11 + netName.size, kausf, 32);
-  print_buffer("ausf_app", "derive_kausf kausf", kausf, 32);
+  if (should_log) print_buffer("ausf_app", "derive_kausf kausf", kausf, 32);
 }
 
 //------------------------------------------------------------------------------
@@ -335,7 +340,8 @@ void Authentication_5gaka::derive_kamf(
   OCTET_STRING_fromBuf(&supi, ueSupi.c_str(), ueSupi.length());
   int supiLen = supi.size;
   uint8_t S[100];
-  S[0] = 0x6D;  // FC = 0x6D
+  bool should_log = Logger::should_log(spdlog::level::debug);
+  S[0]            = 0x6D;  // FC = 0x6D
   memcpy(&S[1], supi.buf, supiLen);
   // memcpy (&S[1+supiLen], &supiLen, 2);
   S[1 + supiLen] = (uint8_t)((supiLen & 0xff00) >> 8);
@@ -345,9 +351,9 @@ void Authentication_5gaka::derive_kamf(
   S[5 + supiLen] = 0x00;
   S[6 + supiLen] = 0x02;
 
-  print_buffer("ausf_app", "derive_kamf kseaf", kseaf, 32);
+  if (should_log) print_buffer("ausf_app", "derive_kamf kseaf", kseaf, 32);
   kdf(kseaf, 32, S, 7 + supiLen, kamf, 32);
-  print_buffer("ausf_app", "derive_kamf kamf", kamf, 32);
+  if (should_log) print_buffer("ausf_app", "derive_kamf kamf", kamf, 32);
 }
 
 //------------------------------------------------------------------------------
@@ -358,6 +364,7 @@ void Authentication_5gaka::derive_knas(
 
   uint8_t S[20];
   uint8_t out[32] = {0};
+  bool should_log = Logger::should_log(spdlog::level::debug);
   S[0]            = 0x69;  // FC
   S[1]            = (uint8_t)(nas_alg_type & 0xFF);
   S[2]            = 0x00;
@@ -366,11 +373,11 @@ void Authentication_5gaka::derive_knas(
   S[5]            = 0x00;
   S[6]            = 0x01;
 
-  print_buffer("ausf_app", "derive_knas kamf", kamf, 32);
+  if (should_log) print_buffer("ausf_app", "derive_knas kamf", kamf, 32);
   kdf(kamf, 32, S, 7, out, 32);
   // memcpy (knas, &out[31 - 16 + 1], 16);
   for (int i = 0; i < 16; i++) knas[i] = out[16 + i];
-  print_buffer("ausf_app", "derive_knas knas", knas, 16);
+  if (should_log) print_buffer("ausf_app", "derive_knas knas", knas, 16);
   // Logger::ausf_app().debug("derive knas finished!");
 }
 
@@ -379,6 +386,7 @@ void Authentication_5gaka::derive_kgnb(
     uint32_t uplinkCount, uint8_t accessType, uint8_t kamf[32], uint8_t* kgnb) {
   Logger::ausf_app().debug("derive_kgnb ...");
   uint8_t S[20];
+  bool should_log      = Logger::should_log(spdlog::level::debug);
   S[0]                 = 0x6E;
   *(uint32_t*) (S + 1) = htonl(uplinkCount);
   S[5]                 = 0x00;
@@ -387,9 +395,9 @@ void Authentication_5gaka::derive_kgnb(
   S[8]                 = 0x00;
   S[9]                 = 0x01;
 
-  print_buffer("ausf_app", "derive_kgnb kamf", kamf, 32);
+  if (should_log) print_buffer("ausf_app", "derive_kgnb kamf", kamf, 32);
   kdf(kamf, 32, S, 10, kgnb, 32);
-  print_buffer("ausf_app", "derive_kgnb kgnb", kgnb, 32);
+  if (should_log) print_buffer("ausf_app", "derive_kgnb kgnb", kgnb, 32);
 }
 
 //------------------------------------------------------------------------------
@@ -437,7 +445,8 @@ void Authentication_5gaka::derive_kasme(
 int Authentication_5gaka::generate_vector(
     const uint8_t opc[16], uint64_t imsi, uint8_t key[16], uint8_t plmn[3],
     uint8_t sqn[6], auc_vector_t* vector) {
-  uint8_t amf[] = {0x80, 0x00};
+  bool should_log = Logger::should_log(spdlog::level::debug);
+  uint8_t amf[]   = {0x80, 0x00};
   uint8_t mac_a[8];
   uint8_t ck[16];
   uint8_t ik[16];
@@ -451,24 +460,30 @@ int Authentication_5gaka::generate_vector(
    * Compute MAC
    */
   f1(opc, key, vector->rand, sqn, amf, mac_a);
-  print_buffer("ausf_app", "generate_vector MAC_A", mac_a, 8);
-  print_buffer("ausf_app", "generate_vector SQN     : ", sqn, 6);
-  print_buffer("ausf_app", "generate_vector RAND    : ", vector->rand, 16);
+  if (should_log) {
+    print_buffer("ausf_app", "generate_vector MAC_A", mac_a, 8);
+    print_buffer("ausf_app", "generate_vector SQN     : ", sqn, 6);
+    print_buffer("ausf_app", "generate_vector RAND    : ", vector->rand, 16);
+  }
   /*
    * Compute XRES, CK, IK, AK
    */
   f2345(opc, key, vector->rand, vector->xres, ck, ik, ak);
-  print_buffer("ausf_app", "generate_vector AK      : ", ak, 6);
-  print_buffer("ausf_app", "generate_vector CK      : ", ck, 16);
-  print_buffer("ausf_app", "generate_vector IK      : ", ik, 16);
-  print_buffer("ausf_app", "generate_vector XRES    : ", vector->xres, 8);
+  if (should_log) {
+    print_buffer("ausf_app", "generate_vector AK      : ", ak, 6);
+    print_buffer("ausf_app", "generate_vector CK      : ", ck, 16);
+    print_buffer("ausf_app", "generate_vector IK      : ", ik, 16);
+    print_buffer("ausf_app", "generate_vector XRES    : ", vector->xres, 8);
+  }
   /*
    * AUTN = SQN ^ AK || AMF || MAC
    */
   generate_autn(sqn, ak, amf, mac_a, vector->autn);
-  print_buffer("ausf_app", "generate_vector AUTN    : ", vector->autn, 16);
+  if (should_log)
+    print_buffer("ausf_app", "generate_vector AUTN    : ", vector->autn, 16);
   derive_kasme(ck, ik, plmn, sqn, ak, vector->kasme);
-  print_buffer("ausf_app", "generate_vector KASME   : ", vector->kasme, 32);
+  if (should_log)
+    print_buffer("ausf_app", "generate_vector KASME   : ", vector->kasme, 32);
   return 0;
 }
 
@@ -487,6 +502,7 @@ uint8_t* Authentication_5gaka::sqn_ms_derive(
   uint8_t* sqn_ms                      = NULL;
   uint8_t amf[2]                       = {0, 0};
   int i                                = 0;
+  bool should_log = Logger::should_log(spdlog::level::debug);
 
   conc_sqn_ms = auts;
   mac_s       = &auts[6];
@@ -505,15 +521,19 @@ uint8_t* Authentication_5gaka::sqn_ms_derive(
     sqn_ms[i] = ak[i] ^ conc_sqn_ms[i];
   }
 
-  print_buffer("ausf_app", "sqn_ms_derive() KEY    : ", key, 16);
-  print_buffer("ausf_app", "sqn_ms_derive() RAND   : ", rand_p, 16);
-  print_buffer("ausf_app", "sqn_ms_derive() AUTS   : ", auts, 14);
-  print_buffer("ausf_app", "sqn_ms_derive() AK     : ", ak, 6);
-  print_buffer("ausf_app", "sqn_ms_derive() SQN_MS : ", sqn_ms, 6);
-  print_buffer("ausf_app", "sqn_ms_derive() MAC_S  : ", mac_s, 8);
+  if (should_log) {
+    print_buffer("ausf_app", "sqn_ms_derive() KEY    : ", key, 16);
+    print_buffer("ausf_app", "sqn_ms_derive() RAND   : ", rand_p, 16);
+    print_buffer("ausf_app", "sqn_ms_derive() AUTS   : ", auts, 14);
+    print_buffer("ausf_app", "sqn_ms_derive() AK     : ", ak, 6);
+    print_buffer("ausf_app", "sqn_ms_derive() SQN_MS : ", sqn_ms, 6);
+    print_buffer("ausf_app", "sqn_ms_derive() MAC_S  : ", mac_s, 8);
+  }
 
   f1star(opc, key, rand_p, sqn_ms, amf, mac_s_computed);
-  print_buffer("ausf_app", "MAC_S +: ", mac_s_computed, 8);
+  if (should_log) {
+    print_buffer("ausf_app", "MAC_S +: ", mac_s_computed, 8);
+  }
 
   if (memcmp(mac_s_computed, mac_s, 8) != 0) {
     Logger::ausf_app().warn("Failed to verify computed SQN_MS");
@@ -568,7 +588,8 @@ void Authentication_5gaka::annex_a_4_33501(
   uint8_t out[32];
   Authentication_5gaka::kdf(key, 32, S, 31 + netName.size, out, 32);
   for (int i = 0; i < 16; i++) output[i] = out[16 + i];
-  print_buffer("udm_ueau", "XRES*(new)", out, 32);
+  if (Logger::should_log(spdlog::level::debug))
+    print_buffer("udm_ueau", "XRES*(new)", out, 32);
 }
 
 //------------------------------------------------------------------------------

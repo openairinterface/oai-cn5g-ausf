@@ -26,7 +26,7 @@ include_directories(${SRC_TOP_DIR}/common)
 include_directories(${SRC_TOP_DIR}/common/utils)
 include_directories(${SRC_TOP_DIR}/common/libngap)
 include_directories(${SRC_TOP_DIR}/5gaka)
-include_directories(${SRC_TOP_DIR}/../build/ext/spdlog/include)
+include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/logger)
 
 file(GLOB 5GAKA_src_files
     ${SRC_TOP_DIR}/common/libngap/*.c

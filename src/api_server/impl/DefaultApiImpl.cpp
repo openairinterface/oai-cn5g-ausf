@@ -99,7 +99,7 @@ void DefaultApiImpl::ue_authentications_auth_ctx_id5g_aka_confirmation_put(
       "5g-aka-confirmation response:\n %s", json_data.dump().c_str());
 
   Logger::ausf_server().info(
-      "Send 5g-aka-confirmation response to SEAF (Code %d)", code);
+      "Send 5g-aka-confirmation response to SEAF (Code %d)", (int) code);
   response.send(code, json_data.dump().c_str());
 }
 
@@ -128,7 +128,8 @@ void DefaultApiImpl::ue_authentications_post(
   Logger::ausf_server().debug(
       "Auth response:\n %s", UEAuthCtx_json.dump().c_str());
 
-  Logger::ausf_server().info("Send Auth response to SEAF (Code %d)", code);
+  Logger::ausf_server().info(
+      "Send Auth response to SEAF (Code %d)", (int) code);
   response.headers().add<Pistache::Http::Header::Location>(location);
   response.send(code, UEAuthCtx_json.dump().c_str());
 }
