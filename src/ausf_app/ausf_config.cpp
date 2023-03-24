@@ -63,6 +63,7 @@ ausf_config::ausf_config() : sbi(), ausf_name(), pid_dir(), instance() {
   udm_addr.fqdn             = {};
   use_fqdn_dns              = false;
   use_http2                 = false;
+  log_level                 = spdlog::level::debug;
 }
 
 //------------------------------------------------------------------------------
@@ -116,6 +117,17 @@ int ausf_config::load(const std::string& config_file) {
     Logger::config().error(
         "%s : %s, using defaults", nfex.what(), nfex.getPath());
   }
+
+  // Log Level
+  try {
+    std::string string_level;
+    ausf_cfg.lookupValue(AUSF_CONFIG_STRING_LOG_LEVEL, string_level);
+    log_level = spdlog::level::from_str(string_level);
+  } catch (const SettingNotFoundException& nfex) {
+    Logger::config().error(
+        "%s : %s, using defaults", nfex.what(), nfex.getPath());
+  }
+
   // AUSF SBI interface
   try {
     const Setting& new_if_cfg = ausf_cfg[AUSF_CONFIG_STRING_INTERFACES];
@@ -337,17 +349,23 @@ void ausf_config::display() {
   Logger::config().info(
       "    API version ..........: %s", udm_addr.api_version.c_str());
 
-  Logger::config().info("- NRF:");
-  Logger::config().info(
-      "    IPv4 Addr ............: %s",
-      inet_ntoa(*((struct in_addr*) &nrf_addr.ipv4_addr)));
-  Logger::config().info("    Port .................: %lu  ", nrf_addr.port);
-  Logger::config().info(
-      "    API version ..........: %s", nrf_addr.api_version.c_str());
+  if (register_nrf) {
+    Logger::config().info("- NRF:");
+    Logger::config().info(
+        "    IPv4 Addr ............: %s",
+        inet_ntoa(*((struct in_addr*) &nrf_addr.ipv4_addr)));
+    Logger::config().info("    Port .................: %lu  ", nrf_addr.port);
+    Logger::config().info(
+        "    API version ..........: %s", nrf_addr.api_version.c_str());
+  }
 
   if (use_fqdn_dns)
     Logger::config().info(
         "    FQDN .................: %s", nrf_addr.fqdn.c_str());
+
+  Logger::config().info(
+      "- Log Level will be .......: %s",
+      spdlog::level::to_string_view(log_level));
 }
 
 //------------------------------------------------------------------------------

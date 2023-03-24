@@ -90,6 +90,7 @@ int main(int argc, char** argv) {
   // Config
   ausf_cfg.load(Options::getlibconfigConfig());
   ausf_cfg.display();
+  Logger::set_level(ausf_cfg.log_level);
 
   // AUSF application layer
   ausf_app_inst = new ausf_app(Options::getlibconfigConfig(), ev);
