@@ -228,7 +228,7 @@ pipeline {
                   prepareWorkspaceMergeCase()
                   // Moving to focal and cppcheck 1.90 and a dockerfile approach
                   sh 'sed -i -e "s@nfName@ausf@" ci-scripts/common/docker/Dockerfile.ci.cppcheck'
-                  sh 'docker build --target ausf-cppcheck --tag ausf-cppcheck:test --file ci-scripts/docker/Dockerfile.ci.cppcheck . > archives/cppcheck_install.log 2>&1'
+                  sh 'docker build --target ausf-cppcheck --tag ausf-cppcheck:test --file ci-scripts/common/docker/Dockerfile.ci.cppcheck . > archives/cppcheck_install.log 2>&1'
                   sh 'docker run --name ausf-ci-cppcheck --entrypoint /bin/true ausf-cppcheck:test'
                   sh 'docker cp ausf-ci-cppcheck:/home/cppcheck.xml archives'
                   sh 'docker cp ausf-ci-cppcheck:/home/cppcheck_build.log archives'
@@ -266,9 +266,9 @@ pipeline {
                   prepareWorkspaceMergeCase()
                   sh 'sed -i -e "s@nfName@ausf@" ci-scripts/common/docker/Dockerfile.ci.clang-format'
                   if ("MERGE".equals(env.gitlabActionType)) {
-                    sh 'docker build --target ausf-clang-format-check --tag ausf-clang-format-check:test --file ci-scripts/docker/Dockerfile.ci.clang-format --build-arg MERGE_REQUEST_CHECK=True --build-arg SOURCE_BRANCH=' + env.gitlabSourceBranch + ' --build-arg TARGET_BRANCH=' + env.gitlabTargetBranch + ' . > archives/clang_format_install.log 2>&1'
+                    sh 'docker build --target ausf-clang-format-check --tag ausf-clang-format-check:test --file ci-scripts/common/docker/Dockerfile.ci.clang-format --build-arg MERGE_REQUEST_CHECK=True --build-arg SOURCE_BRANCH=' + env.gitlabSourceBranch + ' --build-arg TARGET_BRANCH=' + env.gitlabTargetBranch + ' . > archives/clang_format_install.log 2>&1'
                   } else {
-                    sh 'docker build --target ausf-clang-format-check --tag ausf-clang-format-check:test --file ci-scripts/docker/Dockerfile.ci.clang-format . > archives/clang_format_install.log 2>&1'
+                    sh 'docker build --target ausf-clang-format-check --tag ausf-clang-format-check:test --file ci-scripts/common/docker/Dockerfile.ci.clang-format . > archives/clang_format_install.log 2>&1'
                   }
                   sh 'docker run --name ausf-ci-clang-format --entrypoint /bin/true ausf-clang-format-check:test'
                   sh 'docker cp ausf-ci-clang-format:/home/src/oai_rules_result.txt src'
