@@ -50,8 +50,8 @@ RUN git config --global https.postBuffer 123289600 && \
 # Copying source code
 WORKDIR /openair-ausf
 COPY ./build/scripts /openair-ausf/build/scripts/
+COPY ./build/common-build /openair-ausf/build/common-build
 COPY ./build/ausf/CMakeLists.txt /openair-ausf/build/ausf/CMakeLists.txt
-COPY ./build/cmake_modules /openair-ausf/cmake_modules/
 
 # Installing all the needed libraries/packages to build and run AUSF
 WORKDIR /openair-ausf/build/scripts
@@ -68,7 +68,9 @@ COPY . /openair-ausf
 WORKDIR /openair-ausf/build/scripts
 RUN ./build_ausf --clean --Verbose --build-type Release --jobs && \
     ldd /openair-ausf/build/ausf/build/ausf && \
-    mv /openair-ausf/build/ausf/build/ausf /openair-ausf/build/ausf/build/oai_ausf
+    mv /openair-ausf/build/ausf/build/ausf /openair-ausf/build/ausf/build/oai_ausf && \
+    sed -i -e "s@nf-root-folder@ausf@" -e "s@nf-config-file@ausf.conf@" \
+      ../common-build/docker-scripts/entrypoint.py
 
 #---------------------------------------------------------------------
 # TARGET IMAGE
@@ -121,7 +123,7 @@ RUN apt-get update && \
 WORKDIR /openair-ausf/bin
 COPY --from=oai-ausf-builder \
     /openair-ausf/build/ausf/build/oai_ausf \
-    /openair-ausf/scripts/entrypoint.py \
+    /openair-ausf/build/common-build/docker-scripts/entrypoint.py \
     /openair-ausf/scripts/healthcheck.sh \
     ./
 

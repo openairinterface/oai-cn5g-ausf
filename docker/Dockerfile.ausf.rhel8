@@ -68,18 +68,21 @@ RUN ./build_ausf --install-deps --force
 RUN ./build_ausf --clean --Verbose --build-type Release --jobs && \
     ldd /openair-ausf/build/ausf/build/ausf && \
     mv /openair-ausf/build/ausf/build/ausf /openair-ausf/build/ausf/build/oai_ausf && \
+    sed -i -e "s@nf-root-folder@ausf@" -e "s@nf-config-file@ausf.conf@" \
+      ../common-build/docker-scripts/entrypoint.py && \
     # Remove entitlements and Subscription Manager configs
     rm -rf /etc/pki/entitlement && \
     rm -rf /etc/rhsm
+
 #---------------------------------------------------------------------
 # TARGET IMAGE
 #---------------------------------------------------------------------
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest as oai-ausf
 ENV TZ=Europe/Paris
+# We install some debug tools for the moment in addition of mandatory libraries
 
 # Copy the entitlements
 COPY ./etc-pki-entitlement /etc/pki/entitlement
-
 # Copy the subscription manager configurations
 COPY ./rhsm-conf /etc/rhsm
 COPY ./rhsm-ca /etc/rhsm/ca
@@ -111,7 +114,7 @@ RUN rm -f /etc/rhsm-host && \
 WORKDIR /openair-ausf/bin
 COPY --from=oai-ausf-builder \
     /openair-ausf/build/ausf/build/oai_ausf \
-    /openair-ausf/scripts/entrypoint.py \
+    /openair-ausf/build/common-build/docker-scripts/entrypoint.py \
     /openair-ausf/scripts/healthcheck.sh \
     ./
 
