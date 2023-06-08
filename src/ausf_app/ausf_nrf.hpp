@@ -84,12 +84,6 @@ class ausf_nrf {
    * @return void
    */
   void register_to_nrf();
-  /*
-   * Get ausf API Root
-   * @param [std::string& ] api_root: ausf's API Root
-   * @return void
-   */
-  void get_ausf_api_root(std::string& api_root);
 
  private:
   ausf_event& m_event_sub;

@@ -55,13 +55,6 @@ ausf_client* ausf_client_instance = nullptr;
 
 //------------------------------------------------------------------------------
 ausf_nrf::ausf_nrf(ausf_event& ev) : m_event_sub(ev) {}
-//---------------------------------------------------------------------------------------------
-void ausf_nrf::get_ausf_api_root(std::string& api_root) {
-  api_root = std::string(
-                 inet_ntoa(*((struct in_addr*) &ausf_cfg.nrf_addr.ipv4_addr))) +
-             ":" + std::to_string(ausf_cfg.nrf_addr.port) + NNRF_NFM_BASE +
-             ausf_cfg.nrf_addr.api_version;
-}
 
 //---------------------------------------------------------------------------------------------
 void ausf_nrf::generate_ausf_profile(
@@ -103,12 +96,12 @@ void ausf_nrf::register_to_nrf() {
   generate_ausf_profile(ausf_nf_profile, ausf_instance_id);
 
   // Send NF registeration request
-  std::string ausf_api_root = {};
-  std::string response      = {};
-  std::string method        = {"PUT"};
-  get_ausf_api_root(ausf_api_root);
+  std::string nrf_api_root = {};
+  std::string response     = {};
+  std::string method       = {"PUT"};
+  ausf_cfg.get_nrf_api_root(nrf_api_root);
   std::string remoteUri =
-      ausf_api_root + AUSF_NF_REGISTER_URL + ausf_instance_id;
+      nrf_api_root + NNRF_NF_REGISTER_URL + ausf_instance_id;
   nlohmann::json json_data = {};
   ausf_nf_profile.to_json(json_data);
 
@@ -164,10 +157,10 @@ void ausf_nrf::trigger_nf_heartbeat_procedure(uint64_t ms) {
     json_data.push_back(item);
   }
 
-  std::string ausf_api_root = {};
-  get_ausf_api_root(ausf_api_root);
+  std::string nrf_api_root = {};
+  ausf_cfg.get_nrf_api_root(nrf_api_root);
   std::string remoteUri =
-      ausf_api_root + AUSF_NF_REGISTER_URL + ausf_instance_id;
+      nrf_api_root + NNRF_NF_REGISTER_URL + ausf_instance_id;
   ausf_client_instance->curl_http_client(
       remoteUri, method, json_data.dump().c_str(), response);
   if (!response.empty()) task_connection.disconnect();

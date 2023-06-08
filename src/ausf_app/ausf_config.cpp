@@ -35,6 +35,7 @@
 #include "fqdn.hpp"
 #include "if.hpp"
 #include "logger.hpp"
+#include "ausf.h"
 
 #include "string.hpp"
 
@@ -211,7 +212,8 @@ int ausf_config::load(const std::string& config_file) {
         Logger::ausf_app().error(AUSF_CONFIG_STRING_UDM_PORT "failed");
         throw(AUSF_CONFIG_STRING_UDM_PORT "failed");
       }
-      udm_addr.port = udm_port;
+      udm_addr.port     = udm_port;
+      udm_addr.uri_root = util::trim(astring) + ":" + std::to_string(udm_port);
 
       if (!(udm_cfg.lookupValue(
               AUSF_CONFIG_STRING_API_VERSION, udm_api_version))) {
@@ -239,7 +241,9 @@ int ausf_config::load(const std::string& config_file) {
           Logger::ausf_app().error(AUSF_CONFIG_STRING_UDM_PORT "failed");
           throw(AUSF_CONFIG_STRING_UDM_PORT "failed");
         }
-        udm_addr.port               = udm_port;
+        udm_addr.port = udm_port;
+        udm_addr.uri_root =
+            util::trim(astring) + ":" + std::to_string(udm_port);
         std::string udm_api_version = {};
         if (!(udm_cfg.lookupValue(
                 AUSF_CONFIG_STRING_API_VERSION, udm_api_version))) {
@@ -278,6 +282,8 @@ int ausf_config::load(const std::string& config_file) {
           throw(AUSF_CONFIG_STRING_NRF_PORT "failed");
         }
         nrf_addr.port = nrf_port;
+        nrf_addr.uri_root =
+            util::trim(astring) + ":" + std::to_string(nrf_port);
 
         if (!(nrf_cfg.lookupValue(
                 AUSF_CONFIG_STRING_API_VERSION, nrf_api_version))) {
@@ -308,6 +314,8 @@ int ausf_config::load(const std::string& config_file) {
             throw(AUSF_CONFIG_STRING_NRF_PORT "failed");
           }
           nrf_addr.port = nrf_port;
+          nrf_addr.uri_root =
+              util::trim(astring) + ":" + std::to_string(nrf_port);
         }
       }
     } catch (const SettingNotFoundException& nfex) {
@@ -414,6 +422,16 @@ int ausf_config::load_interface(
     if_cfg.lookupValue(AUSF_CONFIG_STRING_PORT, cfg.port);
   }
   return RETURNok;
+}
+
+//---------------------------------------------------------------------------------------------
+void ausf_config::get_udm_ueau_api_root(std::string& api_root) {
+  api_root = udm_addr.uri_root + NUDM_UEAU_BASE + udm_addr.api_version;
+}
+
+//---------------------------------------------------------------------------------------------
+void ausf_config::get_nrf_api_root(std::string& api_root) {
+  api_root = nrf_addr.uri_root + NNRF_NFM_BASE + nrf_addr.api_version;
 }
 
 }  // namespace oai::config

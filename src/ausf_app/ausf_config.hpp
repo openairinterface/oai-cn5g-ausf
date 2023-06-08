@@ -102,6 +102,13 @@ class ausf_config {
   int load(const std::string& config_file);
   int load_interface(const Setting& if_cfg, interface_cfg_t& cfg);
   void display();
+  void get_udm_ueau_api_root(std::string& api_root);
+  /*
+   * Get NRF API Root
+   * @param [std::string& ] api_root: NRF's API Root
+   * @return void
+   */
+  void get_nrf_api_root(std::string& api_root);
 
   unsigned int instance;
   std::string pid_dir;
