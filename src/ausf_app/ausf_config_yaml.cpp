@@ -143,8 +143,7 @@ void ausf_config_yaml::to_ausf_config(oai::config::ausf_config& cfg) {
   cfg.log_level    = spdlog::level::from_str(log_level());
   cfg.register_nrf = register_nrf();
 
-  // TODO:
-  // cfg.support_features.use_fqdn_dns = true;
+  cfg.use_fqdn_dns = false;  // TODO: to be removed
   if (get_http_version() == 2) cfg.use_http2 = true;
 
   cfg.sbi_api_version = local().get_sbi().get_api_version();
