@@ -21,8 +21,8 @@
 
 /*! \file authentication_algorithms_with_5gaka.hpp
  \brief
- \brief Based on https://github.com/OPENAIRINTERFACE/openair-hss
- \author  Jian Yang, Fengjiao He, Hongxin Wang
+ \brief
+ \author
  \company
  \date 2020
  \email: email: contact@openairinterface.org

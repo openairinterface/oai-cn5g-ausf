@@ -43,7 +43,7 @@
 #include "ausf.h"
 #include "logger.hpp"
 
-using namespace config;
+using namespace oai::config;
 using namespace boost::placeholders;
 using namespace oai::ausf::app;
 

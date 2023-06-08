@@ -21,10 +21,10 @@
 
 /*! \file ausf_http2-server.h
  \brief
- \author  Tien-Thinh NGUYEN
+ \author
  \company Eurecom
  \date 2021
- \email: tien-thinh.nguyen@eurecom.fr
+ \email: contact@openairinterface.org
  */
 
 #ifndef FILE_AUSF_HTTP2_SERVER_SEEN

@@ -133,6 +133,7 @@ COPY --from=oai-ausf-builder \
     /usr/local/lib/libnghttp2_asio.so.1 \
     /usr/local/lib/libpistache.so \
     /usr/local/lib/libfmt.so \
+    /usr/local/lib/libyaml-cpp.so.0.? \
 # Ubuntu 18 --> boost 67 will be copied
     /usr/lib/libboost_system.so.1.* \
     /usr/local/lib/

@@ -51,7 +51,7 @@ using namespace oai::ausf::app;
 
 extern ausf_app* ausf_app_inst;
 ausf_client* ausf_client_inst = nullptr;
-using namespace config;
+using namespace oai::config;
 extern ausf_config ausf_cfg;
 ausf_nrf* ausf_nrf_inst = nullptr;
 

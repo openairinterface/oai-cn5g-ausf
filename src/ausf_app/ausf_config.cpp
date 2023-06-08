@@ -53,17 +53,19 @@
 
 using namespace libconfig;
 
-namespace config {
+namespace oai::config {
 
 //------------------------------------------------------------------------------
 ausf_config::ausf_config() : sbi(), ausf_name(), pid_dir(), instance() {
   udm_addr.ipv4_addr.s_addr = INADDR_ANY;
   udm_addr.port             = 80;
+  sbi_http2_port            = 8080;
   udm_addr.api_version      = "v1";
   udm_addr.fqdn             = {};
   use_fqdn_dns              = false;
   use_http2                 = false;
   log_level                 = spdlog::level::debug;
+  register_nrf              = false;
 }
 
 //------------------------------------------------------------------------------
@@ -414,4 +416,4 @@ int ausf_config::load_interface(
   return RETURNok;
 }
 
-}  // namespace config
+}  // namespace oai::config

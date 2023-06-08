@@ -41,7 +41,7 @@
 using namespace Pistache::Http;
 using namespace Pistache::Http::Mime;
 using namespace oai::ausf::app;
-using namespace config;
+using namespace oai::config;
 using json = nlohmann::json;
 
 extern ausf_client* ausf_client_inst;

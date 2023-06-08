@@ -51,7 +51,7 @@
 #include "ausf_client.hpp"
 #include "ProblemDetails.h"
 
-using namespace config;
+using namespace oai::config;
 extern ausf_config ausf_cfg;
 
 using namespace std;
