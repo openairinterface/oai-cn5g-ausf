@@ -27,7 +27,10 @@
 #define _unused(x) ((void) (x))
 
 #define NNRF_NFM_BASE "/nnrf-nfm/"
-#define AUSF_NF_REGISTER_URL "/nf-instances/"
+#define NNRF_NF_REGISTER_URL "/nf-instances/"
+#define NUDM_UEAU_BASE "/nudm-ueau/"
+#define NUDM_UEAU_SECURITY_INFO_URL "/security-information/generate-auth-data"
+#define NUDM_UEAU_AUTH_EVENTS_URL "/auth-events"
 
 typedef enum nf_type_s {
   NF_TYPE_NRF     = 0,

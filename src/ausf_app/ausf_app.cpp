@@ -51,7 +51,7 @@ using namespace oai::ausf::app;
 
 extern ausf_app* ausf_app_inst;
 ausf_client* ausf_client_inst = nullptr;
-using namespace config;
+using namespace oai::config;
 extern ausf_config ausf_cfg;
 ausf_nrf* ausf_nrf_inst = nullptr;
 
@@ -143,15 +143,12 @@ void ausf_app::handle_ue_authentications(
 
   // 5g he av from udm
   // get authentication related info
+  std::string udm_api_root = {};
+  ausf_cfg.get_udm_ueau_api_root(udm_api_root);
   std::string udm_uri  = {};
   std::string method   = "POST";
   std::string response = {};
-  udm_uri              = "http://" +
-            std::string(
-                inet_ntoa(*((struct in_addr*) &ausf_cfg.udm_addr.ipv4_addr))) +
-            ":" + std::to_string(ausf_cfg.udm_addr.port) + "/nudm-ueau/" +
-            ausf_cfg.udm_addr.api_version + "/" + supi +
-            "/security-information/generate-auth-data";
+  udm_uri = udm_api_root + "/" + supi + NUDM_UEAU_SECURITY_INFO_URL;
   Logger::ausf_app().debug("UDM's URI %s", udm_uri.c_str());
 
   // Create AuthInfo to send to UDM
@@ -448,15 +445,12 @@ void ausf_app::handle_ue_authentications_confirmation(
         confirmResponse.setSupi(sc->supi_ausf);
       }
       // Send authResult to UDM (authentication result info)
+      std::string udm_api_root = {};
+      ausf_cfg.get_udm_ueau_api_root(udm_api_root);
       std::string udm_uri  = {};
       std::string method   = "POST";
       std::string response = {};
-      udm_uri =
-          "http://" +
-          std::string(
-              inet_ntoa(*((struct in_addr*) &ausf_cfg.udm_addr.ipv4_addr))) +
-          ":" + std::to_string(ausf_cfg.udm_addr.port) + "/nudm-ueau/" +
-          ausf_cfg.udm_addr.api_version + "/" + sc->supi_ausf + "/auth-events";
+      udm_uri = udm_api_root + "/" + sc->supi_ausf + NUDM_UEAU_AUTH_EVENTS_URL;
 
       Logger::ausf_app().debug("UDM's URI: %s", udm_uri.c_str());
 

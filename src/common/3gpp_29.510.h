@@ -66,7 +66,7 @@ typedef struct patch_item_s {
 } patch_item_t;
 
 #define AUSF_CURL_TIMEOUT_MS 100L
-#define NNRF_NFM_BASE "/nnrf-nfm/"
-#define AUSF_NF_REGISTER_URL "/nf-instances/"
+//#define NNRF_NFM_BASE "/nnrf-nfm/"
+//#define NNRF_NF_REGISTER_URL "/nf-instances/"
 
 #endif

@@ -293,6 +293,7 @@ add_executable(ausf
 
 ## Common modules
 include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/logger/logger.cmake)
+include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/config/config.cmake)
 
 IF(STATIC_LINKING)
     SET(CMAKE_EXE_LINKER_FLAGS "-static")
@@ -302,5 +303,5 @@ IF(STATIC_LINKING)
 ENDIF(STATIC_LINKING)   
 
 target_link_libraries (ausf ${ASAN} 
-    -Wl,--start-group AUSF 3GPP_COMMON_TYPES 5GAKA AUSF_API CN_UTILS -lnettle ${NETTLE_LIBRARIES} ${CRYPTO_LIBRARIES} -lnghttp2_asio -lboost_system -lboost_thread -lfmt -lspdlog -lboost_date_time -lssl -lcrypto -lgmp -Wl,--end-group pthread m rt config++ boost_system pistache curl)
+    -Wl,--start-group AUSF 3GPP_COMMON_TYPES 5GAKA AUSF_API CN_UTILS -lnettle ${NETTLE_LIBRARIES} ${CRYPTO_LIBRARIES} -lnghttp2_asio -lboost_system -lboost_thread -lfmt -lspdlog -lboost_date_time -lssl -lcrypto -lgmp -Wl,--end-group pthread m rt config++ boost_system pistache curl yaml-cpp)
     

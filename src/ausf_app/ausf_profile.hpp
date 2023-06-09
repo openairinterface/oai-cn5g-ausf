@@ -21,10 +21,10 @@
 
 /*! \file ausf_profile.hpp
  \brief
- \author  Tien-Thinh NGUYEN
+ \author
  \company Eurecom
  \date 2021
- \email: Tien-Thinh.Nguyen@eurecom.fr
+ \email: contact@openairinterface.org
  */
 
 #ifndef FILE_AUSF_PROFILE_HPP_SEEN

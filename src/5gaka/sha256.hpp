@@ -21,7 +21,7 @@
 
 /*! \file sha256.hpp
  \brief
- \author Jian Yang, Fengjiao He, Hongxin Wang
+ \author
  \company
  \date 2020
  \email: email: contact@openairinterface.org

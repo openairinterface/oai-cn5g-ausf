@@ -26,11 +26,13 @@ include_directories(${SRC_TOP_DIR}/api_server/)
 include_directories(${SRC_TOP_DIR}/common/)
 include_directories(${SRC_TOP_DIR}/common/utils)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/logger)
+include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/config)
 
 add_library (AUSF STATIC
   ausf_app.cpp
   ausf_client.cpp 
-  ausf_config.cpp 
+  ausf_config.cpp
+  ausf_config_yaml.cpp  
   task_manager.cpp
   ausf_event.cpp
   ausf_profile.cpp

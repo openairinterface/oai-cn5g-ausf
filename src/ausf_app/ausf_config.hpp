@@ -76,7 +76,7 @@
 
 using namespace libconfig;
 
-namespace config {
+namespace oai::config {
 
 typedef struct interface_cfg_s {
   std::string if_name;
@@ -87,6 +87,14 @@ typedef struct interface_cfg_s {
   unsigned int port;
 } interface_cfg_t;
 
+typedef struct nf_addr_s {
+  struct in_addr ipv4_addr;
+  unsigned int port;
+  std::string api_version;
+  std::string fqdn;
+  std::string uri_root;
+} nf_addr;
+
 class ausf_config {
  public:
   ausf_config();
@@ -94,6 +102,13 @@ class ausf_config {
   int load(const std::string& config_file);
   int load_interface(const Setting& if_cfg, interface_cfg_t& cfg);
   void display();
+  void get_udm_ueau_api_root(std::string& api_root);
+  /*
+   * Get NRF API Root
+   * @param [std::string& ] api_root: NRF's API Root
+   * @return void
+   */
+  void get_nrf_api_root(std::string& api_root);
 
   unsigned int instance;
   std::string pid_dir;
@@ -104,26 +119,14 @@ class ausf_config {
   unsigned int sbi_http2_port;
   std::string sbi_api_version;
 
-  struct {
-    struct in_addr ipv4_addr;
-    unsigned int port;
-    std::string api_version;
-    std::string fqdn;
-  } udm_addr;
-
-  struct {
-    struct in_addr ipv4_addr;
-    unsigned int port;
-    std::string api_version;
-    std::string fqdn;
-  } nrf_addr;
+  nf_addr udm_addr;
+  nf_addr nrf_addr;
 
   bool register_nrf;
-  ;
   bool use_fqdn_dns;
   bool use_http2;
 };
 
-}  // namespace config
+}  // namespace oai::config
 
 #endif

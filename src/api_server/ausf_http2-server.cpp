@@ -21,10 +21,10 @@
 
 /*! \file ausf_http2-server.cpp
  \brief
- \author  Tien-Thinh NGUYEN
+ \author
  \company Eurecom
  \date 2020
- \email: tien-thinh.nguyen@eurecom.fr
+ \email: contact@openairinterface.org
  */
 
 #include "ausf-http2-server.h"
@@ -44,7 +44,7 @@
 using namespace nghttp2::asio_http2;
 using namespace nghttp2::asio_http2::server;
 using namespace oai::ausf_server::model;
-using namespace config;
+using namespace oai::config;
 
 extern ausf_config ausf_cfg;
 

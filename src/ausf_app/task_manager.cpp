@@ -24,7 +24,7 @@
  \author
  \company Eurecom
  \date 2020
- \email: Tien-Thinh.Nguyen@eurecom.fr
+ \email: contact@openairinterface.org
  */
 
 #include "task_manager.hpp"

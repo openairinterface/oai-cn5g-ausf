@@ -18,6 +18,7 @@
 #include "ausf-http2-server.h"
 #include "ausf_app.hpp"
 #include "ausf_config.hpp"
+#include "ausf_config_yaml.hpp"
 #include "logger.hpp"
 #include "options.hpp"
 #include "pid_file.hpp"
@@ -37,13 +38,14 @@ using namespace oai::ausf::app;
 using namespace util;
 using namespace std;
 
-using namespace config;
+using namespace oai::config;
 
 ausf_config ausf_cfg;
 ausf_app* ausf_app_inst              = nullptr;
 AUSFApiServer* api_server            = nullptr;
 ausf_http2_server* ausf_api_server_2 = nullptr;
 
+std::unique_ptr<ausf_config_yaml> ausf_cfg_yaml = nullptr;
 //------------------------------------------------------------------------------
 void my_app_signal_handler(int s) {
   std::cout << "Caught signal " << s << std::endl;
@@ -88,9 +90,29 @@ int main(int argc, char** argv) {
   ausf_event ev;
 
   // Config
-  ausf_cfg.load(Options::getlibconfigConfig());
-  ausf_cfg.display();
-  Logger::set_level(ausf_cfg.log_level);
+  std::string conf_file_name = Options::getlibconfigConfig();
+  std::string file_ext       = ".conf";
+  if (conf_file_name.find(file_ext) != std::string::npos) {
+    Logger::ausf_server().debug(
+        "Parsing the configuration file, file type CONF.");
+    ausf_cfg.load(conf_file_name);
+    Logger::set_level(ausf_cfg.log_level);
+    ausf_cfg.display();
+  } else {
+    // By default, considering the config file as yaml
+    Logger::ausf_server().debug(
+        "Parsing the configuration file, file type YAML.");
+    ausf_cfg_yaml = std::make_unique<ausf_config_yaml>(
+        conf_file_name, Options::getlogStdout(), Options::getlogRotFilelog());
+    if (!ausf_cfg_yaml->init()) {
+      Logger::ausf_server().error("Reading the configuration failed. Exiting.");
+      return 1;
+    }
+    ausf_cfg_yaml->pre_process();
+    ausf_cfg_yaml->display();
+    // Convert from YAML to internal structure
+    ausf_cfg_yaml->to_ausf_config(ausf_cfg);
+  }
 
   // AUSF application layer
   ausf_app_inst = new ausf_app(Options::getlibconfigConfig(), ev);
@@ -100,35 +122,40 @@ int main(int argc, char** argv) {
   std::thread task_manager_thread(&task_manager::run, &tm);
 
   // PID file
-  // Currently hard-coded value. TODO: add as config option.
-  string pid_file_name = get_exe_absolute_path("/var/run", ausf_cfg.instance);
+  string pid_file_name =
+      get_exe_absolute_path(ausf_cfg.pid_dir, ausf_cfg.instance);
   if (!is_pid_file_lock_success(pid_file_name.c_str())) {
     Logger::ausf_server().error(
         "Lock PID file %s failed\n", pid_file_name.c_str());
     exit(-EDEADLK);
   }
 
-  // AUSF Pistache API server (HTTP1)
-  Pistache::Address addr(
-      std::string(inet_ntoa(*((struct in_addr*) &ausf_cfg.sbi.addr4))),
-      Pistache::Port(ausf_cfg.sbi.port));
-  api_server = new AUSFApiServer(addr, ausf_app_inst);
-  api_server->init(2);
-  std::thread ausf_manager(&AUSFApiServer::start, api_server);
-
-  // AUSF NGHTTP API server (HTTP2)
-  ausf_api_server_2 = new ausf_http2_server(
-      conv::toString(ausf_cfg.sbi.addr4), ausf_cfg.sbi_http2_port,
-      ausf_app_inst);
-  std::thread ausf_http2_manager(&ausf_http2_server::start, ausf_api_server_2);
-
-  ausf_manager.join();
-  ausf_http2_manager.join();
-
   FILE* fp             = NULL;
   std::string filename = fmt::format("/tmp/ausf_{}.status", getpid());
   fp                   = fopen(filename.c_str(), "w+");
   fprintf(fp, "STARTED\n");
+
+  if (!ausf_cfg.use_http2) {
+    // AUSF Pistache API server (HTTP1)
+    Pistache::Address addr(
+        std::string(inet_ntoa(*((struct in_addr*) &ausf_cfg.sbi.addr4))),
+        Pistache::Port(ausf_cfg.sbi.port));
+    api_server = new AUSFApiServer(addr, ausf_app_inst);
+    api_server->init(2);
+    std::thread ausf_manager(&AUSFApiServer::start, api_server);
+    ausf_manager.join();
+  } else {
+    // AUSF NGHTTP API server (HTTP2)
+    ausf_api_server_2 = new ausf_http2_server(
+        conv::toString(ausf_cfg.sbi.addr4), ausf_cfg.sbi_http2_port,
+        ausf_app_inst);
+    std::thread ausf_http2_manager(
+        &ausf_http2_server::start, ausf_api_server_2);
+    ausf_http2_manager.join();
+  }
+
+  task_manager_thread.join();
+
   fflush(fp);
   fclose(fp);
 
