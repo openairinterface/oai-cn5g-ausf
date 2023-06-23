@@ -77,8 +77,7 @@ def perform_flattening(tag):
     cmd += ' --change "WORKDIR /openair-ausf" '
     cmd += ' --change "EXPOSE 80/tcp" '
     cmd += ' --change "HEALTHCHECK --interval=10s --timeout=15s --retries=6 CMD /openair-ausf/bin/healthcheck.sh" '
-    cmd += ' --change "CMD [\\"/openair-ausf/bin/oai_ausf\\", \\"-c\\", \\"/openair-ausf/etc/ausf.conf\\", \\"-o\\"]" '
-    cmd += ' --change "ENTRYPOINT [\\"python3\\", \\"/openair-ausf/bin/entrypoint.py\\"]" '
+    cmd += ' --change "CMD [\\"/openair-ausf/bin/oai_ausf\\", \\"-c\\", \\"/openair-ausf/etc/config.yaml\\", \\"-o\\"]" '
     cmd += ' - ' + image_prefix + tag
     print (cmd)
     subprocess.check_output(cmd, shell=True, universal_newlines=True)
