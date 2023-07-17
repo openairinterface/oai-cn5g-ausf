@@ -131,7 +131,9 @@ RUN ldconfig && \
     ldd /openair-ausf/bin/oai_ausf
 
 WORKDIR /openair-ausf/etc
-COPY --from=oai-ausf-builder /openair-ausf/etc/ausf.conf .
+COPY --from=oai-ausf-builder \
+    /openair-ausf/etc/ausf.conf \
+    /openair-ausf/etc/config.yaml ./
 
 WORKDIR /openair-ausf
 
