@@ -22,9 +22,6 @@
 # OAI CN Configuration File
 ### This file can be used by all OAI NFs
 ### Some fields are specific to an NF and will be ignored by other NFs
-### The {{ env['ENV_NAME'] }} syntax lets you define these values in a docker-compose file
-### If you intend to mount this file or use a bare-metal deployment, please refer to README.md
-### The README.md also defines default values and allowed values for each configuration parameter
 
 ############# Common configuration
 
