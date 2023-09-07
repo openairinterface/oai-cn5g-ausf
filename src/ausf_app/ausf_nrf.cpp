@@ -139,10 +139,13 @@ void ausf_nrf::start_event_nf_heartbeat(std::string& remoteURI) {
 //---------------------------------------------------------------------------------------------
 void ausf_nrf::trigger_nf_heartbeat_procedure(uint64_t ms) {
   _unused(ms);
-  oai::ausf_server::model::PatchItem patch_item = {};
-  std::vector<oai::ausf_server::model::PatchItem> patch_items;
+  oai::model::common::PatchItem patch_item = {};
+  std::vector<oai::model::common::PatchItem> patch_items;
   //{"op":"replace","path":"/nfStatus", "value": "REGISTERED"}
-  patch_item.setOp("replace");
+  oai::model::common::PatchOperation op;
+  op.setEnumValue(
+      oai::model::common::PatchOperation_anyOf::ePatchOperation_anyOf::REPLACE);
+  patch_item.setOp(op);
   patch_item.setPath("/nfStatus");
   patch_item.setValue("REGISTERED");
   patch_items.push_back(patch_item);

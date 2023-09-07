@@ -38,6 +38,8 @@ namespace oai {
 namespace ausf_server {
 namespace model {
 
+using namespace oai::model::common;
+
 UEAuthenticationCtx::UEAuthenticationCtx() {
   m_ServingNetworkName      = "";
   m_ServingNetworkNameIsSet = false;

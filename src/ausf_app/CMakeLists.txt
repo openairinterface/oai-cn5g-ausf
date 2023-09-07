@@ -28,6 +28,8 @@ include_directories(${SRC_TOP_DIR}/common/utils)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/logger)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/config)
 
+include(${BUILD_TOP_DIR}/ausf/used_models.cmake)
+
 add_library (AUSF STATIC
   ausf_app.cpp
   ausf_client.cpp 

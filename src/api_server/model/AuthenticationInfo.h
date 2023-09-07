@@ -91,8 +91,8 @@ class AuthenticationInfo {
   /// <summary>
   ///
   /// </summary>
-  TraceData getTraceData() const;
-  void setTraceData(TraceData const& value);
+  oai::model::common::TraceData getTraceData() const;
+  void setTraceData(oai::model::common::TraceData const& value);
   bool traceDataIsSet() const;
   void unsetTraceData();
   /// <summary>
@@ -136,7 +136,7 @@ class AuthenticationInfo {
   bool m_ResynchronizationInfoIsSet;
   std::string m_Pei;
   bool m_PeiIsSet;
-  TraceData m_TraceData;
+  oai::model::common::TraceData m_TraceData;
   bool m_TraceDataIsSet;
   std::string m_UdmGroupId;
   bool m_UdmGroupIdIsSet;
