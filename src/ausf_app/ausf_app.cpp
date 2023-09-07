@@ -48,6 +48,7 @@
 
 using namespace std;
 using namespace oai::ausf::app;
+using namespace oai::model::common;
 
 extern ausf_app* ausf_app_inst;
 ausf_client* ausf_client_inst = nullptr;

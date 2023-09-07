@@ -53,8 +53,6 @@ namespace oai {
 namespace ausf_server {
 namespace api {
 
-using namespace oai::ausf_server::model;
-
 class AuthenticationResultDeletionApi {
  public:
   AuthenticationResultDeletionApi(std::shared_ptr<Pistache::Rest::Router>);

@@ -42,7 +42,7 @@ namespace oai {
 namespace ausf_server {
 namespace api {
 
-using namespace oai::ausf_server::helpers;
+using namespace oai::model::common::helpers;
 using namespace oai::ausf_server::model;
 
 DefaultApi::DefaultApi(std::shared_ptr<Pistache::Rest::Router> rtr) {

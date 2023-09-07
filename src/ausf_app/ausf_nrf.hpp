@@ -40,8 +40,6 @@
 #include "ausf_profile.hpp"
 #include "logger.hpp"
 
-using namespace oai::ausf_server::model;
-
 namespace oai {
 namespace ausf {
 namespace app {

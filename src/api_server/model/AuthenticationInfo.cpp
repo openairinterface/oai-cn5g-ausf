@@ -37,6 +37,7 @@
 namespace oai {
 namespace ausf_server {
 namespace model {
+using namespace oai::model::common;
 
 AuthenticationInfo::AuthenticationInfo() {
   m_SupiOrSuci                 = "";

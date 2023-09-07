@@ -32,6 +32,8 @@ include_directories(${SRC_TOP_DIR}/common/libngap)
 include_directories(${SRC_TOP_DIR}/5gaka)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/logger)
 
+include(${BUILD_TOP_DIR}/ausf/used_models.cmake)
+
 file(GLOB AUSF_API_SERVER_src_files
     ${AUSF_API_SERVER_DIR}/ausf-api-server.cpp
     ${AUSF_API_SERVER_DIR}/ausf_http2-server.cpp

@@ -286,6 +286,10 @@ include_directories(${SRC_TOP_DIR}/api_server/model)
 include_directories(${SRC_TOP_DIR}/5gaka)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/logger)
 
+include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/model/common_model/common_model.cmake)
+#include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/model/nrf/nrf_model.cmake)
+
+
 add_executable(ausf
   ${SRC_TOP_DIR}/oai_ausf/main.cpp
   ${SRC_TOP_DIR}/oai_ausf/options.cpp
