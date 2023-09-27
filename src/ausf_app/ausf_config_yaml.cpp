@@ -98,13 +98,13 @@ ausf_config_yaml::ausf_config_yaml(
     : oai::config::config(
           config_path, oai::config::AUSF_CONFIG_NAME, log_stdout,
           log_rot_file) {
-  m_used_sbi_values    = {oai::config::AUSF_CONFIG_NAME,
-                       oai::config::UDM_CONFIG_NAME,
-                       oai::config::NRF_CONFIG_NAME};
-  m_used_config_values = {oai::config::LOG_LEVEL_CONFIG_NAME,
-                          oai::config::REGISTER_NF_CONFIG_NAME,
-                          NF_CONFIG_HTTP_NAME, oai::config::NF_LIST_CONFIG_NAME,
-                          oai::config::AUSF_CONFIG_NAME};
+  m_used_sbi_values = {
+      oai::config::AUSF_CONFIG_NAME, oai::config::UDM_CONFIG_NAME,
+      oai::config::NRF_CONFIG_NAME};
+  m_used_config_values = {
+      oai::config::LOG_LEVEL_CONFIG_NAME, oai::config::REGISTER_NF_CONFIG_NAME,
+      NF_CONFIG_HTTP_NAME, oai::config::NF_LIST_CONFIG_NAME,
+      oai::config::AUSF_CONFIG_NAME};
 
   // TODO with NF_Type and switch
   // TODO: Still we need to add default NFs even we don't use this in all_in_one
