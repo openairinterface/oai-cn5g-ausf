@@ -44,6 +44,7 @@ list(APPEND USED_COMMON_MODEL_SRC_FILES
         ${COMMON_MODEL_DIR}/PlmnId.cpp
         ${COMMON_MODEL_DIR}/PlmnIdNid.cpp
         ${COMMON_MODEL_DIR}/Snssai.cpp
+        ${COMMON_MODEL_DIR}/Tai.cpp
 )
 
 # we also use NRF models
