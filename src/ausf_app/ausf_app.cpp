@@ -134,12 +134,9 @@ void ausf_app::handle_ue_authentications(
 
   // 5g he av from udm
   // get authentication related info
-  std::string udm_api_root = {};
-  ausf_cfg.get_udm_ueau_api_root(udm_api_root);
-  std::string udm_uri  = {};
   std::string method   = "POST";
   std::string response = {};
-  udm_uri = udm_api_root + "/" + supi + NUDM_UEAU_SECURITY_INFO_URL;
+  std::string udm_uri  = ausf_cfg.get_udm_ueau_generate_auth_data_uri(supi);
   Logger::ausf_app().debug("UDM's URI %s", udm_uri.c_str());
 
   // Create AuthInfo to send to UDM
@@ -435,12 +432,10 @@ void ausf_app::handle_ue_authentications_confirmation(
         confirmResponse.setSupi(sc->supi_ausf);
       }
       // Send authResult to UDM (authentication result info)
-      std::string udm_api_root = {};
-      ausf_cfg.get_udm_ueau_api_root(udm_api_root);
-      std::string udm_uri  = {};
       std::string method   = "POST";
       std::string response = {};
-      udm_uri = udm_api_root + "/" + sc->supi_ausf + NUDM_UEAU_AUTH_EVENTS_URL;
+      std::string udm_uri =
+          ausf_cfg.get_udm_ueau_confirm_auth_uri(sc->supi_ausf);
 
       Logger::ausf_app().debug("UDM's URI: %s", udm_uri.c_str());
 

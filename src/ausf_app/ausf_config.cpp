@@ -28,6 +28,9 @@
 #include "if.hpp"
 #include "logger.hpp"
 #include "string.hpp"
+#include "ausf_sbi_helper.hpp"
+
+using namespace oai::ausf::api;
 
 namespace oai::config {
 
@@ -45,13 +48,30 @@ ausf_config::ausf_config() : sbi(), ausf_name(), pid_dir(), instance() {
 ausf_config::~ausf_config() {}
 
 //---------------------------------------------------------------------------------------------
-void ausf_config::get_udm_ueau_api_root(std::string& api_root) {
-  api_root = udm_addr.uri_root + NUDM_UEAU_BASE + udm_addr.api_version;
+std::string ausf_config::get_udm_ueau_api_root() const {
+  return (
+      udm_addr.uri_root + ausf_sbi_helper::UdmUeAuBase + udm_addr.api_version);
 }
 
 //---------------------------------------------------------------------------------------------
-void ausf_config::get_nrf_api_root(std::string& api_root) {
-  api_root = nrf_addr.uri_root + NNRF_NFM_BASE + nrf_addr.api_version;
+std::string ausf_config::get_udm_ueau_generate_auth_data_uri(
+    const std::string& supi) const {
+  std::string fmr_format_str = {};
+  ausf_sbi_helper::get_fmt_format_form(
+      ausf_sbi_helper::UdmUeAuPathGenerateAuthData, fmr_format_str);
+  return (
+      udm_addr.uri_root + ausf_sbi_helper::UdmUeAuBase + udm_addr.api_version +
+      fmt::format(fmr_format_str, supi));
 }
 
+//---------------------------------------------------------------------------------------------
+std::string ausf_config::get_udm_ueau_confirm_auth_uri(
+    const std::string& supi) const {
+  std::string fmr_format_str = {};
+  ausf_sbi_helper::get_fmt_format_form(
+      ausf_sbi_helper::UdmUeAuPathConfirmAuth, fmr_format_str);
+  return (
+      udm_addr.uri_root + ausf_sbi_helper::UdmUeAuBase + udm_addr.api_version +
+      fmt::format(fmr_format_str, supi));
+}
 }  // namespace oai::config

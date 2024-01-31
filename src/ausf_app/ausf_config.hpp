@@ -36,13 +36,28 @@ class ausf_config {
  public:
   ausf_config();
   ~ausf_config();
-  void get_udm_ueau_api_root(std::string& api_root);
+
   /*
-   * Get NRF API Root
-   * @param [std::string& ] api_root: NRF's API Root
-   * @return void
+   * Get the root URI of UDM UE Authentication API
+   * @param void
+   * @return URI in string format
    */
-  void get_nrf_api_root(std::string& api_root);
+  std::string get_udm_ueau_api_root() const;
+
+  /*
+   * Get the URI of UDM to generate authentication data for the UE
+   * @param [const std::string&] supi: UE SUPI
+   * @return URI in string format
+   */
+  std::string get_udm_ueau_generate_auth_data_uri(
+      const std::string& supi) const;
+
+  /*
+   * Get the URI of UDM to create a new confirmation event
+   * @param [const std::string&] supi: UE SUPI
+   * @return URI in string format
+   */
+  std::string get_udm_ueau_confirm_auth_uri(const std::string& supi) const;
 
   unsigned int instance;
   std::string pid_dir;
