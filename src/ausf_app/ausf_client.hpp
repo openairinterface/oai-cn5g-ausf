@@ -22,8 +22,6 @@
 #ifndef FILE_AUSF_CLIENT_HPP_SEEN
 #define FILE_AUSF_CLIENT_HPP_SEEN
 
-#include <curl/curl.h>
-
 #include <map>
 #include <thread>
 

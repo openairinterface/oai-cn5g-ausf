@@ -22,6 +22,8 @@
 #ifndef FILE_AUSF_SEEN
 #define FILE_AUSF_SEEN
 
+#include "sbi_helper.hpp"
+
 #define HEART_BEAT_TIMER 10
 
 #define NRF_REGISTRATION_RETRY_TIMER 5
@@ -120,21 +122,5 @@ enum http_response_codes_e {
 #define NAUSF_UE_AUTHS "/ue-authentications"
 #define NAUSF_UE_AUTHS_DEREG "/ue-authentications/deregister"
 #define NAUSF_RG_AUTH "/rg-authentications"
-
-typedef struct supi_range_s {
-  std::string start;
-  std::string end;
-  std::string pattern;
-} supi_range_t;
-
-typedef struct supi_range_ausf_info_item_s {
-  supi_range_t supi_range;
-} supi_range_ausf_info_item_t;
-
-typedef struct ausf_info_s {
-  std::string groupid;
-  std::vector<supi_range_ausf_info_item_t> supi_ranges;
-  std::vector<std::string> routing_indicators;
-} ausf_info_t;
 
 #endif

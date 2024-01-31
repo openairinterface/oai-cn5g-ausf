@@ -22,11 +22,6 @@
 #ifndef FILE_AUSF_NRF_SEEN
 #define FILE_AUSF_NRF_SEEN
 
-#include <curl/curl.h>
-
-#include <map>
-#include <thread>
-
 #include "PatchItem.h"
 #include "ausf_config.hpp"
 #include "ausf_event.hpp"

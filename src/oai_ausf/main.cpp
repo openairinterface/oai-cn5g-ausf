@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+#include <stdlib.h>  // srand
+#include <unistd.h>  // get_pid(), pause()
+
+#include <iostream>
+#include <thread>
+
 #include "ausf-api-server.h"
 #include "ausf-http2-server.h"
 #include "ausf_app.hpp"
@@ -22,21 +28,10 @@
 #include "logger.hpp"
 #include "options.hpp"
 #include "pid_file.hpp"
-
-#include "pistache/endpoint.h"
 #include "pistache/http.h"
-#include "pistache/router.h"
-
-#include <iostream>
-#include <signal.h>
-#include <stdint.h>
-#include <stdlib.h>  // srand
-#include <thread>
-#include <unistd.h>  // get_pid(), pause()
 
 using namespace oai::ausf::app;
 using namespace util;
-using namespace std;
 
 using namespace oai::config;
 
@@ -91,28 +86,18 @@ int main(int argc, char** argv) {
 
   // Config
   std::string conf_file_name = Options::getlibconfigConfig();
-  std::string file_ext       = ".conf";
-  if (conf_file_name.find(file_ext) != std::string::npos) {
-    Logger::ausf_server().debug(
-        "Parsing the configuration file, file type CONF.");
-    ausf_cfg.load(conf_file_name);
-    Logger::set_level(ausf_cfg.log_level);
-    ausf_cfg.display();
-  } else {
-    // By default, considering the config file as yaml
-    Logger::ausf_server().debug(
-        "Parsing the configuration file, file type YAML.");
-    ausf_cfg_yaml = std::make_unique<ausf_config_yaml>(
-        conf_file_name, Options::getlogStdout(), Options::getlogRotFilelog());
-    if (!ausf_cfg_yaml->init()) {
-      Logger::ausf_server().error("Reading the configuration failed. Exiting.");
-      return 1;
-    }
-    ausf_cfg_yaml->pre_process();
-    ausf_cfg_yaml->display();
-    // Convert from YAML to internal structure
-    ausf_cfg_yaml->to_ausf_config(ausf_cfg);
+  Logger::ausf_server().debug(
+      "Parsing the configuration file, file type YAML.");
+  ausf_cfg_yaml = std::make_unique<ausf_config_yaml>(
+      conf_file_name, Options::getlogStdout(), Options::getlogRotFilelog());
+  if (!ausf_cfg_yaml->init()) {
+    Logger::ausf_server().error("Reading the configuration failed. Exiting.");
+    return 1;
   }
+  ausf_cfg_yaml->pre_process();
+  ausf_cfg_yaml->display();
+  // Convert from YAML to internal structure
+  ausf_cfg_yaml->to_ausf_config(ausf_cfg);
 
   // AUSF application layer
   ausf_app_inst = new ausf_app(Options::getlibconfigConfig(), ev);
@@ -122,7 +107,7 @@ int main(int argc, char** argv) {
   std::thread task_manager_thread(&task_manager::run, &tm);
 
   // PID file
-  string pid_file_name =
+  std::string pid_file_name =
       get_exe_absolute_path(ausf_cfg.pid_dir, ausf_cfg.instance);
   if (!is_pid_file_lock_success(pid_file_name.c_str())) {
     Logger::ausf_server().error(
@@ -147,8 +132,7 @@ int main(int argc, char** argv) {
   } else {
     // AUSF NGHTTP API server (HTTP2)
     ausf_api_server_2 = new ausf_http2_server(
-        conv::toString(ausf_cfg.sbi.addr4), ausf_cfg.sbi_http2_port,
-        ausf_app_inst);
+        conv::toString(ausf_cfg.sbi.addr4), ausf_cfg.sbi.port, ausf_app_inst);
     std::thread ausf_http2_manager(
         &ausf_http2_server::start, ausf_api_server_2);
     ausf_http2_manager.join();

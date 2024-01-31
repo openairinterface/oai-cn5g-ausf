@@ -21,9 +21,7 @@
 
 #include "ausf_nrf.hpp"
 
-#include <curl/curl.h>
 #include <pistache/http.h>
-#include <pistache/mime.h>
 
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -60,12 +58,11 @@ void ausf_nrf::generate_ausf_profile(
   ausf_nf_profile.set_nf_heartBeat_timer(50);
   ausf_nf_profile.set_nf_priority(1);
   ausf_nf_profile.set_nf_capacity(100);
-  // ausf_nf_profile.set_fqdn(ausf_cfg.fqdn);
   ausf_nf_profile.add_nf_ipv4_addresses(ausf_cfg.sbi.addr4);  // N4's Addr
 
   // AUSF info (Hardcoded for now)
   ausf_info_t ausf_info_item;
-  supi_range_ausf_info_item_t supi_ranges;
+  supi_range_info_item_t supi_ranges;
   ausf_info_item.groupid = "oai-ausf-testgroupid";
   ausf_info_item.routing_indicators.push_back("0210");
   ausf_info_item.routing_indicators.push_back("9876");

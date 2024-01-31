@@ -21,13 +21,9 @@
 
 #include "ausf_profile.hpp"
 
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/split.hpp>
-
 #include "logger.hpp"
 #include "string.hpp"
 
-// using namespace ausf;
 using namespace oai::ausf::app;
 
 //------------------------------------------------------------------------------
@@ -334,7 +330,7 @@ void ausf_profile::from_json(const nlohmann::json& data) {
     if (info.find("supiRanges") != info.end()) {
       nlohmann::json supi_ranges = data["ausfInfo"]["supiRanges"];
       for (auto d : supi_ranges) {
-        supi_range_ausf_info_item_t supi;
+        supi_range_info_item_t supi;
         supi.supi_range.start   = d["start"];
         supi.supi_range.end     = d["end"];
         supi.supi_range.pattern = d["pattern"];

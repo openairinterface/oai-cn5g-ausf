@@ -21,9 +21,10 @@
 
 #include "ausf_config_yaml.hpp"
 
+#include <boost/algorithm/string.hpp>
+
 #include "conversions.hpp"
 #include "logger.hpp"
-#include <boost/algorithm/string.hpp>
 
 namespace oai::config {
 
@@ -143,11 +144,9 @@ void ausf_config_yaml::to_ausf_config(oai::config::ausf_config& cfg) {
   cfg.log_level    = spdlog::level::from_str(log_level());
   cfg.register_nrf = register_nrf();
 
-  cfg.use_fqdn_dns = false;  // TODO: to be removed
   if (get_http_version() == 2) cfg.use_http2 = true;
 
-  cfg.sbi_api_version = local().get_sbi().get_api_version();
-  cfg.sbi_http2_port  = local().get_sbi().get_port();
+  cfg.sbi.api_version = local().get_sbi().get_api_version();
   cfg.sbi.port        = local().get_sbi().get_port();
   cfg.sbi.addr4       = local().get_sbi().get_addr4();
   cfg.sbi.if_name     = local().get_sbi().get_if_name();
