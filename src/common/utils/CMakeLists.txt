@@ -35,7 +35,6 @@ set(CN_UTILS_SRC STATIC
  ${CMAKE_CURRENT_SOURCE_DIR}/dynamic_memory_check.c
  ${CMAKE_CURRENT_SOURCE_DIR}/hex_string_convert.cpp
  ${CMAKE_CURRENT_SOURCE_DIR}/pid_file.cpp
- ${CMAKE_CURRENT_SOURCE_DIR}/thread_sched.cpp
  )
 
 add_library(CN_UTILS ${CN_UTILS_SRC})
