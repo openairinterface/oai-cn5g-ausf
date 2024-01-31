@@ -120,7 +120,7 @@ int main(int argc, char** argv) {
   fp                   = fopen(filename.c_str(), "w+");
   fprintf(fp, "STARTED\n");
 
-  if (!ausf_cfg.use_http2) {
+  if (ausf_cfg.http_version == 1) {
     // AUSF Pistache API server (HTTP1)
     Pistache::Address addr(
         std::string(inet_ntoa(*((struct in_addr*) &ausf_cfg.sbi.addr4))),

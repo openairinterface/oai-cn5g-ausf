@@ -70,9 +70,6 @@ void ausf_client::curl_http_client(
   curl_global_init(CURL_GLOBAL_ALL);
   CURL* curl = curl_easy_init();
 
-  uint8_t http_version = 1;
-  if (ausf_cfg.use_http2) http_version = 2;
-
   if (curl) {
     CURLcode res               = {};
     struct curl_slist* headers = nullptr;
@@ -99,7 +96,7 @@ void ausf_client::curl_http_client(
     curl_easy_setopt(curl, CURLOPT_TCP_KEEPALIVE, 1);
     curl_easy_setopt(curl, CURLOPT_INTERFACE, ausf_cfg.sbi.if_name.c_str());
 
-    if (http_version == 2) {
+    if (ausf_cfg.http_version == 2) {
       if (Logger::should_log(spdlog::level::debug))
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
       // we use a self-signed test server, skip verification during debugging

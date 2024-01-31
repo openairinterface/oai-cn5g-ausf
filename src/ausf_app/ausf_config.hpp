@@ -22,8 +22,8 @@
 #ifndef _AUSF_CONFIG_H_
 #define _AUSF_CONFIG_H_
 
-#include <arpa/inet.h>
-#include <netinet/in.h>
+//#include <arpa/inet.h>
+//#include <netinet/in.h>
 
 #include "ausf.h"
 #include "logger.hpp"
@@ -69,7 +69,7 @@ class ausf_config {
   nf_addr_t nrf_addr;
 
   bool register_nrf;
-  bool use_http2;
+  uint8_t http_version;
 };
 
 }  // namespace oai::config

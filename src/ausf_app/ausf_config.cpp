@@ -37,9 +37,9 @@ namespace oai::config {
 //------------------------------------------------------------------------------
 ausf_config::ausf_config() : sbi(), ausf_name(), pid_dir(), instance() {
   udm_addr.ipv4_addr.s_addr = INADDR_ANY;
-  udm_addr.port             = 8080;  // HTTP2 by default
+  udm_addr.port             = 8080;  // HTTP/2 by default
   udm_addr.api_version      = "v1";
-  use_http2                 = false;
+  http_version              = 2;  // HTTP/2 by default
   log_level                 = spdlog::level::debug;
   register_nrf              = false;
 }
