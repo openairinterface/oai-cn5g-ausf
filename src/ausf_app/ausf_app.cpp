@@ -74,7 +74,6 @@ ausf_app::ausf_app(const std::string& config_file, ausf_event& ev)
     try {
       ausf_nrf_inst = new ausf_nrf(ev);
       ausf_nrf_inst->register_to_nrf();
-      Logger::ausf_app().info("NRF TASK Created ");
     } catch (std::exception& e) {
       Logger::ausf_app().error("Cannot create NRF TASK: %s", e.what());
       throw;

@@ -85,6 +85,7 @@ void ausf_nrf::generate_ausf_profile(
 
   ausf_nf_profile.display();
 }
+
 //---------------------------------------------------------------------------------------------
 void ausf_nrf::register_to_nrf() {
   // generate UUID
@@ -105,20 +106,23 @@ void ausf_nrf::register_to_nrf() {
   nlohmann::json json_data = {};
   ausf_nf_profile.to_json(json_data);
 
-  Logger::ausf_nrf().info("Sending NF registeration request");
+  Logger::ausf_nrf().info("Sending NF registration request");
   ausf_client_instance->curl_http_client(
       remoteUri, method, json_data.dump().c_str(), response);
 
-  try {
-    response_data = nlohmann::json::parse(response);
+  if (response.empty()) {
+    Logger::ausf_nrf().info("NF registration procedure failed, try again ...");
+    start_nrf_registration_retry();
+  } else {
     response_data = nlohmann::json::parse(response);
     if (response.find("REGISTERED") != 0) {
       start_event_nf_heartbeat(remoteUri);
+      Logger::ausf_nrf().info("NRF TASK Created");
     }
-  } catch (nlohmann::json::exception& e) {
-    Logger::ausf_nrf().info("NF registeration procedure failed");
+    stop_nrf_registration_retry();
   }
 }
+
 //---------------------------------------------------------------------------------------------
 void ausf_nrf::start_event_nf_heartbeat(std::string& remoteURI) {
   // get current time
@@ -136,6 +140,7 @@ void ausf_nrf::start_event_nf_heartbeat(std::string& remoteURI) {
       boost::bind(&ausf_nrf::trigger_nf_heartbeat_procedure, this, _1),
       interval, ms + interval);
 }
+
 //---------------------------------------------------------------------------------------------
 void ausf_nrf::trigger_nf_heartbeat_procedure(uint64_t ms) {
   _unused(ms);
@@ -167,4 +172,41 @@ void ausf_nrf::trigger_nf_heartbeat_procedure(uint64_t ms) {
   ausf_client_instance->curl_http_client(
       remoteUri, method, json_data.dump().c_str(), response);
   if (!response.empty()) task_connection.disconnect();
+}
+
+//---------------------------------------------------------------------------------------------
+void ausf_nrf::start_nrf_registration_retry() {
+  if (!retry_nrf_registration_task_connection.connected()) {
+    // get current time
+    uint64_t ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                      std::chrono::system_clock::now().time_since_epoch())
+                      .count();
+    const uint64_t interval =
+        NRF_REGISTRATION_RETRY_TIMER * 1000;  // convert sec to msec
+
+    Logger::ausf_nrf().debug("Start NRF registration retry task");
+    retry_nrf_registration_task_connection =
+        m_event_sub.subscribe_task_nf_heartbeat(
+            boost::bind(
+                &ausf_nrf::trigger_nrf_registration_retry_procedure, this, _1),
+            interval, ms + interval);
+  }
+}
+
+//---------------------------------------------------------------------------------------------
+void ausf_nrf::trigger_nrf_registration_retry_procedure(uint64_t ms) {
+  _unused(ms);
+  register_to_nrf();
+}
+
+//---------------------------------------------------------------------------------------------
+void ausf_nrf::stop_nrf_registration_retry() {
+  // get current time
+  uint64_t ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                    std::chrono::system_clock::now().time_since_epoch())
+                    .count();
+  if (retry_nrf_registration_task_connection.connected()) {
+    Logger::ausf_nrf().debug("Stop NRF registration retry task");
+    retry_nrf_registration_task_connection.disconnect();
+  }
 }
