@@ -19,15 +19,6 @@
  *      contact@openairinterface.org
  */
 
-/*! \file rijndael.cpp
- \brief
- \brief
- \author
- \company
- \date 2020
- \email: email: contact@openairinterface.org
- */
-
 #include "authentication_algorithms_with_5gaka.hpp"
 
 typedef uint8_t u8;

@@ -19,19 +19,12 @@
  *      contact@openairinterface.org
  */
 
-/*! \file ausf_profile.hpp
- \brief
- \author
- \company Eurecom
- \date 2021
- \email: contact@openairinterface.org
- */
-
 #ifndef FILE_AUSF_PROFILE_HPP_SEEN
 #define FILE_AUSF_PROFILE_HPP_SEEN
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
+
 #include <nlohmann/json.hpp>
 #include <shared_mutex>
 #include <vector>

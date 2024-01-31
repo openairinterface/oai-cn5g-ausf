@@ -19,25 +19,7 @@
  *      contact@openairinterface.org
  */
 
-/*! \file ausf_config.cpp
- \brief
- \author  Fengjiao He, BUPT
- \date 2021
- \email: contact@openairinterface.org
- */
-
 #include "ausf_config.hpp"
-
-#include "string.hpp"
-#include <iostream>
-#include <libconfig.h++>
-
-#include "fqdn.hpp"
-#include "if.hpp"
-#include "logger.hpp"
-#include "ausf.h"
-
-#include "string.hpp"
 
 #include <arpa/inet.h>
 #include <stdbool.h>
@@ -49,8 +31,15 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include <iostream>
+#include <libconfig.h++>
 
+#include "ausf.h"
 #include "common_defs.h"
+#include "fqdn.hpp"
+#include "if.hpp"
+#include "logger.hpp"
+#include "string.hpp"
 
 using namespace libconfig;
 

@@ -19,26 +19,19 @@
  *      contact@openairinterface.org
  */
 
-/*! \file ausf_app.hpp
- \brief
- \author  Tien-Thinh NGUYEN
- \company Eurecom
- \date 2021
- \email:
- */
-
 #ifndef FILE_AUSF_APP_HPP_SEEN
 #define FILE_AUSF_APP_HPP_SEEN
-#include "ausf_event.hpp"
+#include <pistache/http.h>
+
+#include <map>
+#include <shared_mutex>
+#include <string>
 
 #include "AuthenticationInfo.h"
 #include "ConfirmationData.h"
 #include "UEAuthenticationCtx.h"
 #include "ausf.h"
-#include <map>
-#include <pistache/http.h>
-#include <shared_mutex>
-#include <string>
+#include "ausf_event.hpp"
 
 namespace oai {
 namespace ausf {

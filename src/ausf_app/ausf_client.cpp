@@ -19,20 +19,13 @@
  *      contact@openairinterface.org
  */
 
-/*! \file ausf_client.cpp
- \brief
- \author  Jian Yang, Fengjiao He, Hongxin Wang, Tien-Thinh NGUYEN
- \company Eurecom
- \date 2020
- \email:
- */
-
 #include "ausf_client.hpp"
 
 #include <curl/curl.h>
-#include <nlohmann/json.hpp>
 #include <pistache/http.h>
 #include <pistache/mime.h>
+
+#include <nlohmann/json.hpp>
 #include <stdexcept>
 
 #include "ausf.h"

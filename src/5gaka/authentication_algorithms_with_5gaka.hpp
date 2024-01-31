@@ -19,15 +19,6 @@
  *      contact@openairinterface.org
  */
 
-/*! \file authentication_algorithms_with_5gaka.hpp
- \brief
- \brief
- \author
- \company
- \date 2020
- \email: email: contact@openairinterface.org
- */
-
 #ifndef _5GAKA_H_
 #define _5GAKA_H_
 

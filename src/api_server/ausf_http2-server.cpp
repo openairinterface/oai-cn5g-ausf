@@ -19,27 +19,19 @@
  *      contact@openairinterface.org
  */
 
-/*! \file ausf_http2-server.cpp
- \brief
- \author
- \company Eurecom
- \date 2020
- \email: contact@openairinterface.org
- */
-
-#include "ausf-http2-server.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/future.hpp>
-#include <regex>
 #include <nlohmann/json.hpp>
+#include <regex>
 #include <string>
-#include "string.hpp"
 
-#include "logger.hpp"
-#include "ausf_config.hpp"
 #include "3gpp_29.500.h"
+#include "ausf-http2-server.h"
+#include "ausf_config.hpp"
+#include "logger.hpp"
 #include "mime_parser.hpp"
+#include "string.hpp"
 
 using namespace nghttp2::asio_http2;
 using namespace nghttp2::asio_http2::server;

@@ -19,26 +19,18 @@
  *      contact@openairinterface.org
  */
 
-/*! \file ausf_http2-server.h
- \brief
- \author
- \company Eurecom
- \date 2021
- \email: contact@openairinterface.org
- */
-
 #ifndef FILE_AUSF_HTTP2_SERVER_SEEN
 #define FILE_AUSF_HTTP2_SERVER_SEEN
 
-#include "conversions.hpp"
-
-#include "ausf_app.hpp"
 #include <nghttp2/asio_http2_server.h>
-#include "ConfirmationData.h"
+
 #include "AuthenticationInfo.h"
+#include "ConfirmationData.h"
 #include "DeregistrationInfo.h"
 #include "EapSession.h"
 #include "RgAuthenticationInfo.h"
+#include "ausf_app.hpp"
+#include "conversions.hpp"
 
 using namespace nghttp2::asio_http2;
 using namespace nghttp2::asio_http2::server;

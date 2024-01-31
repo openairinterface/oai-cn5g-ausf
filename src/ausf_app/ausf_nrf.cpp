@@ -19,28 +19,21 @@
  *      contact@openairinterface.org
  */
 
-/*! \file ausf_nrf.cpp
- \brief
- \author  Jian Yang, Fengjiao He, Hongxin Wang, Tien-Thinh NGUYEN
- \company Eurecom
- \date 2020
- \email:
- */
-
 #include "ausf_nrf.hpp"
-#include "ausf_app.hpp"
-#include "ausf_client.hpp"
-#include "ausf_profile.hpp"
-#include <boost/uuid/random_generator.hpp>
-#include <boost/uuid/uuid_io.hpp>
 
 #include <curl/curl.h>
-#include <nlohmann/json.hpp>
 #include <pistache/http.h>
 #include <pistache/mime.h>
+
+#include <boost/uuid/random_generator.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <nlohmann/json.hpp>
 #include <stdexcept>
 
 #include "ausf.h"
+#include "ausf_app.hpp"
+#include "ausf_client.hpp"
+#include "ausf_profile.hpp"
 #include "logger.hpp"
 
 using namespace oai::config;

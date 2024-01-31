@@ -19,20 +19,13 @@
  *      contact@openairinterface.org
  */
 
-/*! \file ausf_client.hpp
- \author  Tien-Thinh NGUYEN
- \company Eurecom
- \date 2020
- \email:
- */
-
 #ifndef FILE_AUSF_CLIENT_HPP_SEEN
 #define FILE_AUSF_CLIENT_HPP_SEEN
 
+#include <curl/curl.h>
+
 #include <map>
 #include <thread>
-
-#include <curl/curl.h>
 
 #include "ausf_config.hpp"
 #include "logger.hpp"

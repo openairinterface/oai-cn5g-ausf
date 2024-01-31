@@ -19,14 +19,6 @@
  *      contact@openairinterface.org
  */
 
-/*! \file sha256.hpp
- \brief
- \author
- \company
- \date 2020
- \email: email: contact@openairinterface.org
- */
-
 #ifndef Sha256_H
 #define Sha256_H
 #include <string>

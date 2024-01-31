@@ -19,32 +19,25 @@
  *      contact@openairinterface.org
  */
 
-/*! \file ausf_app.cpp
- \brief
- \author  Jian Yang, Fengjiao He, Hongxin Wang, Tien-Thinh NGUYEN
- \company Eurecom
- \date 2021
- \email: contact@openairinterface.org
- */
-
 #include "ausf_app.hpp"
-#include "ausf_nrf.hpp"
 
-#include "ProblemDetails.h"
-#include "ausf_client.hpp"
-#include "logger.hpp"
 #include <unistd.h>
 
-#include "AuthenticationInfo.h"
-#include "ConfirmationDataResponse.h"
-#include "UEAuthenticationCtx.h"
-#include "authentication_algorithms_with_5gaka.hpp"
-#include "conversions.hpp"
-#include "iostream"
-#include "sha256.hpp"
 #include <algorithm>
 #include <iterator>
 #include <string>
+
+#include "AuthenticationInfo.h"
+#include "ConfirmationDataResponse.h"
+#include "ProblemDetails.h"
+#include "UEAuthenticationCtx.h"
+#include "ausf_client.hpp"
+#include "ausf_nrf.hpp"
+#include "authentication_algorithms_with_5gaka.hpp"
+#include "conversions.hpp"
+#include "iostream"
+#include "logger.hpp"
+#include "sha256.hpp"
 
 using namespace std;
 using namespace oai::ausf::app;

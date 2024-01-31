@@ -19,15 +19,6 @@
  *      contact@openairinterface.org
  */
 
-/*! \file authentication_algorithms_with_5gaka.cpp
- \brief
- \brief
- \author
- \company
- \date 2020
- \email: email: contact@openairinterface.org
- */
-
 #include "authentication_algorithms_with_5gaka.hpp"
 
 #include <errno.h>
@@ -41,9 +32,9 @@
 #include <iostream>
 
 #include "OCTET_STRING.h"
+#include "comUt.hpp"
 #include "logger.hpp"
 #include "sha256.hpp"
-#include "comUt.hpp"
 
 random_state_t random_state;
 

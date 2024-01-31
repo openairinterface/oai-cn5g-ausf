@@ -19,18 +19,11 @@
  *      contact@openairinterface.org
  */
 
-/*! \file ausf_profile.cpp
- \brief
- \author
- \company Eurecom
- \date 2021
- \email: contact@openairinterface.org
- */
+#include "ausf_profile.hpp"
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 
-#include "ausf_profile.hpp"
 #include "logger.hpp"
 #include "string.hpp"
 

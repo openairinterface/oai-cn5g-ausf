@@ -19,21 +19,13 @@
  *      contact@openairinterface.org
  */
 
-/*! \file task_manager.hpp
- \brief
- \author
- \company Eurecom
- \date 2020
- \email: contact@openairinterface.org
- */
-
 #ifndef TASK_MANAGER_H_
 #define TASK_MANAGER_H_
 
-#include "ausf_event.hpp"
-
 #include <linux/types.h>
 #include <sys/timerfd.h>
+
+#include "ausf_event.hpp"
 
 using namespace oai::ausf::app;
 

@@ -19,29 +19,22 @@
  *      contact@openairinterface.org
  */
 
-/*! \file ausf_config.hpp
- \brief
- \author  Fengjiao He, BUPT
- \date 2021
- \email: contact@openairinterface.org
- */
-
 #ifndef _AUSF_CONFIG_H_
 #define _AUSF_CONFIG_H_
 
-#include "ausf_config.hpp"
-
 #include <arpa/inet.h>
-#include <libconfig.h++>
-#include <mutex>
 #include <netinet/in.h>
-#include <string>
 #include <sys/socket.h>
-#include <vector>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include <libconfig.h++>
+#include <mutex>
+#include <string>
+#include <vector>
+
+#include "ausf_config.hpp"
 #include "logger.hpp"
 
 #define AUSF_CONFIG_STRING_AUSF_CONFIG "AUSF"
