@@ -31,7 +31,6 @@
 #include "ausf_config.hpp"
 #include "ausf_sbi_helper.hpp"
 #include "logger.hpp"
-#include "mime_parser.hpp"
 #include "string.hpp"
 
 using namespace nghttp2::asio_http2;
