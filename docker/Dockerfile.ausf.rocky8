@@ -63,7 +63,7 @@ RUN ./build_ausf --install-deps --force
 RUN ./build_ausf --clean --Verbose --build-type Release --jobs && \
     ldd /openair-ausf/build/ausf/build/ausf && \
     mv /openair-ausf/build/ausf/build/ausf /openair-ausf/build/ausf/build/oai_ausf && \
-    sed -i -e "s@nf-root-folder@ausf@" -e "s@nf-config-file@ausf.conf@" \
+    sed -i -e "s@nf-root-folder@ausf@" \
       ../common-build/docker-scripts/entrypoint.py
 
 FROM mikefarah/yq:latest as yq-source
@@ -116,10 +116,8 @@ RUN ldconfig && \
     ldd /openair-ausf/bin/oai_ausf
 
 WORKDIR /openair-ausf/etc
-COPY --from=oai-ausf-builder /openair-ausf/etc/ausf.conf .
 
 COPY --from=oai-ausf-builder \
-    /openair-ausf/etc/ausf.conf \
     /openair-ausf/etc/config.yaml ./
 
 WORKDIR /openair-ausf

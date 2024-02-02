@@ -49,7 +49,8 @@ void ausf_http2_server::start() {
 
   // Default API
   server.handle(
-      ausf_sbi_helper::UEAuthenticationServiceBase + NAUSF_UE_AUTHS,
+      ausf_sbi_helper::UEAuthenticationServiceBase +
+          ausf_sbi_helper::AusfAuthPathUeAuthentications,
       [&](const request& request, const response& response) {
         request.on_data([&](const uint8_t* data, std::size_t len) {
           std::string msg((char*) data, len);
@@ -75,7 +76,8 @@ void ausf_http2_server::start() {
       });
 
   server.handle(
-      ausf_sbi_helper::UEAuthenticationServiceBase + NAUSF_UE_AUTHS + "/",
+      ausf_sbi_helper::UEAuthenticationServiceBase +
+          ausf_sbi_helper::AusfAuthPathUeAuthentications + "/",
       [&](const request& request, const response& response) {
         request.on_data([&](const uint8_t* data, std::size_t len) {
           std::string msg((char*) data, len);

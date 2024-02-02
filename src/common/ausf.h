@@ -109,9 +109,6 @@ enum http_response_codes_e {
   HTTP_RESPONSE_CODE_GATEWAY_TIMEOUT        = 504
 };
 
-#define NAUSF_AUTH_BASE "/nausf-auth/"
-#define NAUSF_UE_AUTHS "/ue-authentications"
-#define NAUSF_UE_AUTHS_DEREG "/ue-authentications/deregister"
 #define NAUSF_RG_AUTH "/rg-authentications"
 
 #endif
