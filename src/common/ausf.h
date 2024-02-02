@@ -30,12 +30,6 @@
 
 #define _unused(x) ((void) (x))
 
-#define NNRF_NFM_BASE "/nnrf-nfm/"
-#define NNRF_NF_REGISTER_URL "/nf-instances/"
-#define NUDM_UEAU_BASE "/nudm-ueau/"
-#define NUDM_UEAU_SECURITY_INFO_URL "/security-information/generate-auth-data"
-#define NUDM_UEAU_AUTH_EVENTS_URL "/auth-events"
-
 typedef enum nf_type_s {
   NF_TYPE_NRF     = 0,
   NF_TYPE_AMF     = 1,
@@ -78,9 +72,6 @@ typedef enum patch_op_type_s {
 
 static const std::vector<std::string> patch_op_type_e2str = {
     "ADD", "REMOVE", "REPLACE", "MOVE", "COPY", "TEST", "UNKNOWN"};
-
-#define CURL_TIMEOUT_MS 1000L
-#define MAX_WAIT_MSECS 20000  // 1 second
 
 typedef struct {
   uint8_t rand[16];

@@ -22,7 +22,6 @@
 #ifndef _5GAKA_H_
 #define _5GAKA_H_
 
-// extern "C"{
 #include <gmp.h>
 #include <pthread.h>
 #include <stdint.h>
@@ -30,7 +29,6 @@
 #include <unistd.h>
 
 #include <string>
-//}
 
 #define SQN_LENGTH_BITS (48)
 #define SQN_LENGTH_OCTEST (SQN_LENGTH_BITS / 8)

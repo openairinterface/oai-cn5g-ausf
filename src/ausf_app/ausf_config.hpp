@@ -22,9 +22,6 @@
 #ifndef _AUSF_CONFIG_H_
 #define _AUSF_CONFIG_H_
 
-//#include <arpa/inet.h>
-//#include <netinet/in.h>
-
 #include "ausf.h"
 #include "logger.hpp"
 

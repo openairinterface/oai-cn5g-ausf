@@ -33,7 +33,6 @@ set(CN_UTILS_SRC STATIC
  ${CMAKE_CURRENT_SOURCE_DIR}/backtrace.c
  ${CMAKE_CURRENT_SOURCE_DIR}/conversions.c
  ${CMAKE_CURRENT_SOURCE_DIR}/dynamic_memory_check.c
- ${CMAKE_CURRENT_SOURCE_DIR}/hex_string_convert.cpp
  ${CMAKE_CURRENT_SOURCE_DIR}/pid_file.cpp
  )
 

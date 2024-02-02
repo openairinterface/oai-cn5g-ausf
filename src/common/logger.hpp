@@ -22,8 +22,8 @@
 #pragma once
 
 #include <cstdarg>
-#include <stdexcept>
-#include <vector>
+//#include <stdexcept>
+//#include <vector>
 
 #include "logger_base.hpp"
 

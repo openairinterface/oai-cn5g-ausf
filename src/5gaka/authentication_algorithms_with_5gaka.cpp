@@ -25,11 +25,8 @@
 #include <gmp.h>
 #include <nettle/hmac.h>
 #include <pthread.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include <iostream>
 
 #include "OCTET_STRING.h"
 #include "logger.hpp"

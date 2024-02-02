@@ -28,12 +28,15 @@
 #include <stdexcept>
 
 #include "ausf.h"
+#include "ausf_sbi_helper.hpp"
 #include "logger.hpp"
 
 using namespace Pistache::Http;
-using namespace Pistache::Http::Mime;
+// using namespace Pistache::Http::Mime;
 using namespace oai::ausf::app;
 using namespace oai::config;
+using namespace oai::ausf::api;
+using namespace oai::common::sbi;
 using json = nlohmann::json;
 
 extern ausf_client* ausf_client_inst;
@@ -92,7 +95,7 @@ void ausf_client::curl_http_client(
     else
       curl_easy_setopt(curl, CURLOPT_HTTPGET, 1);
 
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, CURL_TIMEOUT_MS);
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, kNfDefaultCurlTimeout);
     curl_easy_setopt(curl, CURLOPT_TCP_KEEPALIVE, 1);
     curl_easy_setopt(curl, CURLOPT_INTERFACE, ausf_cfg.sbi.if_name.c_str());
 
