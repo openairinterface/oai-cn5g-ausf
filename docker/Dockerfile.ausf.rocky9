@@ -21,7 +21,7 @@
 #---------------------------------------------------------------------
 #
 # Dockerfile for the Open-Air-Interface AUSF service
-#   Valid for Rocky Linux 8.7+
+#   Valid for Rocky Linux 9.+
 #
 #---------------------------------------------------------------------
 
@@ -29,12 +29,11 @@
 # BUILDER IMAGE
 #---------------------------------------------------------------------
 
-FROM docker.io/rockylinux:8 AS oai-ausf-builder
+FROM docker.io/rockylinux:9 AS oai-ausf-builder
 
 ENV IS_DOCKERFILE=1
 
 RUN dnf install 'dnf-command(config-manager)' -y && \
-    dnf config-manager --set-enabled powertools && \
     dnf install epel-release -y && crb enable && \
     dnf update -y && \
     # here just to display the current version
@@ -62,16 +61,14 @@ WORKDIR /openair-ausf/build/scripts
 RUN ./build_ausf --install-deps --force
 RUN ./build_ausf --clean --Verbose --build-type Release --jobs && \
     ldd /openair-ausf/build/ausf/build/ausf && \
-    mv /openair-ausf/build/ausf/build/ausf /openair-ausf/build/ausf/build/oai_ausf && \
-    sed -i -e "s@nf-root-folder@ausf@" -e "s@nf-config-file@ausf.conf@" \
-      ../common-build/docker-scripts/entrypoint.py
+    mv /openair-ausf/build/ausf/build/ausf /openair-ausf/build/ausf/build/oai_ausf
 
 FROM mikefarah/yq:latest as yq-source
 
 #---------------------------------------------------------------------
 # TARGET IMAGE
 #---------------------------------------------------------------------
-FROM docker.io/rockylinux:8-minimal as oai-ausf
+FROM docker.io/rockylinux:9-minimal as oai-ausf
 ENV TZ=Europe/Paris
 
 # We install some debug tools for the moment in addition of mandatory libraries
@@ -116,10 +113,7 @@ RUN ldconfig && \
     ldd /openair-ausf/bin/oai_ausf
 
 WORKDIR /openair-ausf/etc
-COPY --from=oai-ausf-builder /openair-ausf/etc/ausf.conf .
-
 COPY --from=oai-ausf-builder \
-    /openair-ausf/etc/ausf.conf \
     /openair-ausf/etc/config.yaml ./
 
 WORKDIR /openair-ausf
