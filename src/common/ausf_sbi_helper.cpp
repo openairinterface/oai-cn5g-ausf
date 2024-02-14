@@ -19,27 +19,22 @@
  *      contact@openairinterface.org
  */
 
-/*! \file fqdn.hpp
- \brief
- \author
- \company Eurecom
- \email:
- */
-#ifndef FILE_FQDN_HPP_SEEN
-#define FILE_FQDN_HPP_SEEN
-#include <string>
-class fqdn {
- public:
-  /*
-   * Resolve a DNS name to get host's IP Addr
-   * @param [const std::string &] host_name: host's name/url
-   * @param [const std::string &] protocol: protocol
-   * @param [uint8_t &] addr_type: addr_type (Ipv4/v6)
-   * @return void
-   */
-  static bool resolve(
-      const std::string& host_name, std::string& address, uint32_t& port,
-      uint8_t& addr_type, const std::string& protocol = "http");
-};
+#include "ausf_sbi_helper.hpp"
 
-#endif /* FILE_FQDN_HPP_SEEN */
+#include <boost/algorithm/string.hpp>
+#include <regex>
+#include <vector>
+
+#include "ProblemDetails.h"
+#include "logger.hpp"
+
+namespace oai::ausf::api {
+//------------------------------------------------------------------------------
+void ausf_sbi_helper::set_problem_details(
+    nlohmann::json& json_data, const std::string& detail) {
+  Logger::ausf_server().error("%s", detail);
+  oai::model::common::ProblemDetails problem_details;
+  problem_details.setDetail(detail);
+  to_json(json_data, problem_details);
+}
+}  // namespace oai::ausf::api

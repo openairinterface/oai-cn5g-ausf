@@ -19,19 +19,9 @@
  *      contact@openairinterface.org
  */
 
-/*! \file authentication_algorithms_with_5gaka.hpp
- \brief
- \brief
- \author
- \company
- \date 2020
- \email: email: contact@openairinterface.org
- */
-
 #ifndef _5GAKA_H_
 #define _5GAKA_H_
 
-// extern "C"{
 #include <gmp.h>
 #include <pthread.h>
 #include <stdint.h>
@@ -39,7 +29,6 @@
 #include <unistd.h>
 
 #include <string>
-//}
 
 #define SQN_LENGTH_BITS (48)
 #define SQN_LENGTH_OCTEST (SQN_LENGTH_BITS / 8)

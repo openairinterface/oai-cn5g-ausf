@@ -4,8 +4,8 @@
  * this work for additional information regarding copyright ownership.
  * The OpenAirInterface Software Alliance licenses this file to You under
  * the OAI Public License, Version 1.1  (the "License"); you may not use this
- *file except in compliance with the License. You may obtain a copy of the
- *License at
+ * file except in compliance with the License. You may obtain a copy of the
+ * License at
  *
  *      http://www.openairinterface.org/?page_id=698
  *
@@ -19,33 +19,28 @@
  *      contact@openairinterface.org
  */
 
-#include "mime_parser.hpp"
-#include <string>
-#include <iostream>
+#pragma once
 
-bool multipart_parser(
-    std::string input, std::string& jsonData, std::string& n1sm,
-    std::string& n2sm) {
-  // simple parser
-  mime_parser sp = {};
-  sp.parse(input);
+#include <nlohmann/json.hpp>
 
-  std::vector<mime_part> parts = {};
-  sp.get_mime_parts(parts);
-  uint8_t size = parts.size();
-  // at least 2 parts for Json data and N1 (+ N2)
-  if (size < 2) {
-    return false;
-  }
+#include "ausf_config.hpp"
+#include "sbi_helper.hpp"
 
-  jsonData     = parts[0].body;
-  n1sm         = parts[1].body;
-  bool is_ngap = false;
-  if (size > 2) {
-    n2sm = parts[2].body;
-  } else {
-    n2sm = "null";
-  }
+using namespace oai::config;
+using namespace oai::common::sbi;
 
-  return true;
-}
+extern ausf_config ausf_cfg;
+
+namespace oai::ausf::api {
+
+class ausf_sbi_helper : public sbi_helper {
+ public:
+  static inline const std::string UEAuthenticationServiceBase =
+      sbi_helper::AusfAuthBase +
+      ausf_cfg.sbi.api_version.value_or(kDefaultSbiApiVersion);
+
+  static void set_problem_details(
+      nlohmann::json& json_data, const std::string& detail);
+};
+
+}  // namespace oai::ausf::api

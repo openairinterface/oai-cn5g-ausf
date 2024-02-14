@@ -19,18 +19,11 @@
  *      contact@openairinterface.org
  */
 
-/*! file
-brief
-author
-date 2020
-email: contact@openairinterface.org
-*/
-
 #pragma once
 
 #include <cstdarg>
-#include <stdexcept>
-#include <vector>
+//#include <stdexcept>
+//#include <vector>
 
 #include "logger_base.hpp"
 

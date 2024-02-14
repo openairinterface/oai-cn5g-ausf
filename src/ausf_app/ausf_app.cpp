@@ -19,34 +19,25 @@
  *      contact@openairinterface.org
  */
 
-/*! \file ausf_app.cpp
- \brief
- \author  Jian Yang, Fengjiao He, Hongxin Wang, Tien-Thinh NGUYEN
- \company Eurecom
- \date 2021
- \email: contact@openairinterface.org
- */
-
 #include "ausf_app.hpp"
-#include "ausf_nrf.hpp"
 
-#include "ProblemDetails.h"
-#include "ausf_client.hpp"
-#include "logger.hpp"
 #include <unistd.h>
 
-#include "AuthenticationInfo.h"
-#include "ConfirmationDataResponse.h"
-#include "UEAuthenticationCtx.h"
-#include "authentication_algorithms_with_5gaka.hpp"
-#include "conversions.hpp"
-#include "iostream"
-#include "sha256.hpp"
 #include <algorithm>
 #include <iterator>
 #include <string>
 
-using namespace std;
+#include "AuthenticationInfo.h"
+#include "ConfirmationDataResponse.h"
+#include "ProblemDetails.h"
+#include "UEAuthenticationCtx.h"
+#include "ausf_client.hpp"
+#include "ausf_nrf.hpp"
+#include "authentication_algorithms_with_5gaka.hpp"
+#include "conversions.hpp"
+#include "logger.hpp"
+#include "sha256.hpp"
+
 using namespace oai::ausf::app;
 using namespace oai::model::common;
 
@@ -143,12 +134,9 @@ void ausf_app::handle_ue_authentications(
 
   // 5g he av from udm
   // get authentication related info
-  std::string udm_api_root = {};
-  ausf_cfg.get_udm_ueau_api_root(udm_api_root);
-  std::string udm_uri  = {};
   std::string method   = "POST";
   std::string response = {};
-  udm_uri = udm_api_root + "/" + supi + NUDM_UEAU_SECURITY_INFO_URL;
+  std::string udm_uri  = ausf_cfg.get_udm_ueau_generate_auth_data_uri(supi);
   Logger::ausf_app().debug("UDM's URI %s", udm_uri.c_str());
 
   // Create AuthInfo to send to UDM
@@ -309,9 +297,9 @@ void ausf_app::handle_ue_authentications(
 
   // Send authentication context to SEAF (AUSF->SEAF)
   UEAuthenticationCtx UEAuthCtx;
-  string rand_s      = conv::uint8_to_hex_string(rand_ausf, 16);
-  string autn_s      = conv::uint8_to_hex_string(autn_ausf, 16);
-  string hxresStar_s = conv::uint8_to_hex_string(hxresStar, 16);
+  std::string rand_s      = conv::uint8_to_hex_string(rand_ausf, 16);
+  std::string autn_s      = conv::uint8_to_hex_string(autn_ausf, 16);
+  std::string hxresStar_s = conv::uint8_to_hex_string(hxresStar, 16);
   UEAuthCtx.setAuthType(authType_udm);  // authType(string)
 
   std::map<std::string, LinksValueSchema> ausf_links;  // links(std::map)
@@ -324,7 +312,6 @@ void ausf_app::handle_ue_authentications(
   set_contextId_2_security_context(authCtxId_s, sc);
 
   std::string ausf_port = std::to_string(ausf_cfg.sbi.port);
-  if (http_version == 2) ausf_port = std::to_string(ausf_cfg.sbi_http2_port);
 
   resourceURI =
       "http://" +
@@ -437,7 +424,7 @@ void ausf_app::handle_ue_authentications_confirmation(
     {
       Logger::ausf_app().info("Authentication successful by home network!");
       // Send Kseaf to SEAF
-      string kseaf_s;
+      std::string kseaf_s;
       kseaf_s = conv::uint8_to_hex_string(sc->ausf_av_s.kseaf, 32);
       confirmResponse.setKseaf(kseaf_s);
       // Send SUPI when supi_ausf exists
@@ -445,12 +432,10 @@ void ausf_app::handle_ue_authentications_confirmation(
         confirmResponse.setSupi(sc->supi_ausf);
       }
       // Send authResult to UDM (authentication result info)
-      std::string udm_api_root = {};
-      ausf_cfg.get_udm_ueau_api_root(udm_api_root);
-      std::string udm_uri  = {};
       std::string method   = "POST";
       std::string response = {};
-      udm_uri = udm_api_root + "/" + sc->supi_ausf + NUDM_UEAU_AUTH_EVENTS_URL;
+      std::string udm_uri =
+          ausf_cfg.get_udm_ueau_confirm_auth_uri(sc->supi_ausf);
 
       Logger::ausf_app().debug("UDM's URI: %s", udm_uri.c_str());
 

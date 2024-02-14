@@ -19,57 +19,25 @@
  *      contact@openairinterface.org
  */
 
-/*! file
-brief
-author  Jian Yang,Fengjiao He,Hongxin Wang
-date 2020
-email: contact@openairinterface.org
-*/
-
-#ifndef _PRINT_BUFFER_H
-#define _PRINT_BUFFER_H
-
-#include <string>
+#include "utils.hpp"
 
 #include "iostream"
-#include "logger.hpp"
-using namespace std;
 
-void print_buffer(
-    const string app, const string commit, uint8_t* buf, int len) {
-  if (!app.compare("ausf_app")) cout << commit.c_str() << endl;
-  Logger::ausf_server().debug(commit.c_str());
-
+//------------------------------------------------------------------------------
+void utils::print_buffer(
+    const std::string app, const std::string commit, uint8_t* buf, int len) {
+  if (!app.compare("ausf_app")) Logger::ausf_server().info(commit.c_str());
   for (int i = 0; i < len; i++) printf("%x ", buf[i]);
   printf("\n");
 }
 
 //------------------------------------------------------------------------------
-void print_buffer(
-    const string app, const string commit, const uint8_t* buf, int len) {
-  if (!app.compare("ausf_app")) cout << commit.c_str() << endl;
+void utils::print_buffer(
+    const std::string app, const std::string commit, const uint8_t* buf,
+    int len) {
+  if (!app.compare("ausf_app")) std::cout << commit.c_str() << std::endl;
   Logger::ausf_server().debug(commit.c_str());
 
   for (int i = 0; i < len; i++) printf("%x ", buf[i]);
   printf("\n");
 }
-
-void hexStr2Byte(const char* src, unsigned char* dest, int len) {
-  short i;
-  unsigned char hBy, lBy;
-  for (i = 0; i < len; i += 2) {
-    hBy = toupper(src[i]);
-    lBy = toupper(src[i + 1]);
-    if (hBy > 0x39)
-      hBy -= 0x37;
-    else
-      hBy -= 0x30;
-    if (lBy > 0x39)
-      lBy -= 0x37;
-    else
-      lBy -= 0x30;
-    dest[i / 2] = (hBy << 4) | lBy;
-  }
-}
-
-#endif

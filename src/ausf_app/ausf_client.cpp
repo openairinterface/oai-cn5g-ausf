@@ -19,29 +19,24 @@
  *      contact@openairinterface.org
  */
 
-/*! \file ausf_client.cpp
- \brief
- \author  Jian Yang, Fengjiao He, Hongxin Wang, Tien-Thinh NGUYEN
- \company Eurecom
- \date 2020
- \email:
- */
-
 #include "ausf_client.hpp"
 
 #include <curl/curl.h>
-#include <nlohmann/json.hpp>
 #include <pistache/http.h>
-#include <pistache/mime.h>
+
+#include <nlohmann/json.hpp>
 #include <stdexcept>
 
 #include "ausf.h"
+#include "ausf_sbi_helper.hpp"
 #include "logger.hpp"
 
 using namespace Pistache::Http;
-using namespace Pistache::Http::Mime;
+// using namespace Pistache::Http::Mime;
 using namespace oai::ausf::app;
 using namespace oai::config;
+using namespace oai::ausf::api;
+using namespace oai::common::sbi;
 using json = nlohmann::json;
 
 extern ausf_client* ausf_client_inst;
@@ -78,9 +73,6 @@ void ausf_client::curl_http_client(
   curl_global_init(CURL_GLOBAL_ALL);
   CURL* curl = curl_easy_init();
 
-  uint8_t http_version = 1;
-  if (ausf_cfg.use_http2) http_version = 2;
-
   if (curl) {
     CURLcode res               = {};
     struct curl_slist* headers = nullptr;
@@ -103,11 +95,11 @@ void ausf_client::curl_http_client(
     else
       curl_easy_setopt(curl, CURLOPT_HTTPGET, 1);
 
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, CURL_TIMEOUT_MS);
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, kNfDefaultCurlTimeout);
     curl_easy_setopt(curl, CURLOPT_TCP_KEEPALIVE, 1);
     curl_easy_setopt(curl, CURLOPT_INTERFACE, ausf_cfg.sbi.if_name.c_str());
 
-    if (http_version == 2) {
+    if (ausf_cfg.http_version == 2) {
       if (Logger::should_log(spdlog::level::debug))
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
       // we use a self-signed test server, skip verification during debugging

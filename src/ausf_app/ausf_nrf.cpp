@@ -19,28 +19,19 @@
  *      contact@openairinterface.org
  */
 
-/*! \file ausf_nrf.cpp
- \brief
- \author  Jian Yang, Fengjiao He, Hongxin Wang, Tien-Thinh NGUYEN
- \company Eurecom
- \date 2020
- \email:
- */
-
 #include "ausf_nrf.hpp"
-#include "ausf_app.hpp"
-#include "ausf_client.hpp"
-#include "ausf_profile.hpp"
+
+#include <pistache/http.h>
+
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
-
-#include <curl/curl.h>
 #include <nlohmann/json.hpp>
-#include <pistache/http.h>
-#include <pistache/mime.h>
 #include <stdexcept>
 
 #include "ausf.h"
+#include "ausf_app.hpp"
+#include "ausf_client.hpp"
+#include "ausf_profile.hpp"
 #include "logger.hpp"
 
 using namespace oai::config;
@@ -67,12 +58,11 @@ void ausf_nrf::generate_ausf_profile(
   ausf_nf_profile.set_nf_heartBeat_timer(50);
   ausf_nf_profile.set_nf_priority(1);
   ausf_nf_profile.set_nf_capacity(100);
-  // ausf_nf_profile.set_fqdn(ausf_cfg.fqdn);
   ausf_nf_profile.add_nf_ipv4_addresses(ausf_cfg.sbi.addr4);  // N4's Addr
 
   // AUSF info (Hardcoded for now)
   ausf_info_t ausf_info_item;
-  supi_range_ausf_info_item_t supi_ranges;
+  supi_range_info_item_t supi_ranges;
   ausf_info_item.groupid = "oai-ausf-testgroupid";
   ausf_info_item.routing_indicators.push_back("0210");
   ausf_info_item.routing_indicators.push_back("9876");
@@ -97,18 +87,18 @@ void ausf_nrf::register_to_nrf() {
   generate_ausf_profile(ausf_nf_profile, ausf_instance_id);
 
   // Send NF registeration request
-  std::string nrf_api_root = {};
-  std::string response     = {};
-  std::string method       = {"PUT"};
-  ausf_cfg.get_nrf_api_root(nrf_api_root);
-  std::string remoteUri =
-      nrf_api_root + NNRF_NF_REGISTER_URL + ausf_instance_id;
+  std::string nrf_uri  = {};
+  std::string response = {};
+  std::string method   = {"PUT"};
+
+  sbi_helper::get_nrf_nf_instance_uri(
+      ausf_cfg.nrf_addr, ausf_instance_id, nrf_uri);
   nlohmann::json json_data = {};
   ausf_nf_profile.to_json(json_data);
 
   Logger::ausf_nrf().info("Sending NF registration request");
   ausf_client_instance->curl_http_client(
-      remoteUri, method, json_data.dump().c_str(), response);
+      nrf_uri, method, json_data.dump().c_str(), response);
 
   if (response.empty()) {
     Logger::ausf_nrf().info("NF registration procedure failed, try again ...");
@@ -116,7 +106,7 @@ void ausf_nrf::register_to_nrf() {
   } else {
     response_data = nlohmann::json::parse(response);
     if (response.find("REGISTERED") != 0) {
-      start_event_nf_heartbeat(remoteUri);
+      start_event_nf_heartbeat(nrf_uri);
       Logger::ausf_nrf().info("NRF TASK Created");
     }
     stop_nrf_registration_retry();
@@ -165,12 +155,12 @@ void ausf_nrf::trigger_nf_heartbeat_procedure(uint64_t ms) {
     json_data.push_back(item);
   }
 
-  std::string nrf_api_root = {};
-  ausf_cfg.get_nrf_api_root(nrf_api_root);
-  std::string remoteUri =
-      nrf_api_root + NNRF_NF_REGISTER_URL + ausf_instance_id;
+  std::string nrf_api = {};
+  sbi_helper::get_nrf_nf_instance_uri(
+      ausf_cfg.nrf_addr, ausf_instance_id, nrf_api);
+
   ausf_client_instance->curl_http_client(
-      remoteUri, method, json_data.dump().c_str(), response);
+      nrf_api, method, json_data.dump().c_str(), response);
   if (!response.empty()) task_connection.disconnect();
 }
 

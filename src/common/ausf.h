@@ -22,17 +22,13 @@
 #ifndef FILE_AUSF_SEEN
 #define FILE_AUSF_SEEN
 
+#include "sbi_helper.hpp"
+
 #define HEART_BEAT_TIMER 10
 
 #define NRF_REGISTRATION_RETRY_TIMER 5
 
 #define _unused(x) ((void) (x))
-
-#define NNRF_NFM_BASE "/nnrf-nfm/"
-#define NNRF_NF_REGISTER_URL "/nf-instances/"
-#define NUDM_UEAU_BASE "/nudm-ueau/"
-#define NUDM_UEAU_SECURITY_INFO_URL "/security-information/generate-auth-data"
-#define NUDM_UEAU_AUTH_EVENTS_URL "/auth-events"
 
 typedef enum nf_type_s {
   NF_TYPE_NRF     = 0,
@@ -77,9 +73,6 @@ typedef enum patch_op_type_s {
 static const std::vector<std::string> patch_op_type_e2str = {
     "ADD", "REMOVE", "REPLACE", "MOVE", "COPY", "TEST", "UNKNOWN"};
 
-#define CURL_TIMEOUT_MS 1000L
-#define MAX_WAIT_MSECS 20000  // 1 second
-
 typedef struct {
   uint8_t rand[16];
   uint8_t autn[16];
@@ -116,25 +109,6 @@ enum http_response_codes_e {
   HTTP_RESPONSE_CODE_GATEWAY_TIMEOUT        = 504
 };
 
-#define NAUSF_AUTH_BASE "/nausf-auth/"
-#define NAUSF_UE_AUTHS "/ue-authentications"
-#define NAUSF_UE_AUTHS_DEREG "/ue-authentications/deregister"
 #define NAUSF_RG_AUTH "/rg-authentications"
-
-typedef struct supi_range_s {
-  std::string start;
-  std::string end;
-  std::string pattern;
-} supi_range_t;
-
-typedef struct supi_range_ausf_info_item_s {
-  supi_range_t supi_range;
-} supi_range_ausf_info_item_t;
-
-typedef struct ausf_info_s {
-  std::string groupid;
-  std::vector<supi_range_ausf_info_item_t> supi_ranges;
-  std::vector<std::string> routing_indicators;
-} ausf_info_t;
 
 #endif

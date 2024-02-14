@@ -19,14 +19,6 @@
  *      contact@openairinterface.org
  */
 
-/*! \file ausf_event.cpp
- \brief
- \author Tien-Thinh NGUYEN (EURECOM)
- \company
- \date 2022
- \email: contact@openairinterface.org
- */
-
 #include "ausf_event.hpp"
 using namespace oai::ausf::app;
 

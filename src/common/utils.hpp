@@ -19,14 +19,20 @@
  *      contact@openairinterface.org
  */
 
-#include <iostream>
-#include <sstream>
+#ifndef FILE_UTILS_HPP_SEEN
+#define FILE_UTILS_HPP_SEEN
+
 #include <string>
 
-template<class T>
-inline T fromString(const std::string& str) {
-  std::istringstream is(str);
-  T v;
-  is >> v;
-  return v;
-}
+#include "logger.hpp"
+
+class utils {
+ public:
+  static void print_buffer(
+      const std::string app, const std::string commit, uint8_t* buf, int len);
+  static void print_buffer(
+      const std::string app, const std::string commit, const uint8_t* buf,
+      int len);
+};
+
+#endif

@@ -19,32 +19,25 @@
  *      contact@openairinterface.org
  */
 
-/*! \file ausf_http2-server.cpp
- \brief
- \author
- \company Eurecom
- \date 2020
- \email: contact@openairinterface.org
- */
-
-#include "ausf-http2-server.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/future.hpp>
-#include <regex>
 #include <nlohmann/json.hpp>
+#include <regex>
 #include <string>
-#include "string.hpp"
 
-#include "logger.hpp"
-#include "ausf_config.hpp"
 #include "3gpp_29.500.h"
-#include "mime_parser.hpp"
+#include "ausf-http2-server.h"
+#include "ausf_config.hpp"
+#include "ausf_sbi_helper.hpp"
+#include "logger.hpp"
+#include "string.hpp"
 
 using namespace nghttp2::asio_http2;
 using namespace nghttp2::asio_http2::server;
 using namespace oai::ausf_server::model;
 using namespace oai::config;
+using namespace oai::ausf::api;
 
 extern ausf_config ausf_cfg;
 
@@ -56,7 +49,8 @@ void ausf_http2_server::start() {
 
   // Default API
   server.handle(
-      NAUSF_AUTH_BASE + ausf_cfg.sbi_api_version + NAUSF_UE_AUTHS,
+      ausf_sbi_helper::UEAuthenticationServiceBase +
+          ausf_sbi_helper::AusfAuthPathUeAuthentications,
       [&](const request& request, const response& response) {
         request.on_data([&](const uint8_t* data, std::size_t len) {
           std::string msg((char*) data, len);
@@ -82,7 +76,8 @@ void ausf_http2_server::start() {
       });
 
   server.handle(
-      NAUSF_AUTH_BASE + ausf_cfg.sbi_api_version + NAUSF_UE_AUTHS + "/",
+      ausf_sbi_helper::UEAuthenticationServiceBase +
+          ausf_sbi_helper::AusfAuthPathUeAuthentications + "/",
       [&](const request& request, const response& response) {
         request.on_data([&](const uint8_t* data, std::size_t len) {
           std::string msg((char*) data, len);
@@ -127,7 +122,7 @@ void ausf_http2_server::start() {
       });
 
   server.handle(
-      NAUSF_AUTH_BASE + ausf_cfg.sbi_api_version + NAUSF_RG_AUTH,
+      ausf_sbi_helper::UEAuthenticationServiceBase + NAUSF_RG_AUTH,
       [&](const request& request, const response& response) {
         request.on_data([&](const uint8_t* data, std::size_t len) {
           std::string msg((char*) data, len);
