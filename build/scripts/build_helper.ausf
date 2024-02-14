@@ -100,10 +100,10 @@ check_install_ausf_deps() {
   if [[ $OS_DISTRO == "ubuntu" ]]; then
     case "$(get_distribution_release)" in
       "ubuntu20.04")
-        specific_packages="libconfig++-dev libasio-dev libboost-all-dev libasan5"
+        specific_packages="libasio-dev libboost-all-dev libasan5"
         ;;
       "ubuntu22.04")
-        specific_packages="libconfig++-dev libasio-dev libboost-all-dev libasan6"
+        specific_packages="libasio-dev libboost-all-dev libasan6"
         ;;
     esac
     # removed libspdlog-dev
@@ -127,7 +127,6 @@ check_install_ausf_deps() {
       ninja-build"
   elif [[ "$OS_BASEDISTRO" == "fedora" ]]; then
     PACKAGE_LIST="\
-      libconfig-devel \
       gmp-devel \
       libidn-devel \
       openssl-devel \
