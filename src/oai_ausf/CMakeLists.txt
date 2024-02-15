@@ -252,9 +252,6 @@ add_boolean_option( LOG_OAI                         False    "Thread safe loggin
 # or cmake provide a generic interface to pkg-config that widely used
 ###################################
 
-pkg_search_module(CONFIG REQUIRED libconfig++)
-include_directories(${CONFIG_INCLUDE_DIRS})
-
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 #find_package(Threads REQUIRED)
 
@@ -309,5 +306,5 @@ IF(STATIC_LINKING)
 ENDIF(STATIC_LINKING)   
 
 target_link_libraries (ausf ${ASAN} 
-    -Wl,--start-group AUSF 3GPP_COMMON_TYPES 5GAKA AUSF_API CN_UTILS -lnettle ${NETTLE_LIBRARIES} ${CRYPTO_LIBRARIES} -lnghttp2_asio -lboost_system -lboost_thread -lfmt -lspdlog -lboost_date_time -lssl -lcrypto -lgmp -Wl,--end-group pthread m rt config++ boost_system pistache curl yaml-cpp)
+    -Wl,--start-group AUSF 3GPP_COMMON_TYPES 5GAKA AUSF_API CN_UTILS -lnettle ${NETTLE_LIBRARIES} ${CRYPTO_LIBRARIES} -lnghttp2_asio -lfmt -lspdlog -lssl -lcrypto -lgmp -Wl,--end-group pthread m rt pistache curl yaml-cpp)
     
