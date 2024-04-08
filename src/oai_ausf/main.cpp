@@ -39,28 +39,40 @@ ausf_config ausf_cfg;
 ausf_app* ausf_app_inst              = nullptr;
 AUSFApiServer* api_server            = nullptr;
 ausf_http2_server* ausf_api_server_2 = nullptr;
+task_manager* tm_inst                = nullptr;
 
 std::unique_ptr<ausf_config_yaml> ausf_cfg_yaml = nullptr;
 //------------------------------------------------------------------------------
 void my_app_signal_handler(int s) {
-  std::cout << "Caught signal " << s << std::endl;
-  Logger::system().startup("exiting");
-  std::cout << "Freeing Allocated memory..." << std::endl;
+  Logger::system().info("Caught signal %d", s);
+  Logger::system().debug("Freeing Allocated memory...");
+
   if (api_server) {
     api_server->shutdown();
     delete api_server;
     api_server = nullptr;
   }
-  std::cout << "AUSF API Server memory done" << std::endl;
+  if (ausf_api_server_2) {
+    ausf_api_server_2->stop();
+    delete ausf_api_server_2;
+    ausf_api_server_2 = nullptr;
+  }
+  Logger::system().debug("AUSF API Servers memory done");
+
+  if (tm_inst) {
+    delete tm_inst;
+    tm_inst = nullptr;
+  }
+  Logger::system().debug("Stopped the AUSF Task Manager.");
 
   if (ausf_app_inst) {
     delete ausf_app_inst;
     ausf_app_inst = nullptr;
   }
 
-  std::cout << "AUSF APP memory done" << std::endl;
-  std::cout << "Freeing allocated memory done" << std::endl;
-
+  Logger::system().debug("AUSF APP memory done");
+  Logger::system().debug("Freeing allocated memory done");
+  Logger::system().info("Bye.");
   exit(0);
 }
 
@@ -103,8 +115,8 @@ int main(int argc, char** argv) {
   ausf_app_inst = new ausf_app(Options::getlibconfigConfig(), ev);
 
   // Task Manager
-  task_manager tm(ev);
-  std::thread task_manager_thread(&task_manager::run, &tm);
+  tm_inst = new task_manager(ev);
+  std::thread task_manager_thread(&task_manager::run, tm_inst);
 
   // PID file
   std::string pid_file_name =
