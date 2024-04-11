@@ -60,9 +60,9 @@ ausf_client::~ausf_client() {
 }
 
 //------------------------------------------------------------------------------
-void ausf_client::curl_http_client(
+bool ausf_client::curl_http_client(
     std::string remoteUri, std::string method, std::string msgBody,
-    std::string& response) {
+    std::string& response, long& response_code) {
   Logger::ausf_app().info("Send HTTP message with body %s", msgBody.c_str());
 
   uint32_t str_len = msgBody.length();
@@ -72,6 +72,8 @@ void ausf_client::curl_http_client(
 
   curl_global_init(CURL_GLOBAL_ALL);
   CURL* curl = curl_easy_init();
+
+  bool is_response_ok = false;
 
   if (curl) {
     CURLcode res               = {};
@@ -110,7 +112,9 @@ void ausf_client::curl_http_client(
     }
 
     // Response information.
-    long httpCode = {0};
+    long httpCode                = {0};
+    nlohmann::json response_data = {};
+
     std::unique_ptr<std::string> httpData(new std::string());
     std::unique_ptr<std::string> httpHeaderData(new std::string());
 
@@ -124,54 +128,64 @@ void ausf_client::curl_http_client(
       curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, msgBody.length());
       curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body_data);
     }
-    res = curl_easy_perform(curl);
-    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
 
-    // Process the response
-    response            = *httpData.get();
-    bool is_response_ok = true;
-    Logger::ausf_app().info("Get response with HTTP code (%d)", httpCode);
-
-    if (httpCode == 0) {
-      Logger::ausf_app().info(
-          "Cannot get response when calling %s", remoteUri.c_str());
-      // free curl before returning
-      curl_slist_free_all(headers);
-      curl_easy_cleanup(curl);
-      return;
-    }
-
-    nlohmann::json response_data = {};
-
-    if (httpCode != HTTP_RESPONSE_CODE_OK &&
-        httpCode != HTTP_RESPONSE_CODE_CREATED &&
-        httpCode != HTTP_RESPONSE_CODE_NO_CONTENT) {
-      is_response_ok = false;
-      if (response.size() < 1) {
-        Logger::ausf_app().info("There's no content in the response");
-        // TODO: send context response error
-        return;
+    int num_retries = 0;
+    while (num_retries < MAX_CURL_RETRY) {
+      num_retries++;
+      res = curl_easy_perform(curl);
+      if (res != CURLE_OK) {
+        // Sleep between two consecutive retries
+        usleep(TIME_INTERVAL_CURL_RETRY * pow(2, num_retries - 1));
+        Logger::udr_app().debug("Curl retry %d ...", num_retries);
+        continue;
+      } else {
+        break;
       }
-      Logger::ausf_app().warn("Receive response with HTTP code %d", httpCode);
-      return;
     }
 
-    if (!is_response_ok) {
-      try {
-        response_data = nlohmann::json::parse(response);
-      } catch (nlohmann::json::exception& e) {
-        Logger::ausf_app().info("Could not get JSON content from the response");
-        // Set the default Cause
-        response_data["error"]["cause"] = "504 Gateway Timeout";
+    if (res != CURLE_OK) {
+      Logger::udr_app().debug(
+          "Still could not reach the destination after %d retries",
+          MAX_CURL_RETRY);
+    } else {
+      curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
+      Logger::udr_app().debug(
+          "Get response with HTTP code (%d)", response_code);
+
+      // Process the response
+      response = *httpData.get();
+
+      if (response_code == HTTP_STATUS_CODE_200_OK or
+          response_code == HTTP_STATUS_CODE_201_CREATED or
+          response_code == HTTP_STATUS_CODE_204_NO_CONTENT) {
+        // TODO
+        is_response_ok = true;
+      } else {
+        is_response_ok = false;
+        if (response.size() < 1) {
+          Logger::ausf_app().info("There's no content in the response");
+          // TODO: send context response error
+        } else {
+          try {
+            response_data = nlohmann::json::parse(response);
+          } catch (nlohmann::json::exception& e) {
+            Logger::ausf_app().info(
+                "Could not get JSON content from the response");
+            // Set the default Cause
+            response_data["error"]["cause"] = "504 Gateway Timeout";
+          }
+
+          Logger::ausf_app().info(
+              "Get response with jsonData: %s", response.c_str());
+
+          std::string cause = response_data["error"]["cause"];
+          Logger::ausf_app().info("Call Network Function services failure");
+          Logger::ausf_app().info("Cause value: %s", cause.c_str());
+        }
+        Logger::ausf_app().warn("Receive response with HTTP code %d", httpCode);
       }
-
-      Logger::ausf_app().info(
-          "Get response with jsonData: %s", response.c_str());
-
-      std::string cause = response_data["error"]["cause"];
-      Logger::ausf_app().info("Call Network Function services failure");
-      Logger::ausf_app().info("Cause value: %s", cause.c_str());
     }
+
     curl_slist_free_all(headers);
     curl_easy_cleanup(curl);
   }
@@ -182,5 +196,5 @@ void ausf_client::curl_http_client(
     free(body_data);
     body_data = NULL;
   }
-  return;
+  return is_response_ok;
 }

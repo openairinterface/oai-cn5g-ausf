@@ -45,11 +45,16 @@ extern ausf_nrf* ausf_nrf_inst;
 ausf_client* ausf_client_instance = nullptr;
 
 //------------------------------------------------------------------------------
-ausf_nrf::ausf_nrf(ausf_event& ev) : m_event_sub(ev) {}
+ausf_nrf::ausf_nrf(ausf_event& ev) : m_event_sub(ev) {
+  // generate UUID
+  ausf_instance_id = to_string(boost::uuids::random_generator()());
+
+  // Generate NF Profile
+  generate_ausf_profile();
+}
 
 //---------------------------------------------------------------------------------------------
-void ausf_nrf::generate_ausf_profile(
-    ausf_profile& ausf_nf_profile, std::string& ausf_instance_id) {
+void ausf_nrf::generate_ausf_profile() {
   // TODO: remove hardcoded values
   ausf_nf_profile.set_nf_instance_id(ausf_instance_id);
   ausf_nf_profile.set_nf_instance_name("OAI-AUSF");
@@ -78,14 +83,7 @@ void ausf_nrf::generate_ausf_profile(
 
 //---------------------------------------------------------------------------------------------
 void ausf_nrf::register_to_nrf() {
-  // generate UUID
-  ausf_instance_id             = to_string(boost::uuids::random_generator()());
   nlohmann::json response_data = {};
-
-  // Generate NF Profile
-  ausf_profile ausf_nf_profile;
-  generate_ausf_profile(ausf_nf_profile, ausf_instance_id);
-
   // Send NF registeration request
   std::string nrf_uri  = {};
   std::string response = {};

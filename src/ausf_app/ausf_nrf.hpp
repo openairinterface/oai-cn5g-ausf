@@ -35,10 +35,6 @@ namespace app {
 class ausf_nrf {
  private:
  public:
-  ausf_profile ausf_nf_profile;  // AUSF profile
-  std::string ausf_instance_id;  // AUSF instance id
-  // timer_id_t timer_ausf_heartbeat;
-
   ausf_nrf(ausf_event& ev);
   ausf_nrf(ausf_nrf const&) = delete;
   void operator=(ausf_nrf const&) = delete;
@@ -85,8 +81,7 @@ class ausf_nrf {
    * @param [void]
    * @return void
    */
-  void generate_ausf_profile(
-      ausf_profile& ausf_nf_profile, std::string& ausf_instance_id);
+  void generate_ausf_profile();
 
   /*
    * Trigger NF instance registration to NRF
@@ -99,6 +94,8 @@ class ausf_nrf {
   ausf_event& m_event_sub;
   bs2::connection task_connection;
   bs2::connection retry_nrf_registration_task_connection;
+  ausf_profile ausf_nf_profile;  // AUSF profile
+  std::string ausf_instance_id;  // AUSF instance id
 };
 }  // namespace app
 }  // namespace ausf
