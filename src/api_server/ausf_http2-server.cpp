@@ -155,6 +155,14 @@ void ausf_http2_server::start() {
 }
 
 //------------------------------------------------------------------------
+void ausf_http2_server::stop() {
+  server.stop();
+  // asio_http2_server.h specifies that after the stop, do a join to wait for
+  // all threads to gracefully finish
+  server.join();
+}
+
+//------------------------------------------------------------------------
 void ausf_http2_server::eap_auth_method_handler(
     const std::string& authCtxId, const EapSession& eapSession,
     const response& response) {
