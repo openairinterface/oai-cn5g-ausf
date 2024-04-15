@@ -282,6 +282,7 @@ include_directories(${SRC_TOP_DIR}/api_server/impl)
 include_directories(${SRC_TOP_DIR}/api_server/model)
 include_directories(${SRC_TOP_DIR}/5gaka)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/logger)
+include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/utils)
 
 include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/model/common_model/common_model.cmake)
 #include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/model/nrf/nrf_model.cmake)

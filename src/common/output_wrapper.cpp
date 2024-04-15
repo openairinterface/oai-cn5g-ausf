@@ -19,20 +19,25 @@
  *      contact@openairinterface.org
  */
 
-#ifndef FILE_UTILS_HPP_SEEN
-#define FILE_UTILS_HPP_SEEN
+#include "output_wrapper.hpp"
 
-#include <string>
+#include "iostream"
 
-#include "logger.hpp"
+//------------------------------------------------------------------------------
+void output_wrapper::print_buffer(
+    const std::string app, const std::string sink, uint8_t* buf, int len) {
+  if (!app.compare("ausf_app")) Logger::ausf_server().info(sink.c_str());
+  for (int i = 0; i < len; i++) printf("%x ", buf[i]);
+  printf("\n");
+}
 
-class utils {
- public:
-  static void print_buffer(
-      const std::string app, const std::string commit, uint8_t* buf, int len);
-  static void print_buffer(
-      const std::string app, const std::string commit, const uint8_t* buf,
-      int len);
-};
+//------------------------------------------------------------------------------
+void output_wrapper::print_buffer(
+    const std::string app, const std::string sink, const uint8_t* buf,
+    int len) {
+  if (!app.compare("ausf_app")) std::cout << sink.c_str() << std::endl;
+  Logger::ausf_server().debug(sink.c_str());
 
-#endif
+  for (int i = 0; i < len; i++) printf("%x ", buf[i]);
+  printf("\n");
+}

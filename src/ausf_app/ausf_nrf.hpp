@@ -33,7 +33,6 @@ namespace ausf {
 namespace app {
 
 class ausf_nrf {
- private:
  public:
   ausf_profile ausf_nf_profile;  // AUSF profile
   std::string ausf_instance_id;  // AUSF instance id
@@ -41,6 +40,8 @@ class ausf_nrf {
 
   ausf_nrf(ausf_event& ev);
   ausf_nrf(ausf_nrf const&) = delete;
+  virtual ~ausf_nrf();
+
   void operator=(ausf_nrf const&) = delete;
 
   void generate_uuid();
@@ -85,8 +86,7 @@ class ausf_nrf {
    * @param [void]
    * @return void
    */
-  void generate_ausf_profile(
-      ausf_profile& ausf_nf_profile, std::string& ausf_instance_id);
+  void generate_ausf_profile();
 
   /*
    * Trigger NF instance registration to NRF
@@ -94,6 +94,13 @@ class ausf_nrf {
    * @return void
    */
   void register_to_nrf();
+
+  /*
+   * Trigger NF instance deregistration to NRF
+   * @param [void]
+   * @return void
+   */
+  void deregister_to_nrf();
 
  private:
   ausf_event& m_event_sub;

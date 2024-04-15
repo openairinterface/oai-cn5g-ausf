@@ -19,25 +19,18 @@
  *      contact@openairinterface.org
  */
 
-#include "utils.hpp"
+#ifndef _OUTPUT_WRAPPER_H
+#define _OUTPUT_WRAPPER_H
 
-#include "iostream"
+#include "logger.hpp"
 
-//------------------------------------------------------------------------------
-void utils::print_buffer(
-    const std::string app, const std::string commit, uint8_t* buf, int len) {
-  if (!app.compare("ausf_app")) Logger::ausf_server().info(commit.c_str());
-  for (int i = 0; i < len; i++) printf("%x ", buf[i]);
-  printf("\n");
-}
+class output_wrapper {
+ public:
+  static void print_buffer(
+      const std::string app, const std::string sink, uint8_t* buf, int len);
+  static void print_buffer(
+      const std::string app, const std::string sink, const uint8_t* buf,
+      int len);
+};
 
-//------------------------------------------------------------------------------
-void utils::print_buffer(
-    const std::string app, const std::string commit, const uint8_t* buf,
-    int len) {
-  if (!app.compare("ausf_app")) std::cout << commit.c_str() << std::endl;
-  Logger::ausf_server().debug(commit.c_str());
-
-  for (int i = 0; i < len; i++) printf("%x ", buf[i]);
-  printf("\n");
-}
+#endif
