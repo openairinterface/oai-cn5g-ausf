@@ -28,6 +28,7 @@
 #include <nlohmann/json.hpp>
 #include <stdexcept>
 
+#include "3gpp_29.500.h"
 #include "ausf.h"
 #include "ausf_app.hpp"
 #include "ausf_client.hpp"
@@ -101,25 +102,39 @@ void ausf_nrf::register_to_nrf() {
   nlohmann::json json_data = {};
   ausf_nf_profile.to_json(json_data);
 
+  bool registration_success = false;
   Logger::ausf_nrf().info("Sending NF registration request");
-  ausf_client_inst->send_request(
-      nrf_uri, method, json_data.dump().c_str(), response, response_code);
-
-  if (response.empty()) {
-    Logger::ausf_nrf().info("NF registration procedure failed, try again ...");
-    start_nrf_registration_retry();
-  } else {
-    response_data = nlohmann::json::parse(response);
-    if (response.find("REGISTERED") != 0) {
-      start_event_nf_heartbeat(nrf_uri);
+  if (ausf_client_inst->send_request(
+          nrf_uri, method, json_data.dump().c_str(), response, response_code)) {
+    try {
+      response_data = nlohmann::json::parse(response);
+      if (response_data.find("nfStatus") != response_data.end()) {
+        std::string status = response_data["nfStatus"].get<std::string>();
+        if (status.compare("REGISTERED") == 0) {
+          registration_success = true;
+          start_event_nf_heartbeat(nrf_uri);
+          stop_nrf_registration_retry();
+        }
+      }
+    } catch (nlohmann::json::exception& e) {
+      Logger::ausf_nrf().info(
+          "NF Registration procedure failed (%s), try again ...", e.what());
+    } catch (std::exception& e) {
+      Logger::ausf_nrf().info(
+          "NF Registration procedure failed (%s), try again ...", e.what());
     }
-    stop_nrf_registration_retry();
+
+  } else {
+    Logger::ausf_nrf().warn("Could not get the response from NRF!");
+  }
+
+  if (!registration_success) {
+    start_nrf_registration_retry();
   }
 }
 
 //---------------------------------------------------------------------------------------------
 void ausf_nrf::deregister_to_nrf() {
-  // Send NFs deregistration request
   std::string nrf_uri  = {};
   std::string response = {};
   long response_code   = {0};
@@ -182,9 +197,26 @@ void ausf_nrf::trigger_nf_heartbeat_procedure(uint64_t ms) {
   sbi_helper::get_nrf_nf_instance_uri(
       ausf_cfg.nrf_addr, ausf_instance_id, nrf_api);
 
-  ausf_client_inst->send_request(
-      nrf_api, method, json_data.dump().c_str(), response, response_code);
-  if (!response.empty()) task_connection.disconnect();
+  bool is_heartbeat_success = false;
+
+  if (ausf_client_inst->send_request(
+          nrf_api, method, json_data.dump().c_str(), response, response_code)) {
+    if (response_code == HTTP_STATUS_CODE_200_OK or
+        response_code == HTTP_STATUS_CODE_201_CREATED or
+        response_code == HTTP_STATUS_CODE_204_NO_CONTENT) {
+      is_heartbeat_success = true;
+      // TODO: process the response
+    }
+  }
+
+  if (!is_heartbeat_success) {
+    Logger::ausf_nrf().info(
+        "NF Heartbeat procedure failed, try to register again");
+    if (task_connection.connected()) task_connection.disconnect();
+    register_to_nrf();
+  }
+
+  // if (!response.empty()) task_connection.disconnect();
 }
 
 //---------------------------------------------------------------------------------------------

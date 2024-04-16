@@ -27,8 +27,6 @@
 class output_wrapper {
  public:
   static void print_buffer(
-      const std::string app, const std::string sink, uint8_t* buf, int len);
-  static void print_buffer(
       const std::string app, const std::string sink, const uint8_t* buf,
       int len);
 };

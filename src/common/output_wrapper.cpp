@@ -25,19 +25,16 @@
 
 //------------------------------------------------------------------------------
 void output_wrapper::print_buffer(
-    const std::string app, const std::string sink, uint8_t* buf, int len) {
-  if (!app.compare("ausf_app")) Logger::ausf_server().info(sink.c_str());
-  for (int i = 0; i < len; i++) printf("%x ", buf[i]);
-  printf("\n");
-}
-
-//------------------------------------------------------------------------------
-void output_wrapper::print_buffer(
     const std::string app, const std::string sink, const uint8_t* buf,
     int len) {
-  if (!app.compare("ausf_app")) std::cout << sink.c_str() << std::endl;
-  Logger::ausf_server().debug(sink.c_str());
+  if (Logger::should_log(spdlog::level::debug)) {
+    if (!app.compare("config")) Logger::config().info(sink.c_str());
+    if (!app.compare("system")) Logger::system().info(sink.c_str());
+    if (!app.compare("ausf_app")) Logger::ausf_app().info(sink.c_str());
+    if (!app.compare("ausf_nrf")) Logger::ausf_nrf().info(sink.c_str());
+    if (!app.compare("ausf_server")) Logger::ausf_server().info(sink.c_str());
 
-  for (int i = 0; i < len; i++) printf("%x ", buf[i]);
-  printf("\n");
+    for (int i = 0; i < len; i++) printf("%x ", buf[i]);
+    printf("\n");
+  }
 }

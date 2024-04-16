@@ -114,7 +114,7 @@ bool ausf_client::send_request(
 
     // Hook up data handling function.
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &callback);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, response);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
     curl_easy_setopt(curl, CURLOPT_HEADERDATA, http_header_data.get());
 
     if ((method.compare("POST") == 0) or (method.compare("PUT") == 0) or
@@ -145,6 +145,7 @@ bool ausf_client::send_request(
       curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
       Logger::ausf_app().debug(
           "Get response with HTTP code (%d)", response_code);
+      Logger::ausf_app().debug("Response body: %s", response);
 
       if (response_code != 0) result = true;
     }

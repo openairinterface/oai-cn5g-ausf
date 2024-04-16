@@ -199,10 +199,10 @@ void ausf_app::handle_ue_authentications(
           udm_uri, method, AuthInfo.dump(), response, response_code)) {
     Logger::ausf_app().warn("Could not get the response from UDM!");
     // TODO: error handling
-    problemDetails.setCause("AV_GENERATION_PROBLEM");
-    problemDetails.setStatus(500);
+    problemDetails.setCause("UPSTREAM_SERVER_ERROR");
+    problemDetails.setStatus(504);
     to_json(problemDetails_json, problemDetails);
-    Logger::ausf_app().info("Send 500 Internal_Server_Error response");
+    Logger::ausf_app().info("504 No response is received from a remote peer");
     code      = Pistache::Http::Code::Internal_Server_Error;
     json_data = problemDetails_json;
     return;
@@ -459,6 +459,17 @@ void ausf_app::handle_ue_authentications_confirmation(
           "Authentication failure by home network with authCtxId %s: res* != "
           "xres*",
           authCtxId.c_str());
+
+      problemDetails.setCause("AUTHENTICATION_REJECTED");
+      problemDetails.setStatus(403);
+      problemDetails.setDetail(
+          "The user cannot be authenticated with this authentication method");
+      to_json(problemDetails_json, problemDetails);
+
+      Logger::ausf_app().error("Serving Network Not Authorized");
+      Logger::ausf_app().info("Send 403 Forbidden response");
+      code      = Pistache::Http::Code::Forbidden;
+      json_data = problemDetails_json;
     } else  // Authentication success
     {
       Logger::ausf_app().info("Authentication successful by home network!");
@@ -500,12 +511,18 @@ void ausf_app::handle_ue_authentications_confirmation(
 
       Logger::ausf_app().debug(
           "confirmResultInfo: %s", confirmResultInfo.dump().c_str());
-      ausf_client_inst->send_request(
-          udm_uri, method, confirmResultInfo.dump(), response, response_code);
+
+      if (!ausf_client_inst->send_request(
+              udm_uri, method, confirmResultInfo.dump(), response,
+              response_code)) {
+        Logger::ausf_app().warn("Could not get the response from UDM!");
+        // TODO: process the response from UDM
+      }
+
+      to_json(json_data, confirmResponse);
+      code = Pistache::Http::Code::Ok;
     }
   }
 
-  to_json(json_data, confirmResponse);
-  code = Pistache::Http::Code::Ok;
   return;
 }
