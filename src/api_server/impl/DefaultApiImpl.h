@@ -67,7 +67,7 @@ namespace ausf_server {
 namespace api {
 
 using namespace oai::ausf::app;
-using namespace oai::ausf_server::model;
+using namespace oai::model::ausf;
 
 class DefaultApiImpl : public oai::ausf_server::api::DefaultApi {
  public:
