@@ -35,7 +35,7 @@
 
 using namespace nghttp2::asio_http2;
 using namespace nghttp2::asio_http2::server;
-using namespace oai::ausf_server::model;
+using namespace oai::model::ausf;
 using namespace oai::config;
 using namespace oai::ausf::api;
 

@@ -60,7 +60,7 @@ namespace oai {
 namespace ausf_server {
 namespace api {
 
-using namespace oai::ausf_server::model;
+using namespace oai::model::ausf;
 
 class DefaultApi {
  public:

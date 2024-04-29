@@ -37,7 +37,7 @@ namespace oai {
 namespace ausf {
 namespace app {
 
-using namespace oai::ausf_server::model;
+using namespace oai::model::ausf;
 
 class security_context {
  public:
