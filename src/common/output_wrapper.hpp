@@ -19,19 +19,15 @@
  *      contact@openairinterface.org
  */
 
-#ifndef FILE_UTILS_HPP_SEEN
-#define FILE_UTILS_HPP_SEEN
-
-#include <string>
+#ifndef _OUTPUT_WRAPPER_H
+#define _OUTPUT_WRAPPER_H
 
 #include "logger.hpp"
 
-class utils {
+class output_wrapper {
  public:
   static void print_buffer(
-      const std::string app, const std::string commit, uint8_t* buf, int len);
-  static void print_buffer(
-      const std::string app, const std::string commit, const uint8_t* buf,
+      const std::string app, const std::string sink, const uint8_t* buf,
       int len);
 };
 

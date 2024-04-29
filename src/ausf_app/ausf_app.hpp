@@ -68,6 +68,9 @@ class ausf_app {
 
   virtual ~ausf_app();
 
+  bool start();
+  void stop();
+
   void handle_ue_authentications(
       const AuthenticationInfo& authenticationInfo, nlohmann::json& json_data,
       std::string& location, Pistache::Http::Code& code,

@@ -282,6 +282,7 @@ include_directories(${SRC_TOP_DIR}/api_server/impl)
 include_directories(${SRC_TOP_DIR}/5gaka)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/logger)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/model/ausf)
+include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/utils)
 
 add_executable(ausf
   ${SRC_TOP_DIR}/oai_ausf/main.cpp

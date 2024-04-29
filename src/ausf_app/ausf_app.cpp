@@ -52,30 +52,58 @@ ausf_app::ausf_app(const std::string& config_file, ausf_event& ev)
     : event_sub(ev),
       contextId2security_context(),
       supi2security_context(),
-      imsi2security_context() {
-  Logger::ausf_app().startup("Starting...");
-  try {
-    ausf_client_inst = new ausf_client();
-  } catch (std::exception& e) {
-    Logger::ausf_app().error("Cannot create AUSF APP: %s", e.what());
-    throw;
-  }
-  // Register to NRF
-  if (ausf_cfg.register_nrf) {
-    try {
-      ausf_nrf_inst = new ausf_nrf(ev);
-      ausf_nrf_inst->register_to_nrf();
-    } catch (std::exception& e) {
-      Logger::ausf_app().error("Cannot create NRF TASK: %s", e.what());
-      throw;
-    }
-  }
-  Logger::ausf_app().startup("Started");
-}
+      imsi2security_context() {}
 
 //------------------------------------------------------------------------------
 ausf_app::~ausf_app() {
   Logger::ausf_app().debug("Delete AUSF_APP instance...");
+  if (ausf_nrf_inst) {
+    delete ausf_nrf_inst;
+    ausf_nrf_inst = nullptr;
+  }
+  if (ausf_client_inst) {
+    delete ausf_client_inst;
+    ausf_client_inst = nullptr;
+  }
+}
+
+//------------------------------------------------------------------------------
+bool ausf_app::start() {
+  Logger::ausf_app().startup("Starting...");
+  try {
+    ausf_client_inst = new ausf_client();
+    Logger::ausf_nrf().info("AUSF Client created");
+  } catch (std::exception& e) {
+    Logger::ausf_app().error("Cannot create AUSF client: %s", e.what());
+    return false;
+  }
+  // Register to NRF
+  if (ausf_cfg.register_nrf) {
+    try {
+      Logger::ausf_nrf().info("Create NRF TASK");
+      ausf_nrf_inst = new ausf_nrf(event_sub);
+      Logger::ausf_nrf().info("NRF TASK created");
+      ausf_nrf_inst->register_to_nrf();
+    } catch (std::exception& e) {
+      Logger::ausf_app().error("Cannot create NRF TASK: %s", e.what());
+      return false;
+    }
+  }
+  Logger::ausf_app().startup("Started");
+  return true;
+}
+
+//------------------------------------------------------------------------------
+void ausf_app::stop() {
+  if (ausf_nrf_inst and ausf_cfg.register_nrf) {
+    ausf_nrf_inst->deregister_to_nrf();
+    delete ausf_nrf_inst;
+    ausf_nrf_inst = nullptr;
+  }
+  if (ausf_client_inst) {
+    delete ausf_client_inst;
+    ausf_client_inst = nullptr;
+  }
 }
 
 //------------------------------------------------------------------------------
@@ -136,6 +164,7 @@ void ausf_app::handle_ue_authentications(
   // get authentication related info
   std::string method   = "POST";
   std::string response = {};
+  long response_code   = {0};
   std::string udm_uri  = ausf_cfg.get_udm_ueau_generate_auth_data_uri(supi);
   Logger::ausf_app().debug("UDM's URI %s", udm_uri.c_str());
 
@@ -162,14 +191,24 @@ void ausf_app::handle_ue_authentications(
         "Received authInfo from AMF without ResynchronizationInfo IE");
   }
 
-  // Send request to UDM
-  ausf_client_inst->curl_http_client(
-      udm_uri, method, AuthInfo.dump(), response);
-
-  Logger::ausf_app().info("Response from UDM: %s", response.c_str());
-
   ProblemDetails problemDetails;
   nlohmann::json problemDetails_json = {};
+
+  // Send request to UDM
+  if (!ausf_client_inst->send_request(
+          udm_uri, method, AuthInfo.dump(), response, response_code)) {
+    Logger::ausf_app().warn("Could not get the response from UDM!");
+    // TODO: error handling
+    problemDetails.setCause("UPSTREAM_SERVER_ERROR");
+    problemDetails.setStatus(504);
+    to_json(problemDetails_json, problemDetails);
+    Logger::ausf_app().info("504 No response is received from a remote peer");
+    code      = Pistache::Http::Code::Internal_Server_Error;
+    json_data = problemDetails_json;
+    return;
+  }
+
+  Logger::ausf_app().info("Response from UDM: %s", response.c_str());
 
   nlohmann::json response_data = {};
   std::string authType_udm     = {};
@@ -420,6 +459,17 @@ void ausf_app::handle_ue_authentications_confirmation(
           "Authentication failure by home network with authCtxId %s: res* != "
           "xres*",
           authCtxId.c_str());
+
+      problemDetails.setCause("AUTHENTICATION_REJECTED");
+      problemDetails.setStatus(403);
+      problemDetails.setDetail(
+          "The user cannot be authenticated with this authentication method");
+      to_json(problemDetails_json, problemDetails);
+
+      Logger::ausf_app().error("Serving Network Not Authorized");
+      Logger::ausf_app().info("Send 403 Forbidden response");
+      code      = Pistache::Http::Code::Forbidden;
+      json_data = problemDetails_json;
     } else  // Authentication success
     {
       Logger::ausf_app().info("Authentication successful by home network!");
@@ -434,6 +484,7 @@ void ausf_app::handle_ue_authentications_confirmation(
       // Send authResult to UDM (authentication result info)
       std::string method   = "POST";
       std::string response = {};
+      long response_code   = {0};
       std::string udm_uri =
           ausf_cfg.get_udm_ueau_confirm_auth_uri(sc->supi_ausf);
 
@@ -460,12 +511,18 @@ void ausf_app::handle_ue_authentications_confirmation(
 
       Logger::ausf_app().debug(
           "confirmResultInfo: %s", confirmResultInfo.dump().c_str());
-      ausf_client_inst->curl_http_client(
-          udm_uri, method, confirmResultInfo.dump(), response);
+
+      if (!ausf_client_inst->send_request(
+              udm_uri, method, confirmResultInfo.dump(), response,
+              response_code)) {
+        Logger::ausf_app().warn("Could not get the response from UDM!");
+        // TODO: process the response from UDM
+      }
+
+      to_json(json_data, confirmResponse);
+      code = Pistache::Http::Code::Ok;
     }
   }
 
-  to_json(json_data, confirmResponse);
-  code = Pistache::Http::Code::Ok;
   return;
 }

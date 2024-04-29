@@ -50,13 +50,25 @@ void my_app_signal_handler(int s) {
   Logger::system().info("Caught signal %d", s);
   Logger::system().debug("Freeing Allocated memory...");
 
+  // Stop on-going tasks
   if (api_server) {
     api_server->shutdown();
-    delete api_server;
-    api_server = nullptr;
   }
   if (ausf_api_server_2) {
     ausf_api_server_2->stop();
+  }
+
+  if (ausf_app_inst) {
+    ausf_app_inst->stop();
+  }
+
+  // Delete instances
+  if (api_server) {
+    delete api_server;
+    api_server = nullptr;
+  }
+
+  if (ausf_api_server_2) {
     delete ausf_api_server_2;
     ausf_api_server_2 = nullptr;
   }
@@ -116,6 +128,15 @@ int main(int argc, char** argv) {
 
   // AUSF application layer
   ausf_app_inst = new ausf_app(Options::getlibconfigConfig(), ev);
+  if (!ausf_app_inst->start()) {
+    ausf_app_inst->stop();
+    Logger::system().error("Could not start AUSF APP, exiting.");
+    if (ausf_app_inst) {
+      delete ausf_app_inst;
+      ausf_app_inst = nullptr;
+    }
+    return 1;
+  }
 
   // Task Manager
   tm_inst = new task_manager(ev);
