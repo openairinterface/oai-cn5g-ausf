@@ -45,7 +45,7 @@ extern ausf_config ausf_cfg;
 void ausf_http2_server::start() {
   boost::system::error_code ec;
 
-  Logger::ausf_server().info("HTTP2 server started");
+  Logger::ausf_server().info("HTTP2 server being started");
 
   // Default API
   server.handle(
@@ -149,9 +149,10 @@ void ausf_http2_server::start() {
         });
       });
 
-  if (server.listen_and_serve(ec, m_address, std::to_string(m_port))) {
-    std::cerr << "HTTP Server error: " << ec.message() << std::endl;
+  if (server.listen_and_serve(ec, m_address, std::to_string(m_port), true)) {
+    Logger::ausf_server().debug("HTTP Server status: %s", ec.message());
   }
+  Logger::ausf_server().info("HTTP2 server fully started");
 }
 
 //------------------------------------------------------------------------

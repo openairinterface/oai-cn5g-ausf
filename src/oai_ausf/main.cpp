@@ -169,11 +169,10 @@ int main(int argc, char** argv) {
     // AUSF NGHTTP API server (HTTP2)
     ausf_api_server_2 = new ausf_http2_server(
         conv::toString(ausf_cfg.sbi.addr4), ausf_cfg.sbi.port, ausf_app_inst);
-    std::thread ausf_http2_manager(
-        &ausf_http2_server::start, ausf_api_server_2);
-    ausf_http2_manager.join();
+    ausf_api_server_2->start();
   }
 
+  Logger::ausf_server().info("Initiation Done!");
   task_manager_thread.join();
 
   fflush(fp);
