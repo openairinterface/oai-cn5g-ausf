@@ -65,6 +65,7 @@ class ausf_http2_server {
   uint32_t m_port;
   http2 server;
   ausf_app* m_ausf_app;
+  bool running_server;
 };
 
 #endif
