@@ -174,6 +174,7 @@ int main(int argc, char** argv) {
     ausf_http2_manager.join();
   }
 
+  Logger::ausf_server().info("Initiation Done!");
   task_manager_thread.join();
 
   fflush(fp);
