@@ -24,12 +24,13 @@ set(5GAKA_DIR "${SRC_TOP_DIR}/5gaka")
 include_directories(${SRC_TOP_DIR}/ausf_app)
 include_directories(${SRC_TOP_DIR}/common)
 include_directories(${SRC_TOP_DIR}/common/utils)
-include_directories(${SRC_TOP_DIR}/common/libngap)
 include_directories(${SRC_TOP_DIR}/5gaka)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/logger)
+include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/ngap/libngap)
+include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/utils)
 
-file(GLOB 5GAKA_src_files
-    ${SRC_TOP_DIR}/common/libngap/*.c
+file(GLOB 5GAKA_src_files    
+    ${SRC_TOP_DIR}/${MOUNTED_COMMON}/ngap/libngap/*.c
     ${5GAKA_DIR}/*.cpp
 )
  

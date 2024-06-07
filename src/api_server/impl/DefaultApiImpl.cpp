@@ -34,7 +34,6 @@
 
 #include "DefaultApiImpl.h"
 
-#include "OCTET_STRING.h"
 #include "authentication_algorithms_with_5gaka.hpp"
 #include "logger.hpp"
 #include <iostream>
@@ -48,7 +47,6 @@
 #include <typeinfo>
 #include <map>
 #include "ausf_config.hpp"
-#include "ausf_client.hpp"
 #include "ProblemDetails.h"
 
 using namespace oai::config;

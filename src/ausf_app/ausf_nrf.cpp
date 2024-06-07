@@ -34,6 +34,7 @@
 #include "ausf_client.hpp"
 #include "ausf_profile.hpp"
 #include "logger.hpp"
+#include "http_client.hpp"
 
 using namespace oai::config;
 using namespace boost::placeholders;
@@ -42,7 +43,7 @@ using namespace oai::ausf::app;
 using json = nlohmann::json;
 
 extern ausf_config ausf_cfg;
-extern ausf_client* ausf_client_inst;
+extern std::shared_ptr<oai::http::http_client> http_client_inst;
 
 //------------------------------------------------------------------------------
 ausf_nrf::ausf_nrf(ausf_event& ev) : m_event_sub(ev) {
@@ -72,8 +73,8 @@ void ausf_nrf::generate_ausf_profile() {
   ausf_nf_profile.add_nf_ipv4_addresses(ausf_cfg.sbi.addr4);  // N4's Addr
 
   // AUSF info (Hardcoded for now)
-  ausf_info_t ausf_info_item;
-  supi_range_info_item_t supi_ranges;
+  oai::common::sbi::ausf_info_t ausf_info_item;
+  oai::common::sbi::supi_range_info_item_t supi_ranges;
   ausf_info_item.groupid = "oai-ausf-testgroupid";
   ausf_info_item.routing_indicators.push_back("0210");
   ausf_info_item.routing_indicators.push_back("9876");
@@ -92,10 +93,7 @@ void ausf_nrf::register_to_nrf() {
   nlohmann::json response_data = {};
 
   // Send NF registeration request
-  std::string nrf_uri  = {};
-  std::string response = {};
-  long response_code   = {0};
-  std::string method   = {"PUT"};
+  std::string nrf_uri = {};
 
   sbi_helper::get_nrf_nf_instance_uri(
       ausf_cfg.nrf_addr, ausf_instance_id, nrf_uri);
@@ -104,10 +102,16 @@ void ausf_nrf::register_to_nrf() {
 
   bool registration_success = false;
   Logger::ausf_nrf().info("Sending NF registration request");
-  if (ausf_client_inst->send_request(
-          nrf_uri, method, json_data.dump().c_str(), response, response_code)) {
+
+  oai::http::request http_request =
+      http_client_inst->prepare_json_request(nrf_uri, json_data.dump());
+  auto http_response = http_client_inst->send_http_request(
+      oai::common::sbi::method_e::PUT, http_request);
+
+  if (http_response.status_code !=
+      oai::common::sbi::http_status_code::NO_RESPONSE) {
     try {
-      response_data = nlohmann::json::parse(response);
+      response_data = nlohmann::json::parse(http_response.body);
       if (response_data.find("nfStatus") != response_data.end()) {
         std::string status = response_data["nfStatus"].get<std::string>();
         if (status.compare("REGISTERED") == 0) {
@@ -123,7 +127,6 @@ void ausf_nrf::register_to_nrf() {
       Logger::ausf_nrf().info(
           "NF Registration procedure failed (%s), try again ...", e.what());
     }
-
   } else {
     Logger::ausf_nrf().warn("Could not get the response from NRF!");
   }
@@ -135,10 +138,7 @@ void ausf_nrf::register_to_nrf() {
 
 //---------------------------------------------------------------------------------------------
 void ausf_nrf::deregister_to_nrf() {
-  std::string nrf_uri  = {};
-  std::string response = {};
-  long response_code   = {0};
-  std::string method   = {"DELETE"};
+  std::string nrf_uri = {};
 
   sbi_helper::get_nrf_nf_instance_uri(
       ausf_cfg.nrf_addr, ausf_instance_id, nrf_uri);
@@ -146,8 +146,10 @@ void ausf_nrf::deregister_to_nrf() {
   Logger::ausf_nrf().info(
       "Sending NF Deregistration request to NRF: %s", nrf_uri);
 
-  ausf_client_inst->send_request(nrf_uri, method, "", response, response_code);
-
+  oai::http::request http_request =
+      http_client_inst->prepare_json_request(nrf_uri, "");
+  auto http_response = http_client_inst->send_http_request(
+      oai::common::sbi::method_e::DELETE, http_request);
   // TODO: process the response
 }
 //---------------------------------------------------------------------------------------------
@@ -183,9 +185,6 @@ void ausf_nrf::trigger_nf_heartbeat_procedure(uint64_t ms) {
   patch_items.push_back(patch_item);
   Logger::ausf_nrf().info("Sending NF heartbeat request");
 
-  std::string response     = {};
-  long response_code       = {0};
-  std::string method       = {"PATCH"};
   nlohmann::json json_data = nlohmann::json::array();
   for (auto i : patch_items) {
     nlohmann::json item = {};
@@ -199,14 +198,18 @@ void ausf_nrf::trigger_nf_heartbeat_procedure(uint64_t ms) {
 
   bool is_heartbeat_success = false;
 
-  if (ausf_client_inst->send_request(
-          nrf_api, method, json_data.dump().c_str(), response, response_code)) {
-    if (response_code == HTTP_STATUS_CODE_200_OK or
-        response_code == HTTP_STATUS_CODE_201_CREATED or
-        response_code == HTTP_STATUS_CODE_204_NO_CONTENT) {
-      is_heartbeat_success = true;
-      // TODO: process the response
-    }
+  oai::http::request http_request =
+      http_client_inst->prepare_json_request(nrf_api, json_data.dump());
+  auto http_response = http_client_inst->send_http_request(
+      oai::common::sbi::method_e::PATCH, http_request);
+
+  if ((http_response.status_code == oai::common::sbi::http_status_code::OK) or
+      (http_response.status_code ==
+       oai::common::sbi::http_status_code::CREATED) or
+      (http_response.status_code ==
+       oai::common::sbi::http_status_code::NO_CONTENT)) {
+    is_heartbeat_success = true;
+    // TODO: process the response
   }
 
   if (!is_heartbeat_success) {
@@ -215,8 +218,6 @@ void ausf_nrf::trigger_nf_heartbeat_procedure(uint64_t ms) {
     if (task_connection.connected()) task_connection.disconnect();
     register_to_nrf();
   }
-
-  // if (!response.empty()) task_connection.disconnect();
 }
 
 //---------------------------------------------------------------------------------------------

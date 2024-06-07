@@ -25,14 +25,13 @@
 #include "ausf_app.hpp"
 #include "ausf_config.hpp"
 #include "ausf_config_yaml.hpp"
+#include "http_client.hpp"
 #include "logger.hpp"
 #include "options.hpp"
 #include "pid_file.hpp"
 #include "pistache/http.h"
 
 using namespace oai::ausf::app;
-using namespace util;
-
 using namespace oai::config;
 
 ausf_config ausf_cfg;
@@ -41,7 +40,8 @@ AUSFApiServer* api_server            = nullptr;
 ausf_http2_server* ausf_api_server_2 = nullptr;
 task_manager* tm_inst                = nullptr;
 
-std::unique_ptr<ausf_config_yaml> ausf_cfg_yaml = nullptr;
+std::shared_ptr<oai::http::http_client> http_client_inst = nullptr;
+std::unique_ptr<ausf_config_yaml> ausf_cfg_yaml          = nullptr;
 //------------------------------------------------------------------------------
 void my_app_signal_handler(int s) {
   // Setting log level arbitrarly to debug to show the whole
@@ -126,6 +126,11 @@ int main(int argc, char** argv) {
   // Convert from YAML to internal structure
   ausf_cfg_yaml->to_ausf_config(ausf_cfg);
 
+  // HTTP Client
+  http_client_inst = oai::http::http_client::create_instance(
+      Logger::ausf_client(), oai::common::sbi::kNfDefaultHttpRequestTimeout,
+      ausf_cfg.sbi.if_name, ausf_cfg.http_version);
+
   // AUSF application layer
   ausf_app_inst = new ausf_app(Options::getlibconfigConfig(), ev);
   if (!ausf_app_inst->start()) {
@@ -144,8 +149,8 @@ int main(int argc, char** argv) {
 
   // PID file
   std::string pid_file_name =
-      get_exe_absolute_path(ausf_cfg.pid_dir, ausf_cfg.instance);
-  if (!is_pid_file_lock_success(pid_file_name.c_str())) {
+      oai::utils::get_exe_absolute_path(ausf_cfg.pid_dir, ausf_cfg.instance);
+  if (!oai::utils::is_pid_file_lock_success(pid_file_name.c_str())) {
     Logger::ausf_server().error(
         "Lock PID file %s failed\n", pid_file_name.c_str());
     exit(-EDEADLK);
@@ -168,7 +173,8 @@ int main(int argc, char** argv) {
   } else {
     // AUSF NGHTTP API server (HTTP2)
     ausf_api_server_2 = new ausf_http2_server(
-        conv::toString(ausf_cfg.sbi.addr4), ausf_cfg.sbi.port, ausf_app_inst);
+        oai::utils::conv::toString(ausf_cfg.sbi.addr4), ausf_cfg.sbi.port,
+        ausf_app_inst);
     std::thread ausf_http2_manager(
         &ausf_http2_server::start, ausf_api_server_2);
     ausf_http2_manager.join();

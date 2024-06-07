@@ -68,7 +68,7 @@ void ausf_http2_server::start() {
             Logger::ausf_server().warn(
                 "Invalid request (error: %s)!", e.what());
             response.write_head(
-                http_status_code_e::HTTP_STATUS_CODE_400_BAD_REQUEST);
+                oai::common::sbi::http_status_code::BAD_REQUEST);
             response.end();
             return;
           }
@@ -114,7 +114,7 @@ void ausf_http2_server::start() {
             Logger::ausf_server().warn(
                 "Invalid request (error: %s)!", e.what());
             response.write_head(
-                http_status_code_e::HTTP_STATUS_CODE_400_BAD_REQUEST);
+                oai::common::sbi::http_status_code::BAD_REQUEST);
             response.end();
             return;
           }
@@ -142,7 +142,7 @@ void ausf_http2_server::start() {
             Logger::ausf_server().warn(
                 "Invalid request (error: %s)!", e.what());
             response.write_head(
-                http_status_code_e::HTTP_STATUS_CODE_400_BAD_REQUEST);
+                oai::common::sbi::http_status_code::BAD_REQUEST);
             response.end();
             return;
           }
@@ -173,7 +173,7 @@ void ausf_http2_server::eap_auth_method_handler(
     const response& response) {
   Logger::ausf_server().info("eap_auth_method");
   header_map h;
-  response.write_head(HTTP_STATUS_CODE_501_NOT_IMPLEMENTED, h);
+  response.write_head(oai::common::sbi::http_status_code::NOT_IMPLEMENTED, h);
   response.end("eap_auth_method API has not been implemented yet!");
 }
 
@@ -183,7 +183,7 @@ void ausf_http2_server::rg_authentications_post_handler(
     const response& response) {
   Logger::ausf_server().info("rg_authentications_post");
   header_map h;
-  response.write_head(HTTP_STATUS_CODE_501_NOT_IMPLEMENTED, h);
+  response.write_head(oai::common::sbi::http_status_code::NOT_IMPLEMENTED, h);
   response.end("rg_authentications_post API has not been implemented yet!");
 }
 
@@ -192,7 +192,7 @@ void ausf_http2_server::ue_authentications_deregister_post_handler(
     const DeregistrationInfo& deregistrationInfo, const response& response) {
   Logger::ausf_server().info("ue_authentications_deregister_post");
   header_map h;
-  response.write_head(HTTP_STATUS_CODE_501_NOT_IMPLEMENTED, h);
+  response.write_head(oai::common::sbi::http_status_code::NOT_IMPLEMENTED, h);
   response.end(
       "ue_authentications_deregister_post API has not been implemented yet!");
 }
@@ -221,9 +221,9 @@ void ausf_http2_server::
   Logger::ausf_server().info(
       "Send 5g-aka-confirmation response to SEAF (Code %d)", (int) code);
   if (code == Pistache::Http::Code::Ok)
-    response.write_head(HTTP_STATUS_CODE_200_OK, h);
+    response.write_head(oai::common::sbi::http_status_code::OK, h);
   else
-    response.write_head(HTTP_STATUS_CODE_403_FORBIDDEN, h);
+    response.write_head(oai::common::sbi::http_status_code::FORBIDDEN, h);
   response.end(json_data.dump().c_str());
 }
 
@@ -248,9 +248,9 @@ void ausf_http2_server::ue_authentications_post_handler(
   Logger::ausf_server().info(
       "Send Auth response to SEAF (Code %d)", (int) code);
   if (code == Pistache::Http::Code::Created)
-    response.write_head(HTTP_STATUS_CODE_201_CREATED, h);
+    response.write_head(oai::common::sbi::http_status_code::CREATED, h);
   else
-    response.write_head(HTTP_STATUS_CODE_404_NOT_FOUND, h);
+    response.write_head(oai::common::sbi::http_status_code::NOT_FOUND, h);
   response.end(UEAuthCtx_json.dump().c_str());
 }
 //------------------------------------------------------------------------

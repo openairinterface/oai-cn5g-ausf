@@ -26,16 +26,17 @@ include_directories(${SRC_TOP_DIR}/common/)
 include_directories(${SRC_TOP_DIR}/common/utils)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/common)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/config)
+include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/http)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/logger)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/utils)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/model/common_model)
 
 
 include(${BUILD_TOP_DIR}/ausf/used_models.cmake)
+include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/http/http.cmake)
 
 add_library (AUSF STATIC
   ausf_app.cpp
-  ausf_client.cpp 
   ausf_config.cpp
   ausf_config_yaml.cpp  
   task_manager.cpp

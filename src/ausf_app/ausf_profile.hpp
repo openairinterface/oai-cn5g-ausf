@@ -281,17 +281,17 @@ class ausf_profile : public std::enable_shared_from_this<ausf_profile> {
 
   /*
    * Set ausf info
-   * @param [ausf_info_t &] s: ausf info
+   * @param [oai::common::sbi::ausf_info_t &] s: ausf info
    * @return void
    */
-  void set_ausf_info(const ausf_info_t& s);
+  void set_ausf_info(const oai::common::sbi::ausf_info_t& s);
 
   /*
    * Get NF instance ausf info
-   * @param [ausf_info_t &] s: store instance's ausf info
+   * @param [oai::common::sbi::ausf_info_t &] s: store instance's ausf info
    * @return void:
    */
-  void get_ausf_info(ausf_info_t& s) const;
+  void get_ausf_info(oai::common::sbi::ausf_info_t& s) const;
 
   /*
    * Print related-information for NF profile
@@ -333,7 +333,7 @@ class ausf_profile : public std::enable_shared_from_this<ausf_profile> {
   std::vector<struct in_addr> ipv4_addresses;
   uint16_t priority;
   uint16_t capacity;
-  ausf_info_t ausf_info;
+  oai::common::sbi::ausf_info_t ausf_info;
 };
 
 }  // namespace app

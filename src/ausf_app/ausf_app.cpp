@@ -37,12 +37,13 @@
 #include "conversions.hpp"
 #include "logger.hpp"
 #include "sha256.hpp"
+#include "http_client.hpp"
 
 using namespace oai::ausf::app;
 using namespace oai::model::common;
 
 extern ausf_app* ausf_app_inst;
-ausf_client* ausf_client_inst = nullptr;
+extern std::shared_ptr<oai::http::http_client> http_client_inst;
 using namespace oai::config;
 extern ausf_config ausf_cfg;
 ausf_nrf* ausf_nrf_inst = nullptr;
@@ -61,22 +62,11 @@ ausf_app::~ausf_app() {
     delete ausf_nrf_inst;
     ausf_nrf_inst = nullptr;
   }
-  if (ausf_client_inst) {
-    delete ausf_client_inst;
-    ausf_client_inst = nullptr;
-  }
 }
 
 //------------------------------------------------------------------------------
 bool ausf_app::start() {
   Logger::ausf_app().startup("Starting...");
-  try {
-    ausf_client_inst = new ausf_client();
-    Logger::ausf_nrf().info("AUSF Client created");
-  } catch (std::exception& e) {
-    Logger::ausf_app().error("Cannot create AUSF client: %s", e.what());
-    return false;
-  }
   // Register to NRF
   if (ausf_cfg.register_nrf) {
     try {
@@ -99,10 +89,6 @@ void ausf_app::stop() {
     ausf_nrf_inst->deregister_to_nrf();
     delete ausf_nrf_inst;
     ausf_nrf_inst = nullptr;
-  }
-  if (ausf_client_inst) {
-    delete ausf_client_inst;
-    ausf_client_inst = nullptr;
   }
 }
 
@@ -195,8 +181,13 @@ void ausf_app::handle_ue_authentications(
   nlohmann::json problemDetails_json = {};
 
   // Send request to UDM
-  if (!ausf_client_inst->send_request(
-          udm_uri, method, AuthInfo.dump(), response, response_code)) {
+  oai::http::request http_request =
+      http_client_inst->prepare_json_request(udm_uri, AuthInfo.dump());
+  auto http_response = http_client_inst->send_http_request(
+      oai::common::sbi::method_e::POST, http_request);
+
+  if (http_response.status_code ==
+      oai::common::sbi::http_status_code::NO_RESPONSE) {
     Logger::ausf_app().warn("Could not get the response from UDM!");
     // TODO: error handling
     problemDetails.setCause("UPSTREAM_SERVER_ERROR");
@@ -208,6 +199,7 @@ void ausf_app::handle_ue_authentications(
     return;
   }
 
+  response = http_response.body;
   Logger::ausf_app().info("Response from UDM: %s", response.c_str());
 
   nlohmann::json response_data = {};
@@ -260,10 +252,10 @@ void ausf_app::handle_ue_authentications(
   uint8_t xresStar[16] = {0};
   uint8_t kausf[32]    = {0};
 
-  conv::hex_str_to_uint8(autn_udm.c_str(), autn);          // autn
-  conv::hex_str_to_uint8(rand_udm.c_str(), rand);          // rand
-  conv::hex_str_to_uint8(xresStar_udm.c_str(), xresStar);  // xres*
-  conv::hex_str_to_uint8(kausf_udm.c_str(), kausf);        // kausf
+  oai::utils::conv::hex_str_to_uint8(autn_udm.c_str(), autn);          // autn
+  oai::utils::conv::hex_str_to_uint8(rand_udm.c_str(), rand);          // rand
+  oai::utils::conv::hex_str_to_uint8(xresStar_udm.c_str(), xresStar);  // xres*
+  oai::utils::conv::hex_str_to_uint8(kausf_udm.c_str(), kausf);        // kausf
 
   // Generating 5G AV from 5G HE AV
   //  HXRES* <-- XRES*
@@ -291,12 +283,13 @@ void ausf_app::handle_ue_authentications(
   Authentication_5gaka::generate_Hxres(rand_ausf, xresStar_ausf, hxresStar);
   Logger::ausf_app().debug(
       "HXresStar calculated:\n %s",
-      (conv::uint8_to_hex_string(hxresStar, 16)).c_str());
+      (oai::utils::conv::uint8_to_hex_string(hxresStar, 16)).c_str());
 
   uint8_t kseaf[32] = {0};
   Authentication_5gaka::derive_kseaf(snn, kausf, kseaf);
   Logger::ausf_app().debug(
-      "Kseaf calculated:\n %s", (conv::uint8_to_hex_string(kseaf, 32)).c_str());
+      "Kseaf calculated:\n %s",
+      (oai::utils::conv::uint8_to_hex_string(kseaf, 32)).c_str());
 
   // Store the security context
   std::shared_ptr<security_context> sc = {};
@@ -331,14 +324,15 @@ void ausf_app::handle_ue_authentications(
   sc->supi_ausf  = authenticationInfo.getSupiOrSuci();  // store supi in ausf
   sc->serving_nn = snn;                                 // store snn in ausf
   sc->auth_type  = authType_udm;  // store authType in ausf
-  sc->kausf_tmp =
-      conv::uint8_to_hex_string(kausf_ausf, 32);  // store kausf_tmp in ausf
+  sc->kausf_tmp  = oai::utils::conv::uint8_to_hex_string(
+      kausf_ausf, 32);  // store kausf_tmp in ausf
 
   // Send authentication context to SEAF (AUSF->SEAF)
   UEAuthenticationCtx UEAuthCtx;
-  std::string rand_s      = conv::uint8_to_hex_string(rand_ausf, 16);
-  std::string autn_s      = conv::uint8_to_hex_string(autn_ausf, 16);
-  std::string hxresStar_s = conv::uint8_to_hex_string(hxresStar, 16);
+  std::string rand_s = oai::utils::conv::uint8_to_hex_string(rand_ausf, 16);
+  std::string autn_s = oai::utils::conv::uint8_to_hex_string(autn_ausf, 16);
+  std::string hxresStar_s =
+      oai::utils::conv::uint8_to_hex_string(hxresStar, 16);
   UEAuthCtx.setAuthType(authType_udm);  // authType(string)
 
   std::map<std::string, LinksValueSchema> ausf_links;  // links(std::map)
@@ -414,17 +408,18 @@ void ausf_app::handle_ue_authentications_confirmation(
       "Received res* %s", confirmationData.getResStar().c_str());
 
   uint8_t resStar[16] = {0};
-  conv::hex_str_to_uint8(confirmationData.getResStar().c_str(), resStar);
+  oai::utils::conv::hex_str_to_uint8(
+      confirmationData.getResStar().c_str(), resStar);
 
   ConfirmationDataResponse confirmResponse;
   uint8_t authCtxId_seaf[16];
-  conv::hex_str_to_uint8(
+  oai::utils::conv::hex_str_to_uint8(
       authCtxId.c_str(),
       authCtxId_seaf);  // authCtxId in SEAF
 
   Logger::ausf_app().debug(
       "authCtxId in AUSF: %s",
-      (conv::uint8_to_hex_string(sc->ausf_av_s.autn, 16)).c_str());
+      (oai::utils::conv::uint8_to_hex_string(sc->ausf_av_s.autn, 16)).c_str());
 
   bool is_auth_vectors_present =
       Authentication_5gaka::equal_uint8(sc->ausf_av_s.autn, authCtxId_seaf, 16);
@@ -446,9 +441,11 @@ void ausf_app::handle_ue_authentications_confirmation(
         std::begin(xresStar));
 
     Logger::ausf_app().debug(
-        "xres* in AUSF: %s", (conv::uint8_to_hex_string(xresStar, 16)).c_str());
+        "xres* in AUSF: %s",
+        (oai::utils::conv::uint8_to_hex_string(xresStar, 16)).c_str());
     Logger::ausf_app().debug(
-        "xres in AMF: %s", (conv::uint8_to_hex_string(resStar, 16)).c_str());
+        "xres in AMF: %s",
+        (oai::utils::conv::uint8_to_hex_string(resStar, 16)).c_str());
 
     bool authResult = Authentication_5gaka::equal_uint8(xresStar, resStar, 16);
     confirmResponse.setAuthResult(authResult);
@@ -475,7 +472,7 @@ void ausf_app::handle_ue_authentications_confirmation(
       Logger::ausf_app().info("Authentication successful by home network!");
       // Send Kseaf to SEAF
       std::string kseaf_s;
-      kseaf_s = conv::uint8_to_hex_string(sc->ausf_av_s.kseaf, 32);
+      kseaf_s = oai::utils::conv::uint8_to_hex_string(sc->ausf_av_s.kseaf, 32);
       confirmResponse.setKseaf(kseaf_s);
       // Send SUPI when supi_ausf exists
       if (!sc->supi_ausf.empty()) {
@@ -512,9 +509,14 @@ void ausf_app::handle_ue_authentications_confirmation(
       Logger::ausf_app().debug(
           "confirmResultInfo: %s", confirmResultInfo.dump().c_str());
 
-      if (!ausf_client_inst->send_request(
-              udm_uri, method, confirmResultInfo.dump(), response,
-              response_code)) {
+      // Send request to UDM
+      oai::http::request http_request = http_client_inst->prepare_json_request(
+          udm_uri, confirmResultInfo.dump());
+      auto http_response = http_client_inst->send_http_request(
+          oai::common::sbi::method_e::POST, http_request);
+
+      if (http_response.status_code ==
+          oai::common::sbi::http_status_code::NO_RESPONSE) {
         Logger::ausf_app().warn("Could not get the response from UDM!");
         // TODO: process the response from UDM
       }
