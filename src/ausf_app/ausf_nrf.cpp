@@ -31,10 +31,9 @@
 #include "3gpp_29.500.h"
 #include "ausf.h"
 #include "ausf_app.hpp"
-#include "ausf_client.hpp"
 #include "ausf_profile.hpp"
-#include "logger.hpp"
 #include "http_client.hpp"
+#include "logger.hpp"
 
 using namespace oai::config;
 using namespace boost::placeholders;

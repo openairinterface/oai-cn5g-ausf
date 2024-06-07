@@ -31,13 +31,12 @@
 #include "ConfirmationDataResponse.h"
 #include "ProblemDetails.h"
 #include "UEAuthenticationCtx.h"
-#include "ausf_client.hpp"
 #include "ausf_nrf.hpp"
 #include "authentication_algorithms_with_5gaka.hpp"
 #include "conversions.hpp"
+#include "http_client.hpp"
 #include "logger.hpp"
 #include "sha256.hpp"
-#include "http_client.hpp"
 
 using namespace oai::ausf::app;
 using namespace oai::model::common;

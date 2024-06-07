@@ -23,7 +23,6 @@ set(5GAKA_DIR "${SRC_TOP_DIR}/5gaka")
 
 include_directories(${SRC_TOP_DIR}/ausf_app)
 include_directories(${SRC_TOP_DIR}/common)
-include_directories(${SRC_TOP_DIR}/common/utils)
 include_directories(${SRC_TOP_DIR}/5gaka)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/logger)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/ngap/libngap)
