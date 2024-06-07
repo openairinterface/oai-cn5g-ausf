@@ -165,12 +165,12 @@ void ausf_profile::get_nf_ipv4_addresses(std::vector<struct in_addr>& a) const {
 }
 
 //------------------------------------------------------------------------------
-void ausf_profile::set_ausf_info(const ausf_info_t& s) {
+void ausf_profile::set_ausf_info(const oai::common::sbi::ausf_info_t& s) {
   ausf_info = s;
 }
 
 //------------------------------------------------------------------------------
-void ausf_profile::get_ausf_info(ausf_info_t& s) const {
+void ausf_profile::get_ausf_info(oai::common::sbi::ausf_info_t& s) const {
   s = ausf_info;
 }
 
@@ -296,11 +296,13 @@ void ausf_profile::from_json(const nlohmann::json& data) {
       struct in_addr addr4 = {};
       std::string address  = it.get<std::string>();
       unsigned char buf_in_addr[sizeof(struct in_addr)];
-      if (inet_pton(AF_INET, util::trim(address).c_str(), buf_in_addr) == 1) {
+      if (inet_pton(AF_INET, oai::utils::trim(address).c_str(), buf_in_addr) ==
+          1) {
         memcpy(&addr4, buf_in_addr, sizeof(struct in_addr));
       } else {
         Logger::ausf_app().warn(
-            "Address conversion: Bad value %s", util::trim(address).c_str());
+            "Address conversion: Bad value %s",
+            oai::utils::trim(address).c_str());
       }
       add_nf_ipv4_addresses(addr4);
     }
@@ -330,7 +332,7 @@ void ausf_profile::from_json(const nlohmann::json& data) {
     if (info.find("supiRanges") != info.end()) {
       nlohmann::json supi_ranges = data["ausfInfo"]["supiRanges"];
       for (auto d : supi_ranges) {
-        supi_range_info_item_t supi;
+        oai::common::sbi::supi_range_info_item_t supi;
         supi.supi_range.start   = d["start"];
         supi.supi_range.end     = d["end"];
         supi.supi_range.pattern = d["pattern"];

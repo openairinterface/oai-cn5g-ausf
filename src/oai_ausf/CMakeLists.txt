@@ -255,6 +255,9 @@ add_boolean_option( LOG_OAI                         False    "Thread safe loggin
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 #find_package(Threads REQUIRED)
 
+#CPR
+find_package(cpr REQUIRED)
+
 ################################################################
 # Add sub modules
 ################################################################
@@ -265,7 +268,6 @@ else(STATIC_LINKING)
 endif(STATIC_LINKING)
 
 ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/../../src/common ${CMAKE_CURRENT_BINARY_DIR}/common)
-ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/../../src/common/utils ${CMAKE_CURRENT_BINARY_DIR}/utils)
 ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/../../src/api_server ${CMAKE_CURRENT_BINARY_DIR}/api_server)
 ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/../../src/5gaka ${CMAKE_CURRENT_BINARY_DIR}/5gaka)
 ################################################################################
@@ -275,14 +277,16 @@ add_definitions("-DPACKAGE_NAME=\"AUSF\"")
 include_directories(${SRC_TOP_DIR}/ausf_app)
 include_directories(${SRC_TOP_DIR}/oai_ausf)
 include_directories(${SRC_TOP_DIR}/common)
-include_directories(${SRC_TOP_DIR}/common/utils)
 include_directories(${SRC_TOP_DIR}/api_server)
 include_directories(${SRC_TOP_DIR}/api_server/api)
 include_directories(${SRC_TOP_DIR}/api_server/impl)
 include_directories(${SRC_TOP_DIR}/5gaka)
+include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/http)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/logger)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/model/ausf)
+include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/ngap/libngap)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/utils)
+include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/utils/bstr)
 
 add_executable(ausf
   ${SRC_TOP_DIR}/oai_ausf/main.cpp
@@ -291,8 +295,9 @@ add_executable(ausf
 
 ## Common modules
 include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/common/common.cmake)
-include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/logger/logger.cmake)
+include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/http/http.cmake)
 include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/config/config.cmake)
+include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/logger/logger.cmake)
 include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/utils/utils.cmake)
 include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/model/ausf/ausf.cmake)
 
@@ -304,5 +309,5 @@ IF(STATIC_LINKING)
 ENDIF(STATIC_LINKING)   
 
 target_link_libraries (ausf ${ASAN} 
-    -Wl,--start-group AUSF 3GPP_COMMON_TYPES 5GAKA AUSF_API CN_UTILS -lnettle ${NETTLE_LIBRARIES} ${CRYPTO_LIBRARIES} -lnghttp2_asio -lfmt -lspdlog -lssl -lcrypto -lgmp -Wl,--end-group pthread m rt pistache curl yaml-cpp)
+    -Wl,--start-group AUSF 3GPP_COMMON_TYPES 5GAKA AUSF_API -lnettle ${NETTLE_LIBRARIES} ${CRYPTO_LIBRARIES} -lnghttp2_asio -lfmt -lspdlog -lssl -lcrypto -lgmp -Wl,--end-group pthread m rt pistache curl yaml-cpp cpr::cpr)
     
