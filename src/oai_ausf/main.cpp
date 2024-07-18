@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <thread>
+#include <chrono>
 
 #include "ausf-api-server.h"
 #include "ausf-http2-server.h"
@@ -44,6 +45,7 @@ std::shared_ptr<oai::http::http_client> http_client_inst = nullptr;
 std::unique_ptr<ausf_config_yaml> ausf_cfg_yaml          = nullptr;
 //------------------------------------------------------------------------------
 void my_app_signal_handler(int s) {
+  auto shutdown_start = std::chrono::system_clock::now();
   // Setting log level arbitrarly to debug to show the whole
   // shutdown procedure in the logs even in case of off-logging
   Logger::set_level(spdlog::level::debug);
@@ -87,7 +89,9 @@ void my_app_signal_handler(int s) {
 
   Logger::system().debug("AUSF APP memory done");
   Logger::system().debug("Freeing allocated memory done");
-  Logger::system().info("Bye.");
+  auto elapsed = std::chrono::system_clock::now() - shutdown_start;
+  auto ms_diff = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
+  Logger::system().info("Bye. Shutdown Procedure took %d ms", ms_diff.count());
   exit(0);
 }
 
