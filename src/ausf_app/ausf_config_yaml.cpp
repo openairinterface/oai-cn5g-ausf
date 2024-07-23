@@ -138,11 +138,12 @@ void ausf_config_yaml::pre_process() {
 void ausf_config_yaml::to_ausf_config(oai::config::ausf_config& cfg) {
   std::shared_ptr<ausf> ausf_local =
       std::static_pointer_cast<ausf>(get_local());
-  cfg.instance     = ausf_local->get_instance_id();
-  cfg.pid_dir      = ausf_local->get_pid_directory();
-  cfg.ausf_name    = ausf_local->get_ausf_name();
-  cfg.log_level    = spdlog::level::from_str(log_level());
-  cfg.register_nrf = register_nrf();
+  cfg.instance             = ausf_local->get_instance_id();
+  cfg.pid_dir              = ausf_local->get_pid_directory();
+  cfg.ausf_name            = ausf_local->get_ausf_name();
+  cfg.log_level            = spdlog::level::from_str(log_level());
+  cfg.register_nrf         = register_nrf();
+  cfg.http_request_timeout = get_http_request_timeout();
 
   cfg.http_version    = get_http_version();
   cfg.sbi.api_version = local().get_sbi().get_api_version();

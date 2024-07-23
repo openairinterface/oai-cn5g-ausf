@@ -17,9 +17,9 @@
 #include <stdlib.h>  // srand
 #include <unistd.h>  // get_pid(), pause()
 
+#include <chrono>
 #include <iostream>
 #include <thread>
-#include <chrono>
 
 #include "ausf-api-server.h"
 #include "ausf-http2-server.h"
@@ -132,7 +132,7 @@ int main(int argc, char** argv) {
 
   // HTTP Client
   http_client_inst = oai::http::http_client::create_instance(
-      Logger::ausf_client(), oai::common::sbi::kNfDefaultHttpRequestTimeout,
+      Logger::ausf_client(), ausf_cfg.http_request_timeout,
       ausf_cfg.sbi.if_name, ausf_cfg.http_version);
 
   // AUSF application layer

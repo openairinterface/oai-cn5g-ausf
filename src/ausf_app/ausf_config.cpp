@@ -24,11 +24,12 @@
 #include <arpa/inet.h>
 
 #include "ausf.h"
+#include "ausf_sbi_helper.hpp"
 #include "common_defs.h"
+#include "config.hpp"
 #include "if.hpp"
 #include "logger.hpp"
 #include "string.hpp"
-#include "ausf_sbi_helper.hpp"
 
 using namespace oai::ausf::api;
 
@@ -42,6 +43,8 @@ ausf_config::ausf_config() : sbi(), ausf_name(), pid_dir(), instance() {
   http_version              = 2;  // HTTP/2 by default
   log_level                 = spdlog::level::debug;
   register_nrf              = false;
+  http_request_timeout =
+      oai::config::NF_CONFIG_HTTP_REQUEST_TIMEOUT_DEFAULT_VALUE;
 }
 
 //------------------------------------------------------------------------------
