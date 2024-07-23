@@ -67,6 +67,7 @@ class ausf_config {
 
   bool register_nrf;
   uint8_t http_version;
+  uint32_t http_request_timeout;
 };
 
 }  // namespace oai::config
