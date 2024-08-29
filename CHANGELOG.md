@@ -1,5 +1,23 @@
 # RELEASE NOTES : #
 
+## v2.1.0 -- August 2024 ##
+
+* Features
+  - Add connection handling mechanism
+  - Use HTTP Request Timeout parameter from Conf file
+* Fixes
+  - Fix HTTP/2 server shutdown
+  - Fix of the shutdown for the task manager
+  - Fix issue for SD
+* Tech Debt
+  - Remove NRF dependency from AUSF
+  - Stopping support for RHEL8/Rocky8 in favor of RHEL9/Rocky9
+  - Code refactor cleanup
+  - Removing unneccessary packages from target images
+  - Cleanup AUSF client
+  - Move AUSF SBI models to common src git submodule
+  - HTTP client cpr library refactoring effort
+
 ## v2.0.0 -- December 2023 ##
 
 * Features
