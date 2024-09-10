@@ -35,6 +35,7 @@ FROM $BASE_IMAGE as oai-ausf-base
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/Paris
 ENV IS_DOCKERFILE=1
+ARG ENABLE_LTTNG=false
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get upgrade --yes && \
     DEBIAN_FRONTEND=noninteractive apt-get install --yes \
@@ -65,7 +66,16 @@ FROM oai-ausf-base as oai-ausf-builder
 COPY . /openair-ausf
 # Building AUSF
 WORKDIR /openair-ausf/build/scripts
-RUN ./build_ausf --clean --Verbose --build-type Release --jobs && \
+RUN  if [ "$ENABLE_LTTNG" = "true" ]; then DEBIAN_FRONTEND=noninteractive apt-get install --yes \
+        lttng-modules-dkms \
+        liblttng-ust-dev \
+        lttng-tools && \
+        ldconfig && \
+        ./build_ausf --clean --Verbose --build-type Release --jobs --lttng; \
+    else \
+        ldconfig && \
+        ./build_ausf --clean --Verbose --build-type Release --jobs; \
+    fi && \
     ldd /openair-ausf/build/ausf/build/ausf && \
     mv /openair-ausf/build/ausf/build/ausf /openair-ausf/build/ausf/build/oai_ausf
 
@@ -77,6 +87,7 @@ FROM mikefarah/yq:latest as yq-source
 FROM $BASE_IMAGE as oai-ausf
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/Paris
+ARG ENABLE_LTTNG=false
 # We install some debug tools for the moment in addition of mandatory libraries
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get upgrade --yes && \
@@ -107,6 +118,8 @@ RUN apt-get update && \
       libcurl?-gnutls \
       librtmp1 \
       libpsl5 \
+# lttng
+  && if [ "$ENABLE_LTTNG" = "true" ]; then DEBIAN_FRONTEND=noninteractive apt-get install --yes liblttng-ust-dev; fi \
   && rm -rf /var/lib/apt/lists/*
 
 # Copying executable and generated libraries
@@ -137,7 +150,7 @@ COPY --from=oai-ausf-builder \
 WORKDIR /openair-ausf
 
 # expose ports
-EXPOSE 80/tcp
+EXPOSE 80/tcp 5342 5343 5344
 # healthcheck
 HEALTHCHECK --interval=10s \
             --timeout=15s \
