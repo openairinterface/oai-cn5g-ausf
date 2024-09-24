@@ -311,3 +311,9 @@ ENDIF(STATIC_LINKING)
 target_link_libraries (ausf ${ASAN} 
     -Wl,--start-group AUSF 3GPP_COMMON_TYPES 5GAKA AUSF_API -lnettle ${NETTLE_LIBRARIES} ${CRYPTO_LIBRARIES} -lnghttp2_asio -lfmt -lspdlog -lssl -lcrypto -lgmp -Wl,--end-group pthread m rt pistache curl yaml-cpp cpr::cpr)
     
+add_boolean_option(USE_LTTNG  False "Activate the LTTNG tracer, a debugging/monitoring framework" ON)
+if (USE_LTTNG)
+    message("Using the lttng build variant")
+    add_definitions("-DLOGGER_CAN_USE_LTTNG")
+    target_link_libraries(ausf -ldl lttng-ust)
+endif ()
