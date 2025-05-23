@@ -151,6 +151,7 @@ void ausf_nrf::deregister_to_nrf() {
       oai::common::sbi::method_e::DELETE, http_request);
   // TODO: process the response
 }
+
 //---------------------------------------------------------------------------------------------
 void ausf_nrf::start_event_nf_heartbeat(std::string& remoteURI) {
   // get current time

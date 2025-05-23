@@ -26,7 +26,6 @@
 #include "logger_base.hpp"
 
 static const std::string CONFIG       = "config";
-static const std::string SYSTEM       = "system";
 static const std::string AUSF_APP     = "ausf_app";
 static const std::string AUSF_NRF     = "ausf_nrf";
 static const std::string AUSF_CLIENT  = "ausf_client";
