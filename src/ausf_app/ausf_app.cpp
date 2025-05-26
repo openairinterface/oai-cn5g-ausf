@@ -353,7 +353,6 @@ void ausf_app::handle_ue_authentications(
       "/5g-aka-confirmation";
   ausf_href.setHref(resource_uri);
 
-  ausf_links["5G_AKA"] = ausf_href;  // TODO: to be removed
   ausf_links["5g-aka"] = ausf_href;
   ue_auth_ctx.setLinks(ausf_links);
 
