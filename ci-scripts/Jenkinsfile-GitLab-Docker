@@ -72,6 +72,9 @@ server = 'https://api.oai.cs.eurecom.fr:6443'
 // Docker build options
 dockerBuildOptions = '--no-cache '
 
+// List of failing stages
+def failingStages = ""
+
 //-------------------------------------------------------------------------------
 // Pipeline start
 pipeline {
@@ -104,10 +107,12 @@ pipeline {
 
           if (params.RhelOcCredentials == null) {
             echo '\u26D4 \u001B[31mNo Credentials to connect to Openshift!\u001B[0m'
+            failingStages += "Verify Parameters"
             error "Stopping pipeline!"
           }
           if (params.DockerHubCredentials == null) {
             echo '\u26D4 \u001B[31mNo Credentials to push to DockerHub!\u001B[0m'
+            failingStages += "Verify Parameters"
             error "Stopping pipeline!"
           }
         }
@@ -214,6 +219,9 @@ pipeline {
             }
             unsuccessful {
               sh "echo 'OAI-AUSF UBUNTU IMAGE BUILD: KO' >> archives/ausf_ubuntu_image_build.log"
+              script {
+                failingStages += "Build Ubuntu ARM Neoverse V2 (Grace) Image\n"
+              }
             }
           }
         }
@@ -241,6 +249,9 @@ pipeline {
             }
             unsuccessful {
               sh "echo 'OAI-AUSF UBUNTU IMAGE BUILD: KO' >> archives/ausf_ubuntu_lttng_image_build.log"
+              script {
+              failingStages += "Build Ubuntu AUSF Image with LTTNG\n"
+              }
             }
           }
         }
@@ -280,6 +291,9 @@ pipeline {
             }
             unsuccessful {
               sh "echo 'OAI-AUSF RHEL IMAGE BUILD: KO' >> archives/ausf_rhel_image_build.log"
+              script {
+              failingStages += "Build RHEL AUSF Image\n"
+              }
             }
             cleanup {
               script {
@@ -318,6 +332,9 @@ pipeline {
             }
             unsuccessful {
               sh "echo 'CPPCHECK: KO' >> archives/cppcheck_install.log"
+              script {
+              failingStages += "Static Code Analysis\n"
+              }
             }
             cleanup {
               script {
@@ -393,6 +410,7 @@ pipeline {
                 if (localStatus.resultIsBetterOrEqualTo('SUCCESS')) {
                   echo "Tutorials Test Job is OK"
                 } else {
+                  failingStages += "Testing the tutorials\n"
                   error "Tutorials Test Job is KO"
                 }
               }
@@ -422,6 +440,7 @@ pipeline {
                 if (localStatus.resultIsBetterOrEqualTo('SUCCESS')) {
                   echo "Test Job with COTS-UE is OK"
                 } else {
+                  failingStages += "Testing with COTS-UE\n"
                   error "Test Job with COTS-UE is is KO"
                 }
               }
@@ -452,6 +471,7 @@ pipeline {
                 if (localStatus.resultIsBetterOrEqualTo('SUCCESS')) {
                   echo "Robot-Test is OK"
                 } else {
+                  failingStages += "Robot-Test\n"
                   error "Robot-Test is is KO"
                 }
               }
@@ -508,8 +528,11 @@ pipeline {
     unsuccessful {
       script {
         if ("MERGE".equals(env.gitlabActionType)) {
-          def message = "OAI " + JOB_NAME + " build (" + BUILD_ID + "): failed (" + BUILD_URL + ")"
+          def message = "OAI " + JOB_NAME + " build (" + BUILD_ID + "): failed (" + BUILD_URL + ")\n"
           echo "This is a MERGE event"
+          if (failingStages?.trim()) {
+              message += "\nFailing stages:" + "\n" + failingStages + "\n"
+          }
           addGitLabMRComment comment: message
         }
       }
