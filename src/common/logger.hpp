@@ -26,7 +26,6 @@
 #include "logger_base.hpp"
 
 static const std::string CONFIG       = "config";
-static const std::string SYSTEM       = "system";
 static const std::string AUSF_APP     = "ausf_app";
 static const std::string AUSF_NRF     = "ausf_nrf";
 static const std::string AUSF_CLIENT  = "ausf_client";
@@ -56,7 +55,9 @@ class Logger : public oai::logger::logger_common {
   static bool should_log(spdlog::level::level_enum level) {
     return oai::logger::logger_registry::should_log(level);
   }
-
+  static void set_lttng(bool isLttngActive) {
+    oai::logger::logger_registry::set_lttng_is_active(isLttngActive);
+  }
   static const oai::logger::printf_logger& config() {
     return oai::logger::logger_registry::get_logger(CONFIG);
   }
