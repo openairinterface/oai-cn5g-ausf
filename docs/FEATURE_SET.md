@@ -28,14 +28,12 @@
 | ------ | ------------- | ------------------ | --------------------------------------------------------------------------|
 | 1      | N12            | :heavy_check_mark: | Communicate with AMF     |
 | 2      | N13            | :heavy_check_mark: | Communicate with UDM     |
-                                            |
 
 # 3. OAI AUSF Feature List #
 
-Based on document **3GPP TS 23.501 V16.0.0 §6.2.8**.
+Based on document **3GPP TS 23.501 V16.14.0 §6.2.8**.
 
 | **ID** | **Classification**                                      | **Status**         | **Comments**  |
 | ------ | ------------------------------------------------------- | ------------------ |---------------|
 | 1      | Supports authentication for 3GPP access                 | :heavy_check_mark: |               |
 | 2      | Supports authentication for untrusted non-3GPP access   | :x:                |               |
-      
