@@ -208,6 +208,7 @@ void ausf_app::handle_ue_authentications(
   std::string kausf_udm        = {};
   std::string rand_udm         = {};
   std::string xres_star_udm    = {};
+  std::string supi_format_imsi = {};
   try {
     response_data = nlohmann::json::parse(response.c_str());
     // Get security context
@@ -224,6 +225,7 @@ void ausf_app::handle_ue_authentications(
     xres_star_udm =
         response_data["authenticationVector"].at("xresStar");  // xres*
     Logger::ausf_app().debug("xres*_udm %s", xres_star_udm.c_str());
+    supi_format_imsi = response_data.at("supi");
 
   } catch (nlohmann::json::exception& e) {
     // TODO: Catch parse_error exception
@@ -305,7 +307,6 @@ void ausf_app::handle_ue_authentications(
   }
 
   // Update information
-  sc->supi_ausf = supi;  // TODO: setter/getter
   std::copy(
       std::begin(rand_ausf), std::end(rand_ausf),
       std::begin(sc->ausf_av_s.rand));
@@ -321,9 +322,9 @@ void ausf_app::handle_ue_authentications(
   std::copy(
       std::begin(xres_star), std::end(xres_star), std::begin(sc->xres_star));
 
-  sc->supi_ausf  = authentication_info.getSupiOrSuci();  // store supi in ausf
-  sc->serving_nn = snn;                                  // store snn in ausf
-  sc->auth_type  = auth_type_udm;  // store authType in ausf
+  sc->supi_ausf  = supi_format_imsi;  // store supi in ausf
+  sc->serving_nn = snn;               // store snn in ausf
+  sc->auth_type  = auth_type_udm;     // store authType in ausf
   sc->kausf_tmp  = oai::utils::conv::uint8_to_hex_string(
       kausf_ausf, 32);  // store kausf_tmp in ausf
 
