@@ -42,18 +42,16 @@ using namespace oai::model::ausf;
 class security_context {
  public:
   security_context() : xres_star() {
-    // supi       = {};
     ausf_av_s  = {};
-    supi_ausf  = "";
-    auth_type  = "";
-    serving_nn = "";
-    kausf_tmp  = "";
+    supi       = {};
+    auth_type  = {};
+    serving_nn = {};
+    kausf_tmp  = {};
   }
 
-  // supi64_t supi;
   AUSF_AV_s ausf_av_s;
   uint8_t xres_star[16];   // store xres*
-  std::string supi_ausf;   // store supi
+  std::string supi;        // store supi
   std::string auth_type;   // store authType
   std::string serving_nn;  // store serving network name
   std::string kausf_tmp;   // store Kausf(string)
@@ -94,8 +92,6 @@ class ausf_app {
 
  private:
   ausf_event& event_sub;
-  std::map<supi64_t, std::shared_ptr<security_context>> imsi2security_context;
-  mutable std::shared_mutex m_imsi2security_context;
 
   std::map<std::string, std::shared_ptr<security_context>>
       supi2security_context;

@@ -177,11 +177,11 @@ void ausf_profile::get_ausf_info(oai::common::sbi::ausf_info_t& s) const {
 //------------------------------------------------------------------------------
 void ausf_profile::display() const {
   Logger::ausf_app().debug("- NF instance info");
-  Logger::ausf_app().debug("    Instance ID: %s", nf_instance_id.c_str());
-  Logger::ausf_app().debug("    Instance name: %s", nf_instance_name.c_str());
-  Logger::ausf_app().debug("    Instance type: %s", nf_type.c_str());
-  Logger::ausf_app().debug("    Instance fqdn: %s", fqdn.c_str());
-  Logger::ausf_app().debug("    Status: %s", nf_status.c_str());
+  Logger::ausf_app().debug("    Instance ID: %s", nf_instance_id);
+  Logger::ausf_app().debug("    Instance name: %s", nf_instance_name);
+  Logger::ausf_app().debug("    Instance type: %s", nf_type);
+  Logger::ausf_app().debug("    Instance fqdn: %s", fqdn);
+  Logger::ausf_app().debug("    Status: %s", nf_status);
   Logger::ausf_app().debug("    HeartBeat timer: %d", heartBeat_timer);
   Logger::ausf_app().debug("    Priority: %d", priority);
   Logger::ausf_app().debug("    Capacity: %d", capacity);
@@ -190,7 +190,7 @@ void ausf_profile::display() const {
     Logger::ausf_app().debug("    SNSSAI:");
   }
   for (auto s : snssais) {
-    Logger::ausf_app().debug("        SST, SD: %d, %s", s.sst, s.sd.c_str());
+    Logger::ausf_app().debug("        SST, SD: %d, %s", s.sst, s.sd);
   }
 
   // IPv4 Addresses
@@ -255,7 +255,7 @@ void ausf_profile::to_json(nlohmann::json& data) const {
     data["ausfInfo"]["routingIndicators"].push_back(route_ind);
   }
 
-  Logger::ausf_app().debug("ausf profile to JSON:\n %s", data.dump().c_str());
+  Logger::ausf_app().debug("AUSF profile to JSON:\n %s", data.dump());
 }
 
 //------------------------------------------------------------------------------
@@ -301,8 +301,7 @@ void ausf_profile::from_json(const nlohmann::json& data) {
         memcpy(&addr4, buf_in_addr, sizeof(struct in_addr));
       } else {
         Logger::ausf_app().warn(
-            "Address conversion: Bad value %s",
-            oai::utils::trim(address).c_str());
+            "Address conversion: Bad value %s", oai::utils::trim(address));
       }
       add_nf_ipv4_addresses(addr4);
     }
@@ -346,7 +345,6 @@ void ausf_profile::from_json(const nlohmann::json& data) {
 //------------------------------------------------------------------------------
 void ausf_profile::handle_heartbeart_timeout(uint64_t ms) {
   Logger::ausf_app().info(
-      "Handle heartbeart timeout profile %s, time %d", nf_instance_id.c_str(),
-      ms);
+      "Handle heartbeart timeout profile %s, time %d", nf_instance_id, ms);
   set_nf_status("SUSPENDED");
 }

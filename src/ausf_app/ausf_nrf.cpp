@@ -47,7 +47,12 @@ extern std::shared_ptr<oai::http::http_client> http_client_inst;
 //------------------------------------------------------------------------------
 ausf_nrf::ausf_nrf(ausf_event& ev) : m_event_sub(ev) {
   // generate UUID
-  ausf_instance_id = to_string(boost::uuids::random_generator()());
+  {
+    std::mutex m_generate_uuid;
+    const std::lock_guard<std::mutex> lock(m_generate_uuid);
+    ausf_instance_id = to_string(boost::uuids::random_generator()());
+  }
+
   // Generate AUSF profile
   generate_ausf_profile();
 }
@@ -69,7 +74,7 @@ void ausf_nrf::generate_ausf_profile() {
   ausf_nf_profile.set_nf_heartBeat_timer(50);
   ausf_nf_profile.set_nf_priority(1);
   ausf_nf_profile.set_nf_capacity(100);
-  ausf_nf_profile.add_nf_ipv4_addresses(ausf_cfg.sbi.addr4);  // N4's Addr
+  ausf_nf_profile.add_nf_ipv4_addresses(ausf_cfg.sbi.addr4);
 
   // AUSF info (Hardcoded for now)
   oai::common::sbi::ausf_info_t ausf_info_item;
@@ -82,16 +87,20 @@ void ausf_nrf::generate_ausf_profile() {
   supi_ranges.supi_range.start   = "q0930j0c80283ncjf";
   ausf_info_item.supi_ranges.push_back(supi_ranges);
   ausf_nf_profile.set_ausf_info(ausf_info_item);
-  // AUSF info item end
 
   ausf_nf_profile.display();
+}
+
+//------------------------------------------------------------------------------
+std::string ausf_nrf::get_nf_instance_id() const {
+  return ausf_instance_id;
 }
 
 //---------------------------------------------------------------------------------------------
 void ausf_nrf::register_to_nrf() {
   nlohmann::json response_data = {};
 
-  // Send NF registeration request
+  // Send NF registration request
   std::string nrf_uri = {};
 
   sbi_helper::get_nrf_nf_instance_uri(

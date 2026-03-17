@@ -39,8 +39,6 @@ using namespace oai::model::ausf;
 using namespace oai::config;
 using namespace oai::ausf::api;
 
-extern ausf_config ausf_cfg;
-
 //------------------------------------------------------------------------------
 void ausf_http2_server::start() {
   boost::system::error_code ec;
@@ -59,10 +57,10 @@ void ausf_http2_server::start() {
             boost::split(
                 split_result, request.uri().path, boost::is_any_of("/"));
             if (request.method().compare("POST") == 0 && len > 0) {
-              AuthenticationInfo authenticationInfo;
-              nlohmann::json::parse(msg.c_str()).get_to(authenticationInfo);
+              AuthenticationInfo authentication_info = {};
+              nlohmann::json::parse(msg.c_str()).get_to(authentication_info);
               this->ue_authentications_post_handler(
-                  authenticationInfo, response);
+                  authentication_info, response);
             }
           } catch (std::exception& e) {
             Logger::ausf_server().warn(
@@ -88,27 +86,27 @@ void ausf_http2_server::start() {
             if (request.method().compare("POST") == 0 && len > 0) {
               if (split_result[split_result.size() - 1].compare(
                       "eap-session") == 0) {
-                EapSession eapSession;
-                std::string authCtxId =
+                EapSession eap_session = {};
+                std::string auth_ctx_id =
                     split_result[split_result.size() - 2].c_str();
-                nlohmann::json::parse(msg.c_str()).get_to(eapSession);
-                this->eap_auth_method_handler(authCtxId, eapSession, response);
-              }
-              if (split_result[split_result.size() - 1].compare("deregister") ==
+                nlohmann::json::parse(msg.c_str()).get_to(eap_session);
+                this->eap_auth_method_handler(
+                    auth_ctx_id, eap_session, response);
+              } else if (
+                  split_result[split_result.size() - 1].compare("deregister") ==
                   0) {
-                DeregistrationInfo deregistrationInfo;
-                nlohmann::json::parse(msg.c_str()).get_to(deregistrationInfo);
+                DeregistrationInfo deregistration_info = {};
+                nlohmann::json::parse(msg.c_str()).get_to(deregistration_info);
                 this->ue_authentications_deregister_post_handler(
-                    deregistrationInfo, response);
+                    deregistration_info, response);
               }
-            }
-            if (request.method().compare("PUT") == 0 && len > 0) {
-              ConfirmationData confirmationData;
-              std::string authCtxId =
+            } else if (request.method().compare("PUT") == 0 && len > 0) {
+              ConfirmationData confirmation_data = {};
+              std::string auth_ctx_id =
                   split_result[split_result.size() - 2].c_str();
-              nlohmann::json::parse(msg.c_str()).get_to(confirmationData);
+              nlohmann::json::parse(msg.c_str()).get_to(confirmation_data);
               this->ue_authentications_auth_ctx_id5g_aka_confirmation_put_handler(
-                  authCtxId, confirmationData, response);
+                  auth_ctx_id, confirmation_data, response);
             }
           } catch (std::exception& e) {
             Logger::ausf_server().warn(
@@ -131,12 +129,12 @@ void ausf_http2_server::start() {
             boost::split(
                 split_result, request.uri().path, boost::is_any_of("/"));
             if (request.method().compare("POST") == 0 && len > 0) {
-              RgAuthenticationInfo rgAuthenticationInfo;
-              std::string authCtxId =
+              RgAuthenticationInfo rg_authentication_info = {};
+              std::string auth_ctx_id =
                   split_result[split_result.size() - 2].c_str();
-              nlohmann::json::parse(msg.c_str()).get_to(rgAuthenticationInfo);
+              nlohmann::json::parse(msg.c_str()).get_to(rg_authentication_info);
               this->rg_authentications_post_handler(
-                  rgAuthenticationInfo, response);
+                  rg_authentication_info, response);
             }
           } catch (std::exception& e) {
             Logger::ausf_server().warn(
@@ -169,7 +167,7 @@ void ausf_http2_server::stop() {
 
 //------------------------------------------------------------------------
 void ausf_http2_server::eap_auth_method_handler(
-    const std::string& authCtxId, const EapSession& eapSession,
+    const std::string& auth_ctx_id, const EapSession& eap_session,
     const response& response) {
   Logger::ausf_server().info("eap_auth_method");
   header_map h;
@@ -179,7 +177,7 @@ void ausf_http2_server::eap_auth_method_handler(
 
 //------------------------------------------------------------------------
 void ausf_http2_server::rg_authentications_post_handler(
-    const RgAuthenticationInfo& rgAuthenticationInfo,
+    const RgAuthenticationInfo& rg_authentication_info,
     const response& response) {
   Logger::ausf_server().info("rg_authentications_post");
   header_map h;
@@ -189,7 +187,7 @@ void ausf_http2_server::rg_authentications_post_handler(
 
 //------------------------------------------------------------------------
 void ausf_http2_server::ue_authentications_deregister_post_handler(
-    const DeregistrationInfo& deregistrationInfo, const response& response) {
+    const DeregistrationInfo& deregistration_info, const response& response) {
   Logger::ausf_server().info("ue_authentications_deregister_post");
   header_map h;
   response.write_head(oai::common::sbi::http_status_code::NOT_IMPLEMENTED, h);
@@ -200,23 +198,23 @@ void ausf_http2_server::ue_authentications_deregister_post_handler(
 //------------------------------------------------------------------------
 void ausf_http2_server::
     ue_authentications_auth_ctx_id5g_aka_confirmation_put_handler(
-        const std::string& authCtxId, const ConfirmationData& confirmationData,
-        const response& response) {
+        const std::string& auth_ctx_id,
+        const ConfirmationData& confirmation_data, const response& response) {
   Logger::ausf_server().info("Received 5g_aka_confirmation Request");
-
   Logger::ausf_server().info(
-      "5gaka confirmation received with authctxID %s", authCtxId.c_str());
+      "5gaka confirmation received with authctxID %s", auth_ctx_id.c_str());
 
   nlohmann::json json_data  = {};
   Pistache::Http::Code code = {};
   header_map h;
 
   m_ausf_app->handle_ue_authentications_confirmation(
-      authCtxId, confirmationData, json_data, code);
+      auth_ctx_id, confirmation_data, json_data, code);
 
   // ausf --> seaf
+  std::string json_data_str = json_data.dump();
   Logger::ausf_server().debug(
-      "5g-aka-confirmation response:\n %s", json_data.dump().c_str());
+      "5g-aka-confirmation response:\n %s", json_data_str);
 
   Logger::ausf_server().info(
       "Send 5g-aka-confirmation response to SEAF (Code %d)", (int) code);
@@ -224,26 +222,24 @@ void ausf_http2_server::
     response.write_head(oai::common::sbi::http_status_code::OK, h);
   else
     response.write_head(oai::common::sbi::http_status_code::FORBIDDEN, h);
-  response.end(json_data.dump().c_str());
+  response.end(json_data_str.c_str());
 }
 
 //------------------------------------------------------------------------
 void ausf_http2_server::ue_authentications_post_handler(
-    const AuthenticationInfo& authenticationInfo, const response& response) {
+    const AuthenticationInfo& authentication_info, const response& response) {
   Logger::ausf_server().info("Received ue_authentications_post Request");
 
-  std::string reponse_from_udm    = {};
   std::string location            = {};
-  UEAuthenticationCtx ue_auth_ctx = {};
-  nlohmann::json UEAuthCtx_json   = {};
+  nlohmann::json ue_auth_ctx_json = {};
   Pistache::Http::Code code       = {};
   header_map h;
 
   m_ausf_app->handle_ue_authentications(
-      authenticationInfo, UEAuthCtx_json, location, code, 2);
+      authentication_info, ue_auth_ctx_json, location, code, 2);
 
-  Logger::ausf_server().debug(
-      "Auth response:\n %s", UEAuthCtx_json.dump().c_str());
+  std::string ue_auth_ctx_json_str = ue_auth_ctx_json.dump();
+  Logger::ausf_server().debug("Auth response:\n %s", ue_auth_ctx_json_str);
 
   Logger::ausf_server().info(
       "Send Auth response to SEAF (Code %d)", (int) code);
@@ -251,6 +247,6 @@ void ausf_http2_server::ue_authentications_post_handler(
     response.write_head(oai::common::sbi::http_status_code::CREATED, h);
   else
     response.write_head(oai::common::sbi::http_status_code::NOT_FOUND, h);
-  response.end(UEAuthCtx_json.dump().c_str());
+  response.end(ue_auth_ctx_json_str.c_str());
 }
 //------------------------------------------------------------------------
