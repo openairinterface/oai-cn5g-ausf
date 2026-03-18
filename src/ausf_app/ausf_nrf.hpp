@@ -36,7 +36,6 @@ class ausf_nrf {
  public:
   ausf_profile ausf_nf_profile;  // AUSF profile
   std::string ausf_instance_id;  // AUSF instance id
-  // timer_id_t timer_ausf_heartbeat;
 
   ausf_nrf(ausf_event& ev);
   ausf_nrf(ausf_nrf const&) = delete;
@@ -87,6 +86,13 @@ class ausf_nrf {
    * @return void
    */
   void generate_ausf_profile();
+
+  /*
+   * Get NF instance ID
+   * @param void
+   * @return instance id
+   */
+  std::string get_nf_instance_id() const;
 
   /*
    * Trigger NF instance registration to NRF
