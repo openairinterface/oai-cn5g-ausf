@@ -1,3 +1,6 @@
+/*
+ * SPDX-License-Identifier: LicenseRef-CSSL-1.0
+ */
 #ifndef UNF_TABLE_HH
 #define UNF_TABLE_HH
 namespace UNF {
