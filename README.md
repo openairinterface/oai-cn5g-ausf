@@ -35,6 +35,8 @@ file at the root of this repository.
 Certain files in the repository are using MIT License and documentation is distributed under
 Creative Commons Attribution 4.0 International license.
 
+For third-party softwares, please refer to the [NOTICE](NOTICE) file.
+
 # Where to start
 
 The Openair-CN-5G AUSF code is written, executed, and tested on UBUNTU server bionic version.
