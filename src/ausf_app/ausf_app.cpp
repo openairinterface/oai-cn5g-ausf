@@ -47,12 +47,12 @@ ausf_app::~ausf_app() {
 //------------------------------------------------------------------------------
 bool ausf_app::start() {
   Logger::ausf_app().startup("Starting...");
-  // Register to NRF
+  Logger::ausf_nrf().info("Create NRF TASK");
+  ausf_nrf_inst = new ausf_nrf(event_sub);
+  Logger::ausf_nrf().info("NRF TASK created");
+  // Register to NRF if needed
   if (ausf_cfg.register_nrf) {
     try {
-      Logger::ausf_nrf().info("Create NRF TASK");
-      ausf_nrf_inst = new ausf_nrf(event_sub);
-      Logger::ausf_nrf().info("NRF TASK created");
       ausf_nrf_inst->register_to_nrf();
     } catch (std::exception& e) {
       Logger::ausf_app().error("Cannot create NRF TASK: %s", e.what());
@@ -67,6 +67,9 @@ bool ausf_app::start() {
 void ausf_app::stop() {
   if (ausf_nrf_inst and ausf_cfg.register_nrf) {
     ausf_nrf_inst->deregister_to_nrf();
+    delete ausf_nrf_inst;
+    ausf_nrf_inst = nullptr;
+  } else if (ausf_nrf_inst) {
     delete ausf_nrf_inst;
     ausf_nrf_inst = nullptr;
   }
