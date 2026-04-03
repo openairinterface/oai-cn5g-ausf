@@ -42,7 +42,7 @@ namespace ausf_server {
 namespace api {
 
 using namespace oai::ausf::app;
-using namespace oai::model::ausf;
+using namespace oai::_3gpp::model;
 
 class AuthenticationResultDeletionApiImpl
     : public oai::ausf_server::api::AuthenticationResultDeletionApi {

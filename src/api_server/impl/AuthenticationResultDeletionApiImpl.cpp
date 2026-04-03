@@ -22,7 +22,7 @@ namespace oai {
 namespace ausf_server {
 namespace api {
 
-using namespace oai::model::ausf;
+using namespace oai::_3gpp::model;
 
 AuthenticationResultDeletionApiImpl::AuthenticationResultDeletionApiImpl(
     std::shared_ptr<Pistache::Rest::Router> rtr, ausf_app* ausf_app_inst,

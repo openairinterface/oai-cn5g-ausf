@@ -20,7 +20,7 @@ namespace oai {
 namespace ausf {
 namespace app {
 
-using namespace oai::model::ausf;
+using namespace oai::_3gpp::model;
 
 class security_context {
  public:

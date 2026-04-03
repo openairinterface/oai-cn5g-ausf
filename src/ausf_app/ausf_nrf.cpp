@@ -165,12 +165,12 @@ void ausf_nrf::start_event_nf_heartbeat(std::string& remoteURI) {
 //---------------------------------------------------------------------------------------------
 void ausf_nrf::trigger_nf_heartbeat_procedure(uint64_t ms) {
   _unused(ms);
-  oai::model::common::PatchItem patch_item = {};
-  std::vector<oai::model::common::PatchItem> patch_items;
-  //{"op":"replace","path":"/nfStatus", "value": "REGISTERED"}
-  oai::model::common::PatchOperation op;
+  oai::_3gpp::model::PatchItem patch_item = {};
+  std::vector<oai::_3gpp::model::PatchItem> patch_items;
+  //{{"op":"replace","path":"/nfStatus", "value": "REGISTERED"}}
+  oai::_3gpp::model::PatchOperation op;
   op.setEnumValue(
-      oai::model::common::PatchOperation_anyOf::ePatchOperation_anyOf::REPLACE);
+      oai::_3gpp::model::PatchOperation_anyOf::ePatchOperation_anyOf::REPLACE);
   patch_item.setOp(op);
   patch_item.setPath("/nfStatus");
   patch_item.setValue("REGISTERED");
