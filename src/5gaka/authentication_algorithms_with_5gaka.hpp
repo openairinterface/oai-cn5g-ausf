@@ -23,34 +23,46 @@
 #define AUTN_LENGTH_OCTETS (16)
 #define KASME_LENGTH_OCTETS (32)
 #define MAC_S_LENGTH (8)
+#define HXRES_LENGTH_OCTETS (16)
+#define XRES_STAR_LENGTH_OCTETS (16)
+#define HXRES_STAR_LENGTH_OCTETS (16)
+
+#define AMF_LENGTH_OCTETS (2)
+
+#define KSEAF_LENGTH_OCTETS (32)
+#define KAUSF_LENGTH_OCTETS (32)
+#define KAMF_LENGTH_OCTETS (32)
+#define KGNB_LENGTH_OCTETS (32)
+
+#define AUTH_VECTOR_LENGTH_OCTETS 32
 
 typedef mpz_t random_t;
 typedef mpz_t sqn_t;
 
 typedef struct {
-  uint8_t rand[16];
+  uint8_t rand[RAND_LENGTH_OCTETS];
   uint8_t rand_new;
-  uint8_t xres[8];
-  uint8_t autn[16];
-  uint8_t kasme[32];
+  uint8_t xres[XRES_LENGTH_OCTETS];
+  uint8_t autn[AUTN_LENGTH_OCTETS];
+  uint8_t kasme[KASME_LENGTH_OCTETS];
 } auc_vector_t;
 
 typedef struct {
   uint8_t avType;
-  uint8_t rand[16];
-  uint8_t xres[8];
-  uint8_t xresStar[16];
-  uint8_t autn[16];
-  uint8_t kausf[32];
+  uint8_t rand[RAND_LENGTH_OCTETS];
+  uint8_t xres[XRES_LENGTH_OCTETS];
+  uint8_t xresStar[XRES_STAR_LENGTH_OCTETS];
+  uint8_t autn[AUTN_LENGTH_OCTETS];
+  uint8_t kausf[KAUSF_LENGTH_OCTETS];
 } _5G_HE_AV_t;  // clause 6.3.6.2.5, ts33.501
 
 typedef struct _5G_AV_s {
   uint8_t avType;
-  uint8_t rand[16];
-  uint8_t hxres[16];
-  uint8_t hxresStar[16];
-  uint8_t autn[16];
-  uint8_t kseaf[32];
+  uint8_t rand[RAND_LENGTH_OCTETS];
+  uint8_t hxres[HXRES_LENGTH_OCTETS];
+  uint8_t hxresStar[HXRES_STAR_LENGTH_OCTETS];
+  uint8_t autn[AUTN_LENGTH_OCTETS];
+  uint8_t kseaf[KSEAF_LENGTH_OCTETS];
 } _5G_AV_t;
 
 typedef struct random_state_s {
@@ -86,13 +98,14 @@ class Authentication_5gaka {
    * @param [const uint8_t[16]] k
    * @param [const uint8_t[16]] _rand
    * @param [const uint8_t[6]] sqn
-   * @param [const uint8_t[2]] amf
+   * @param [const uint8_t[AMF_LENGTH_OCTETS]] amf
    * @param [uint8_t[8]] mac_a
    * @return
    */
   static void f1(
-      const uint8_t opc[16], const uint8_t k[16], const uint8_t _rand[16],
-      const uint8_t sqn[6], const uint8_t amf[2], uint8_t mac_a[8]);
+      const uint8_t opc[16], const uint8_t k[16],
+      const uint8_t _rand[RAND_LENGTH_OCTETS], const uint8_t sqn[6],
+      const uint8_t amf[AMF_LENGTH_OCTETS], uint8_t mac_a[8]);
 
   /*
    * f1star: Computes resynch authentication code MAC-S from key K, random
@@ -102,20 +115,21 @@ class Authentication_5gaka {
    * @param [const uint8_t[16]] k
    * @param [const uint8_t[16]] _rand
    * @param [const uint8_t[6]] sqn
-   * @param [const uint8_t[2]] amf
+   * @param [const uint8_t[AMF_LENGTH_OCTETS]] amf
    * @param [uint8_t[8]] mac_s
    * @return
    */
   static void f1star(
-      const uint8_t kP[16], const uint8_t k[16], const uint8_t rand[16],
-      const uint8_t sqn[6], const uint8_t amf[2], uint8_t mac_s[8]);
+      const uint8_t kP[16], const uint8_t k[16],
+      const uint8_t rand[RAND_LENGTH_OCTETS], const uint8_t sqn[6],
+      const uint8_t amf[AMF_LENGTH_OCTETS], uint8_t mac_s[8]);
 
   /*
    * f2345: Takes key K and random challenge RAND, and returns response RES,
      confidentiality key CK, integrity key IK and anonymity key AK
    * @param [const uint8_t[16]] opc
    * @param [const uint8_t[16]] k
-   * @param [const uint8_t[16]] _rand
+   * @param [const uint8_t[RAND_LENGTH_OCTETS]] _rand
    * @param [const uint8_t[8]] res
    * @param [const uint8_t[16]] ck
    * @param [uint8_t[16]] ik
@@ -123,21 +137,22 @@ class Authentication_5gaka {
    * @return
    */
   static void f2345(
-      const uint8_t opc[16], const uint8_t k[16], const uint8_t _rand[16],
-      uint8_t res[8], uint8_t ck[16], uint8_t ik[16], uint8_t ak[6]);
+      const uint8_t opc[16], const uint8_t k[16],
+      const uint8_t _rand[RAND_LENGTH_OCTETS], uint8_t res[8], uint8_t ck[16],
+      uint8_t ik[16], uint8_t ak[6]);
 
   /*
    * F5star: Takes key K and random challenge RAND, and returns resynch
      anonymity key AK
    * @param [const uint8_t[16]] kP
    * @param [const uint8_t[16]] k
-   * @param [const uint8_t[16]] rand
+   * @param [const uint8_t[RAND_LENGTH_OCTETS]] rand
    * @param [const uint8_t[6]] ak
    * @return
    */
   static void f5star(
-      const uint8_t kP[16], const uint8_t k[16], const uint8_t rand[16],
-      uint8_t ak[6]);
+      const uint8_t kP[16], const uint8_t k[16],
+      const uint8_t rand[RAND_LENGTH_OCTETS], uint8_t ak[6]);
 
  public:
   static void kdf(
@@ -145,20 +160,21 @@ class Authentication_5gaka {
       uint16_t out_len);
   static void derive_kasme(
       uint8_t ck[16], uint8_t ik[16], uint8_t plmn[3], uint8_t sqn[6],
-      uint8_t ak[6], uint8_t kasme[32]);
+      uint8_t ak[6], uint8_t kasme[KASME_LENGTH_OCTETS]);
   static void derive_kausf(
       uint8_t ck[16], uint8_t ik[16], std::string serving_network,
-      uint8_t sqn[6], uint8_t ak[6], uint8_t kausf[32]);
+      uint8_t sqn[6], uint8_t ak[6], uint8_t kausf[KAUSF_LENGTH_OCTETS]);
   static void derive_kseaf(
-      std::string serving_network, uint8_t kausf[32], uint8_t kseaf[32]);
+      std::string serving_network, uint8_t kausf[KAUSF_LENGTH_OCTETS],
+      uint8_t kseaf[KSEAF_LENGTH_OCTETS]);
   static void derive_kamf(
       std::string imsi, uint8_t* kseaf, uint8_t* kamf, uint16_t abba);
   static void derive_knas(
-      algorithm_type_dist_t nas_alg_type, uint8_t nas_alg_id, uint8_t kamf[32],
-      uint8_t* knas);
+      algorithm_type_dist_t nas_alg_type, uint8_t nas_alg_id,
+      uint8_t kamf[KAMF_LENGTH_OCTETS], uint8_t* knas);
   static void derive_kgnb(
-      uint32_t uplinkCount, uint8_t accessType, uint8_t kamf[32],
-      uint8_t* kgnb);
+      uint32_t uplinkCount, uint8_t accessType,
+      uint8_t kamf[KAMF_LENGTH_OCTETS], uint8_t* kgnb);
   static uint8_t* sqn_ms_derive(
       const uint8_t opc[16], uint8_t* key, uint8_t* auts, uint8_t* rand);
 
@@ -175,8 +191,9 @@ class Authentication_5gaka {
 
   // TODO
   static void generate_autn(
-      const uint8_t sqn[6], const uint8_t ak[6], const uint8_t amf[2],
-      const uint8_t mac_a[8], uint8_t autn[16]);
+      const uint8_t sqn[6], const uint8_t ak[6],
+      const uint8_t amf[AMF_LENGTH_OCTETS], const uint8_t mac_a[8],
+      uint8_t autn[RAND_LENGTH_OCTETS]);
 
   // TODO
   static int generate_vector(
@@ -198,7 +215,7 @@ class Authentication_5gaka {
   // TODO
   static void generate_Hxres(
       uint8_t rand[16], uint8_t xresStar[16], uint8_t* hxresStar);
-  // static void generate_authCtxId(uint8_t autn[16],
+  // static void generate_authCtxId(uint8_t autn[RAND_LENGTH_OCTETS],
   //                                           uint8_t *authCtxId);
 
   // TODO
