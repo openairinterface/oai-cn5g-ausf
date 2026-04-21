@@ -17,7 +17,7 @@
 
 using namespace nghttp2::asio_http2;
 using namespace nghttp2::asio_http2::server;
-using namespace oai::model::ausf;
+using namespace oai::_3gpp::model;
 using namespace oai::ausf::app;
 
 class ausf_http2_server {
