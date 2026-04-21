@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <stdexcept>
 #include <string>
 
 #include "AuthenticationInfo.h"
@@ -23,7 +24,7 @@
 #include "sha256.hpp"
 
 using namespace oai::ausf::app;
-using namespace oai::model::common;
+using namespace oai::_3gpp::model;
 
 extern ausf_app* ausf_app_inst;
 extern std::shared_ptr<oai::http::http_client> http_client_inst;
@@ -308,7 +309,23 @@ void ausf_app::handle_ue_authentications(
   std::string autn_s = oai::utils::conv::uint8_to_hex_string(autn_ausf, 16);
   std::string hxresStar_s =
       oai::utils::conv::uint8_to_hex_string(hxres_star, 16);
-  ue_auth_ctx.setAuthType(auth_type_udm);  // authType(string)
+  AuthType auth_type_obj;
+  nlohmann::json j_auth_type = auth_type_udm;
+  try {
+    from_json(j_auth_type, auth_type_obj);
+  } catch (const std::invalid_argument& e) {
+    Logger::ausf_app().error(
+        "Invalid authType value from UDM: %s", auth_type_udm.c_str());
+    problem_details.setCause("UPSTREAM_SERVER_ERROR");
+    problem_details.setStatus(http_status_code::BAD_REQUEST);
+    problem_details.setDetail(
+        std::string("Invalid authType value: ") + auth_type_udm);
+    to_json(json_data, problem_details);
+    Logger::ausf_app().info("Send 400 Bad Request response");
+    code = Pistache::Http::Code::Bad_Request;
+    return;
+  }
+  ue_auth_ctx.setAuthType(auth_type_obj);  // authType(AuthType object)
 
   std::map<std::string, LinksValueSchema> ausf_links;  // links(std::map)
   LinksValueSchema ausf_href;
@@ -328,8 +345,8 @@ void ausf_app::handle_ue_authentications(
   ausf_links["5g-aka"] = ausf_href;
   ue_auth_ctx.setLinks(ausf_links);
 
-  // 5gAuthData(Av5gAka):rand autn hxresStar
-  Av5gAka ausf_5g_auth_data;
+  // 5gAuthData(UEAuthenticationCtx_5gAuthData):rand autn hxresStar
+  UEAuthenticationCtx_5gAuthData ausf_5g_auth_data;
   ausf_5g_auth_data.setRand(rand_s);
   ausf_5g_auth_data.setAutn(autn_s);
   ausf_5g_auth_data.setHxresStar(hxresStar_s);

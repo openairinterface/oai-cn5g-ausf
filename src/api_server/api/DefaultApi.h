@@ -43,7 +43,7 @@ namespace oai {
 namespace ausf_server {
 namespace api {
 
-using namespace oai::model::ausf;
+using namespace oai::_3gpp::model;
 
 class DefaultApi {
  public:

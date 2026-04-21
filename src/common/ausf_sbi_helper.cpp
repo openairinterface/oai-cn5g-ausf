@@ -16,7 +16,7 @@ namespace oai::ausf::api {
 void ausf_sbi_helper::set_problem_details(
     nlohmann::json& json_data, const std::string& detail) {
   Logger::ausf_server().error("%s", detail);
-  oai::model::common::ProblemDetails problem_details;
+  oai::_3gpp::model::ProblemDetails problem_details;
   problem_details.setDetail(detail);
   to_json(json_data, problem_details);
 }

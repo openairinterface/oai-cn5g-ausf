@@ -16,9 +16,9 @@ include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/http)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/logger)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/utils)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/utils/bstr)
-include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/model/common_model)
+include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/model)
 
-include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/model/ausf/ausf.cmake)
+include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/model/ausf.cmake)
 
 file(GLOB AUSF_API_SERVER_src_files
     ${AUSF_API_SERVER_DIR}/ausf-api-server.cpp
