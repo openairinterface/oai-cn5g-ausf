@@ -3,6 +3,7 @@
  */
 
 #include "authentication_algorithms_with_5gaka.hpp"
+#include "logger.hpp"
 
 typedef uint8_t u8;
 typedef uint32_t u32;
@@ -78,7 +79,7 @@ void Authentication_5gaka::RijndaelKeySchedule(const uint8_t key[16]) {
       roundConst = (2*roundConst) ^ 283;
     */
   }
-//#if AUTH_ALG_ON
+// #if AUTH_ALG_ON
 #if 0 
   for(int m=0; m<11; m++){
     printf("roundKeys(%d)\n0x", m);
@@ -87,6 +88,7 @@ void Authentication_5gaka::RijndaelKeySchedule(const uint8_t key[16]) {
     printf("\n");
     }
 #endif
+
   return;
 }
 
@@ -132,6 +134,7 @@ void ShiftRow(u8 state[4][4]) {
   state[3][3] = state[3][2];
   state[3][2] = state[3][1];
   state[3][1] = temp;
+
   return;
 }
 
@@ -153,6 +156,7 @@ void MixColumn(u8 state[4][4]) {
     tmp = Xtime[state[3][i] ^ tmp0];
     state[3][i] ^= temp ^ tmp;
   }
+
   return;
 }
 
@@ -167,16 +171,21 @@ void Authentication_5gaka::RijndaelEncrypt(
   u8 state[4][4];
   for (i = 0; i < 16; i++) state[i & 0x3][i >> 2] = input[i];
   KeyAdd(state, roundKeys, 0);
+
 #if AUTH_ALG_ON
   printf("end of round(%d)\n0x", 0);
 #endif
-  for (int i = 0; i < 16; i++) printf("%x ", state[i & 0x3][i >> 2]);
-  printf("\n");
+
+  if (Logger::should_log(spdlog::level::debug)) {
+    for (int i = 0; i < 16; i++) printf("%x ", state[i & 0x3][i >> 2]);
+    printf("\n");
+  }
   for (r = 1; r <= 9; r++) {
     ByteSub(state);
     ShiftRow(state);
     MixColumn(state);
     KeyAdd(state, roundKeys, r);
+
 #if AUTH_ALG_ON
     printf("end of round(%d)\n0x", r);
     for (i = 0; i < 16; i++) printf("%x ", state[i & 0x3][i >> 2]);
@@ -186,16 +195,19 @@ void Authentication_5gaka::RijndaelEncrypt(
   ByteSub(state);
   ShiftRow(state);
   KeyAdd(state, roundKeys, r);
+
 #if AUTH_ALG_ON
   printf("end of round(%d)\n0x", r);
   for (int i = 0; i < 16; i++) printf("%x ", state[i & 0x3][i >> 2]);
   printf("\n");
 #endif
+
   for (i = 0; i < 16; i++) output[i] = state[i & 0x3][i >> 2];
 #if AUTH_ALG_ON
   printf("output_encrypt: ");
   for (i = 0; i < 16; i++) printf("%x", output[i]);
   printf("\n");
 #endif
+
   return;
 }

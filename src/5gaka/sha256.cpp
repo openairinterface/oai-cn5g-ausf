@@ -7,7 +7,10 @@
 #include <cstring>
 #include <fstream>
 
-Sha256::Sha256() : m_tot_len(), m_len(), m_block(), m_h() {}
+Sha256::Sha256() : m_block(), m_h() {
+  m_tot_len = 0;
+  m_len     = 0;
+}
 Sha256::~Sha256() {}
 
 const unsigned int Sha256::sha256_k[64] =  // UL = uint32
@@ -59,6 +62,8 @@ void Sha256::transform(const unsigned char* message, unsigned int block_nb) {
       m_h[j] += wv[j];
     }
   }
+
+  return;
 }
 
 //------------------------------------------------------------------------------
@@ -73,6 +78,8 @@ void Sha256::init() {
   m_h[7]    = 0x5be0cd19;
   m_len     = 0;
   m_tot_len = 0;
+
+  return;
 }
 
 //------------------------------------------------------------------------------
@@ -96,6 +103,8 @@ void Sha256::update(const unsigned char* message, unsigned int len) {
   memcpy(m_block, &shifted_message[block_nb << 6], rem_len);
   m_len = rem_len;
   m_tot_len += (block_nb + 1) << 6;
+
+  return;
 }
 
 //------------------------------------------------------------------------------
@@ -115,6 +124,8 @@ void Sha256::finalResult(unsigned char* digest) {
   for (i = 0; i < 8; i++) {
     SHA2_UNPACK32(m_h[i], &digest[i << 2]);
   }
+
+  return;
 }
 
 //------------------------------------------------------------------------------
