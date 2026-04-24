@@ -76,15 +76,6 @@ typedef struct random_state_s {
   gmp_randstate_t state;
 } random_state_t;
 
-#define _NEA0_ 0b0000
-#define _128_NEA1_ 0b0001
-#define _128_NEA2_ 0b0010
-#define _128_NEA3_ 0b0011
-#define _NIA0_ 0b0000
-#define _128_NIA1_ 0b0001
-#define _128_NIA2_ 0b0010
-#define _128_NIA3_ 0b0011
-
 typedef enum {
   NAS_ENC_ALG = 0x01,
   NAS_INT_ALG = 0x02,
