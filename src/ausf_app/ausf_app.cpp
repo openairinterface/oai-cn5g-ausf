@@ -224,10 +224,10 @@ void ausf_app::handle_ue_authentications(
   }
 
   // 5G HE AV
-  uint8_t autn[16]      = {0};
-  uint8_t rand[16]      = {0};
-  uint8_t xres_star[16] = {0};
-  uint8_t kausf[32]     = {0};
+  uint8_t autn[AUTN_LENGTH_OCTETS]           = {0};
+  uint8_t rand[RAND_LENGTH_OCTETS]           = {0};
+  uint8_t xres_star[XRES_STAR_LENGTH_OCTETS] = {0};
+  uint8_t kausf[KAUSF_LENGTH_OCTETS]         = {0};
 
   oai::utils::conv::hex_str_to_uint8(autn_udm.c_str(), autn);  // autn
   oai::utils::conv::hex_str_to_uint8(rand_udm.c_str(), rand);  // rand
@@ -244,11 +244,11 @@ void ausf_app::handle_ue_authentications(
   Logger::ausf_app().debug("Generating 5G AV");
 
   // Generating hxres*
-  uint8_t rand_ausf[16]      = {0};
-  uint8_t autn_ausf[16]      = {0};
-  uint8_t xres_star_ausf[16] = {0};
-  uint8_t kausf_ausf[32]     = {0};
-  uint8_t hxres_star[16]     = {0};
+  uint8_t rand_ausf[RAND_LENGTH_OCTETS]           = {0};
+  uint8_t autn_ausf[AUTN_LENGTH_OCTETS]           = {0};
+  uint8_t xres_star_ausf[XRES_STAR_LENGTH_OCTETS] = {0};
+  uint8_t kausf_ausf[KAUSF_LENGTH_OCTETS]         = {0};
+  uint8_t hxres_star[HXRES_STAR_LENGTH_OCTETS]    = {0};
 
   // Getting params from UDM 5G HE AV
   std::copy(
@@ -260,14 +260,14 @@ void ausf_app::handle_ue_authentications(
   // Generate_Hxres*
   Authentication_5gaka::generate_Hxres(rand_ausf, xres_star_ausf, hxres_star);
   Logger::ausf_app().debug(
-      "HXresStar calculated:\n %s",
-      oai::utils::conv::uint8_to_hex_string(hxres_star, 16));
+      "HXresStar calculated:\n %s", oai::utils::conv::uint8_to_hex_string(
+                                        hxres_star, HXRES_STAR_LENGTH_OCTETS));
 
-  uint8_t kseaf[32] = {0};
+  uint8_t kseaf[KSEAF_LENGTH_OCTETS] = {0};
   Authentication_5gaka::derive_kseaf(snn, kausf, kseaf);
   Logger::ausf_app().debug(
       "Kseaf calculated:\n %s",
-      oai::utils::conv::uint8_to_hex_string(kseaf, 32));
+      oai::utils::conv::uint8_to_hex_string(kseaf, KSEAF_LENGTH_OCTETS));
 
   // Store the security context
   std::shared_ptr<security_context> sc = {};
@@ -301,14 +301,17 @@ void ausf_app::handle_ue_authentications(
   sc->supi       = supi;
   sc->serving_nn = snn;
   sc->auth_type  = auth_type_udm;
-  sc->kausf_tmp  = oai::utils::conv::uint8_to_hex_string(kausf_ausf, 32);
+  sc->kausf_tmp =
+      oai::utils::conv::uint8_to_hex_string(kausf_ausf, KAUSF_LENGTH_OCTETS);
 
   // Send authentication context to SEAF (AUSF->SEAF)
   UEAuthenticationCtx ue_auth_ctx = {};
-  std::string rand_s = oai::utils::conv::uint8_to_hex_string(rand_ausf, 16);
-  std::string autn_s = oai::utils::conv::uint8_to_hex_string(autn_ausf, 16);
-  std::string hxresStar_s =
-      oai::utils::conv::uint8_to_hex_string(hxres_star, 16);
+  std::string rand_s =
+      oai::utils::conv::uint8_to_hex_string(rand_ausf, RAND_LENGTH_OCTETS);
+  std::string autn_s =
+      oai::utils::conv::uint8_to_hex_string(autn_ausf, AUTN_LENGTH_OCTETS);
+  std::string hxresStar_s = oai::utils::conv::uint8_to_hex_string(
+      hxres_star, HXRES_STAR_LENGTH_OCTETS);
   AuthType auth_type_obj;
   nlohmann::json j_auth_type = auth_type_udm;
   try {
@@ -390,23 +393,23 @@ void ausf_app::handle_ue_authentications_confirmation(
   Logger::ausf_app().info("Received authCtxId %s", auth_ctx_id);  // authCtxId
   Logger::ausf_app().info("Received res* %s", confirmation_data.getResStar());
 
-  uint8_t res_star[16] = {0};
+  uint8_t res_star[XRES_STAR_LENGTH_OCTETS] = {0};
   oai::utils::conv::hex_str_to_uint8(
       confirmation_data.getResStar().c_str(), res_star);
 
   ConfirmationDataResponse confirm_response;
   AuthResult auth_result = {};
-  uint8_t auth_ctx_id_seaf[16];
+  uint8_t auth_ctx_id_seaf[AUTN_LENGTH_OCTETS];
   oai::utils::conv::hex_str_to_uint8(
       auth_ctx_id.c_str(),
       auth_ctx_id_seaf);  // authCtxId in SEAF
 
   Logger::ausf_app().debug(
-      "authCtxId in AUSF: %s",
-      oai::utils::conv::uint8_to_hex_string(sc->ausf_av_s.autn, 16));
+      "authCtxId in AUSF: %s", oai::utils::conv::uint8_to_hex_string(
+                                   sc->ausf_av_s.autn, AUTN_LENGTH_OCTETS));
 
   bool is_auth_vectors_present = Authentication_5gaka::equal_uint8(
-      sc->ausf_av_s.autn, auth_ctx_id_seaf, 16);
+      sc->ausf_av_s.autn, auth_ctx_id_seaf, AUTN_LENGTH_OCTETS);
   if (!is_auth_vectors_present)  // AV expired
   {
     Logger::ausf_app().error(
@@ -419,20 +422,21 @@ void ausf_app::handle_ue_authentications_confirmation(
   {
     Logger::ausf_app().info("AV is up to date, handling received res*...");
     // Get stored xres* and compare with res*
-    uint8_t xres_star[16] = {0};
+    uint8_t xres_star[XRES_STAR_LENGTH_OCTETS] = {0};
     // xres* stored for 5g-aka-confirmation
     std::copy(
         std::begin(sc->xres_star), std::end(sc->xres_star),
         std::begin(xres_star));
 
     Logger::ausf_app().debug(
-        "xres* in AUSF: %s",
-        oai::utils::conv::uint8_to_hex_string(xres_star, 16));
+        "xres* in AUSF: %s", oai::utils::conv::uint8_to_hex_string(
+                                 xres_star, XRES_STAR_LENGTH_OCTETS));
     Logger::ausf_app().debug(
-        "xres in AMF: %s", oai::utils::conv::uint8_to_hex_string(res_star, 16));
+        "xres in AMF: %s", oai::utils::conv::uint8_to_hex_string(
+                               res_star, XRES_STAR_LENGTH_OCTETS));
 
-    bool auth_result_check =
-        Authentication_5gaka::equal_uint8(xres_star, res_star, 16);
+    bool auth_result_check = Authentication_5gaka::equal_uint8(
+        xres_star, res_star, XRES_STAR_LENGTH_OCTETS);
 
     if (!auth_result_check)  // Authentication failed
     {
@@ -459,7 +463,8 @@ void ausf_app::handle_ue_authentications_confirmation(
       confirm_response.setAuthResult(auth_result);
       // Send Kseaf to SEAF
       std::string kseaf_s;
-      kseaf_s = oai::utils::conv::uint8_to_hex_string(sc->ausf_av_s.kseaf, 32);
+      kseaf_s = oai::utils::conv::uint8_to_hex_string(
+          sc->ausf_av_s.kseaf, KSEAF_LENGTH_OCTETS);
       confirm_response.setKseaf(kseaf_s);
       // Send SUPI when supi exists
       if (!sc->supi.empty()) {
