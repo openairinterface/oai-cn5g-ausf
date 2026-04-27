@@ -30,6 +30,7 @@
 #define XRES_STAR_LENGTH_OCTETS (16)
 #define HXRES_STAR_LENGTH_OCTETS (16)
 
+#define SQN_LENGTH_OCTETS (6)
 #define AMF_LENGTH_OCTETS (2)
 
 #define KSEAF_LENGTH_OCTETS (32)
@@ -37,7 +38,7 @@
 #define KAMF_LENGTH_OCTETS (32)
 #define KGNB_LENGTH_OCTETS (32)
 
-#define AUTH_VECTOR_LENGTH_OCTETS 32
+#define AUTH_VECTOR_LENGTH_OCTETS (32)
 
 #define OP_LENGTH_OCTETS (16)
 #define K_LENGTH_OCTETS (16)
@@ -176,7 +177,7 @@ class Authentication_5gaka {
       uint8_t kamf[KAMF_LENGTH_OCTETS], uint8_t* knas);
   static void derive_kgnb(
       uint32_t uplinkCount, uint8_t accessType,
-      uint8_t kamf[KAMF_LENGTH_OCTETS], uint8_t* kgnb);
+      uint8_t kamf[KAMF_LENGTH_OCTETS], uint8_t (&kgnb)[KGNB_LENGTH_OCTETS]);
   static void handover_ncc_derive_knh(
       uint32_t uplinkCount, uint8_t accessType,
       uint8_t kamf[KAMF_LENGTH_OCTETS], uint8_t (&kgnb)[KGNB_LENGTH_OCTETS],

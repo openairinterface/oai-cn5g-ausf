@@ -410,7 +410,7 @@ void Authentication_5gaka::handover_ncc_derive_knh(
     uint8_t (&kgnb)[AUTH_VECTOR_LENGTH_OCTETS],
     uint8_t (&knh)[AUTH_VECTOR_LENGTH_OCTETS], int ncc, bool is_prev_kgnb_set,
     uint8_t (&prev_kgnb)[AUTH_VECTOR_LENGTH_OCTETS]) {
-  Logger::amf_n1().debug("derive_handover_ncc_knh ...");
+  Logger::ausf_app().debug("derive_handover_ncc_knh ...");
   uint8_t S[20], SS[ncc][35];
 
   if (is_prev_kgnb_set) {
