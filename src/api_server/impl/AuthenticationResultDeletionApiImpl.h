@@ -31,7 +31,7 @@
 
 #include <AuthenticationResultDeletionApi.h>
 
-#include <pistache/optional.h>
+#include <optional>
 
 #include "ProblemDetails.h"
 #include "ausf_app.hpp"
