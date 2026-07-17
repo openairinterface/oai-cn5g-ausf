@@ -304,7 +304,7 @@ pipeline {
             failure {
               sh "echo 'Ubuntu Image with LTTNG Builder for OAI-${NF} status is FAILURE' >> archives/${nf}_ubuntu_lttng_image_build.log"
               script {
-                recordFailure(null, false)
+                recordFailure(nfReportLink(), false)
               }
             }
           }
