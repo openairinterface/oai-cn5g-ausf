@@ -33,6 +33,7 @@ import groovy.transform.Field
 @Field def nf                              // NF name, lowercase
 @Field def NF                              // NF name, uppercase
 @Field def isPullRequest = false   // true if triggered by a PR
+@Field def doBuild       = true    // false if the PR has a 'documentation' label; skips build/integration stages
 @Field def nf_tag        = 'develop'  // image tag, set later
 @Field def nf_branch     = ''      // source branch
 @Field def targetBranch  = ''      // PR target branch
@@ -228,7 +229,26 @@ pipeline {
       }
     }
 
+    // A 'documentation' label marks a docs-only PR, so skip the build and integration test stages.
+    stage('Verify Labels') {
+      when {
+        expression { return isPullRequest }
+      }
+      steps {
+        script {
+          echo "PR labels: ${env.GITHUB_PR_LABELS}"
+          if ((env.GITHUB_PR_LABELS ?: '').toLowerCase().contains('documentation')) {
+            doBuild = false
+            echo "'documentation' label detected -- skipping 'Build Images and Run Checks' and '5G Core Network Integration Testing'"
+          }
+        }
+      }
+    }
+
     stage('Build Images and Run Checks') {
+      when {
+        expression { return doBuild }
+      }
       parallel {
         stage('Ubuntu ARM Neoverse V2 (Grace) Image Builder') {
           steps {
@@ -509,7 +529,7 @@ pipeline {
 
     stage('Sanity Check on Ubuntu') {
       when {
-        expression { return cfg.hasSanityCheck }
+        expression { return doBuild && cfg.hasSanityCheck }
       }
       steps {
         lock(ubuntuBuildResource) {
@@ -534,6 +554,9 @@ pipeline {
 
     // Exercises the whole 5G Core against this NF's freshly built image; per-test NF coverage in nfConfig.
     stage('5G Core Network Integration Testing') {
+      when {
+        expression { return doBuild }
+      }
       parallel {
         stage('Testing the tutorials') {
           when {
