@@ -197,8 +197,6 @@ void ausf_nrf::trigger_nf_heartbeat_procedure(uint64_t ms) {
 
   if ((http_response.status_code == oai::common::sbi::http_status_code::OK) or
       (http_response.status_code ==
-       oai::common::sbi::http_status_code::CREATED) or
-      (http_response.status_code ==
        oai::common::sbi::http_status_code::NO_CONTENT)) {
     is_heartbeat_success = true;
     // TODO: process the response
