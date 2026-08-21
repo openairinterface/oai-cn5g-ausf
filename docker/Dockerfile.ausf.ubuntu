@@ -51,7 +51,6 @@ COPY . /openair-ausf
 # Building AUSF
 WORKDIR /openair-ausf/build/scripts
 RUN  if [ "$ENABLE_LTTNG" = "true" ]; then DEBIAN_FRONTEND=noninteractive apt-get install --yes \
-        lttng-modules-dkms \
         liblttng-ust-dev \
         lttng-tools && \
         ldconfig && \
