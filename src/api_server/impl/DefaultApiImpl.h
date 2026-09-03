@@ -31,7 +31,7 @@
 
 #include <DefaultApi.h>
 
-#include <pistache/optional.h>
+#include <optional>
 
 #include "AuthenticationInfo.h"
 #include "ConfirmationData.h"
