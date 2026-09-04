@@ -143,5 +143,8 @@ void ausf_config_yaml::to_ausf_config(oai::config::ausf_config& cfg) {
     cfg.udm_addr.api_version = get_nf("udm")->get_sbi().get_api_version();
     cfg.udm_addr.uri_root    = get_nf(oai::config::UDM_CONFIG_NAME)->get_url();
   }
+  if (get_nf(oai::config::AUSF_CONFIG_NAME)) {
+    cfg.ausf_name = get_nf("ausf")->get_sbi().get_host();
+  }
 }
 }  // namespace oai::config
