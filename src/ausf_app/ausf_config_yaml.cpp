@@ -46,19 +46,22 @@ std::string ausf::to_string(const std::string& indent) const {
   out.append(indent).append(nf::to_string(indent));
 
   out.append(inner_indent)
-      .append(fmt::format(
-          BASE_FORMATTER, OUTER_LIST_ELEM, AUSF_CONFIG_INSTANCE_ID_LABEL,
-          inner_width, m_instance_id.get_value()));
+      .append(
+          fmt::format(
+              BASE_FORMATTER, OUTER_LIST_ELEM, AUSF_CONFIG_INSTANCE_ID_LABEL,
+              inner_width, m_instance_id.get_value()));
 
   out.append(inner_indent)
-      .append(fmt::format(
-          BASE_FORMATTER, OUTER_LIST_ELEM, AUSF_CONFIG_PID_DIRECTORY_LABEL,
-          inner_width, m_pid_directory.get_value()));
+      .append(
+          fmt::format(
+              BASE_FORMATTER, OUTER_LIST_ELEM, AUSF_CONFIG_PID_DIRECTORY_LABEL,
+              inner_width, m_pid_directory.get_value()));
 
   out.append(inner_indent)
-      .append(fmt::format(
-          BASE_FORMATTER, OUTER_LIST_ELEM, AUSF_CONFIG_AUSF_NAME_LABEL,
-          inner_width, m_ausf_name.get_value()));
+      .append(
+          fmt::format(
+              BASE_FORMATTER, OUTER_LIST_ELEM, AUSF_CONFIG_AUSF_NAME_LABEL,
+              inner_width, m_ausf_name.get_value()));
 
   return out;
 }
@@ -142,6 +145,9 @@ void ausf_config_yaml::to_ausf_config(oai::config::ausf_config& cfg) {
   if (get_nf(oai::config::UDM_CONFIG_NAME)) {
     cfg.udm_addr.api_version = get_nf("udm")->get_sbi().get_api_version();
     cfg.udm_addr.uri_root    = get_nf(oai::config::UDM_CONFIG_NAME)->get_url();
+  }
+  if (get_nf(oai::config::AUSF_CONFIG_NAME)) {
+    cfg.ausf_name = get_nf("ausf")->get_sbi().get_host();
   }
 }
 }  // namespace oai::config
