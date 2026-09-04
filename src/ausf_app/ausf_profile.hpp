@@ -232,14 +232,14 @@ class ausf_profile : public std::enable_shared_from_this<ausf_profile> {
    * @param
    * @return [std::string] nf fqdn
    */
-  std::string get_fqdn() const;
+  std::string get_nf_fqdn() const;
 
   /*
    * Set NF fqdn
    * @param [const fqdn_t &] fqdn: nf fqdn
    * @return void
    */
-  void set_fqdn(const std::string& fqdn);
+  void set_nf_fqdn(const std::string& fqdn);
 
   /*
    * Set NF instance ipv4_addresses

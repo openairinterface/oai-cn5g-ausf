@@ -53,6 +53,7 @@ void ausf_nrf::generate_ausf_profile() {
   ausf_nf_profile.set_nf_instance_id(ausf_instance_id);
   ausf_nf_profile.set_nf_instance_name("OAI-AUSF");
   ausf_nf_profile.set_nf_type("AUSF");
+  ausf_nf_profile.set_nf_fqdn(ausf_cfg.ausf_name);
   ausf_nf_profile.set_nf_status("REGISTERED");
   ausf_nf_profile.set_nf_heartBeat_timer(50);
   ausf_nf_profile.set_nf_priority(1);
