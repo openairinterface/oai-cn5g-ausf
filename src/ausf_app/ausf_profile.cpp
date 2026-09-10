@@ -124,12 +124,12 @@ void ausf_profile::add_snssai(const snssai_t& s) {
 }
 
 //------------------------------------------------------------------------------
-void ausf_profile::set_fqdn(const std::string& fqdN) {
+void ausf_profile::set_nf_fqdn(const std::string& fqdN) {
   fqdn = fqdN;
 }
 
 //------------------------------------------------------------------------------
-std::string ausf_profile::get_fqdn() const {
+std::string ausf_profile::get_nf_fqdn() const {
   return fqdn;
 }
 
