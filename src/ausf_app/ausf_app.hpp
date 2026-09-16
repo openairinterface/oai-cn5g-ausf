@@ -44,7 +44,7 @@ class security_context {
 class ausf_app {
  public:
   explicit ausf_app(const std::string& config_file, ausf_event& ev);
-  ausf_app(ausf_app const&) = delete;
+  ausf_app(ausf_app const&)       = delete;
   void operator=(ausf_app const&) = delete;
 
   virtual ~ausf_app();

@@ -16,8 +16,8 @@ namespace oai::ausf::app {
 class task_manager;
 class ausf_event {
  public:
-  ausf_event(){};
-  ausf_event(ausf_event const&) = delete;
+  ausf_event() {};
+  ausf_event(ausf_event const&)     = delete;
   void operator=(ausf_event const&) = delete;
 
   static ausf_event& get_instance() {
