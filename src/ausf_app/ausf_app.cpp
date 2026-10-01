@@ -26,7 +26,6 @@
 using namespace oai::ausf::app;
 using namespace oai::_3gpp::model;
 
-extern ausf_app* ausf_app_inst;
 extern std::shared_ptr<oai::sba::sbi_http_client> http_client_inst;
 using namespace oai::config;
 extern ausf_config ausf_cfg;

@@ -35,7 +35,8 @@ using namespace oai::ausf::app;
 
 class AUSFApiServer {
  public:
-  AUSFApiServer(Pistache::Address address, ausf_app* ausf_app_inst)
+  AUSFApiServer(
+      Pistache::Address address, const std::shared_ptr<ausf_app>& ausf_app_inst)
       : m_httpEndpoint(std::make_shared<Pistache::Http::Endpoint>(address)) {
     m_router  = std::make_shared<Pistache::Rest::Router>();
     m_address = address.host() + ":" + (address.port()).toString();
