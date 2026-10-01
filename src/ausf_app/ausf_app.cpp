@@ -11,15 +11,15 @@
 #include <stdexcept>
 #include <string>
 
+#include "ausf_sbi.hpp"
 #include "AuthenticationInfo.h"
 #include "AuthResult.h"
 #include "ConfirmationDataResponse.h"
 #include "ProblemDetails.h"
 #include "UEAuthenticationCtx.h"
-#include "ausf_nrf.hpp"
+#include "nf_service.hpp"
 #include "authentication_algorithms_with_5gaka.hpp"
 #include "conversions.hpp"
-#include "http_client.hpp"
 #include "logger.hpp"
 #include "sha256.hpp"
 
@@ -27,34 +27,35 @@ using namespace oai::ausf::app;
 using namespace oai::_3gpp::model;
 
 extern ausf_app* ausf_app_inst;
-extern std::shared_ptr<oai::http::http_client> http_client_inst;
+extern std::shared_ptr<oai::sba::sbi_http_client> http_client_inst;
 using namespace oai::config;
 extern ausf_config ausf_cfg;
-ausf_nrf* ausf_nrf_inst = nullptr;
+ausf_sbi* ausf_sbi_inst = nullptr;
 
 //------------------------------------------------------------------------------
-ausf_app::ausf_app(const std::string& config_file, ausf_event& ev)
+ausf_app::ausf_app(
+    const std::string& config_file, const std::shared_ptr<ausf_event>& ev)
     : event_sub(ev), contextId2security_context(), supi2security_context() {}
 
 //------------------------------------------------------------------------------
 ausf_app::~ausf_app() {
   Logger::ausf_app().debug("Delete AUSF_APP instance...");
-  if (ausf_nrf_inst) {
-    delete ausf_nrf_inst;
-    ausf_nrf_inst = nullptr;
+  if (ausf_sbi_inst) {
+    delete ausf_sbi_inst;
+    ausf_sbi_inst = nullptr;
   }
 }
 
 //------------------------------------------------------------------------------
 bool ausf_app::start() {
   Logger::ausf_app().startup("Starting...");
-  Logger::ausf_nrf().info("Create NRF TASK");
-  ausf_nrf_inst = new ausf_nrf(event_sub);
-  Logger::ausf_nrf().info("NRF TASK created");
+  Logger::ausf_sbi().info("Create NRF TASK");
+  ausf_sbi_inst = new ausf_sbi(event_sub, http_client_inst);
+  Logger::ausf_sbi().info("NRF TASK created");
   // Register to NRF if needed
   if (ausf_cfg.register_nrf) {
     try {
-      ausf_nrf_inst->register_to_nrf();
+      ausf_sbi_inst->register_to_nrf();
     } catch (std::exception& e) {
       Logger::ausf_app().error("Cannot create NRF TASK: %s", e.what());
       return false;
@@ -66,13 +67,13 @@ bool ausf_app::start() {
 
 //------------------------------------------------------------------------------
 void ausf_app::stop() {
-  if (ausf_nrf_inst and ausf_cfg.register_nrf) {
-    ausf_nrf_inst->deregister_to_nrf();
-    delete ausf_nrf_inst;
-    ausf_nrf_inst = nullptr;
-  } else if (ausf_nrf_inst) {
-    delete ausf_nrf_inst;
-    ausf_nrf_inst = nullptr;
+  if (ausf_sbi_inst and ausf_cfg.register_nrf) {
+    ausf_sbi_inst->deregister_to_nrf();
+    delete ausf_sbi_inst;
+    ausf_sbi_inst = nullptr;
+  } else if (ausf_sbi_inst) {
+    delete ausf_sbi_inst;
+    ausf_sbi_inst = nullptr;
   }
 }
 
@@ -141,7 +142,7 @@ void ausf_app::handle_ue_authentications(
   nlohmann::json auth_info =
       {};  // model AuthenticationInfo do not have ausfInstanceId field
   auth_info["servingNetworkName"] = snn;
-  auth_info["ausfInstanceId"]     = ausf_nrf_inst->get_nf_instance_id();
+  auth_info["ausfInstanceId"]     = ausf_sbi_inst->get_nf_instance_id();
 
   if (authentication_info
           .resynchronizationInfoIsSet())  // set ResynchronizationInfo
@@ -159,7 +160,7 @@ void ausf_app::handle_ue_authentications(
   }
 
   // Send request to UDM
-  oai::http::request http_request =
+  oai::sba::sbi_http_request http_request =
       http_client_inst->prepare_json_request(udm_uri, auth_info.dump());
   auto http_response = http_client_inst->send_http_request(
       oai::common::sbi::method_e::POST, http_request);
@@ -473,7 +474,7 @@ void ausf_app::handle_ue_authentications_confirmation(
 
       // Form request body
       nlohmann::json confirm_result_info  = {};
-      confirm_result_info["nfInstanceId"] = ausf_nrf_inst->get_nf_instance_id();
+      confirm_result_info["nfInstanceId"] = ausf_sbi_inst->get_nf_instance_id();
       confirm_result_info["success"]      = true;
 
       // TODO: Update timestamp
@@ -493,8 +494,9 @@ void ausf_app::handle_ue_authentications_confirmation(
           "confirmResultInfo: %s", confirm_result_info_str);
 
       // Send request to UDM
-      oai::http::request http_request = http_client_inst->prepare_json_request(
-          udm_uri, confirm_result_info_str);
+      oai::sba::sbi_http_request http_request =
+          http_client_inst->prepare_json_request(
+              udm_uri, confirm_result_info_str);
       auto http_response = http_client_inst->send_http_request(
           oai::common::sbi::method_e::POST, http_request);
 
