@@ -19,6 +19,7 @@
 
 #include <chrono>
 #include <iostream>
+#include <memory>
 #include <thread>
 
 #include "ausf-api-server.h"
@@ -26,8 +27,9 @@
 #include "ausf_app.hpp"
 #include "ausf_config.hpp"
 #include "ausf_config_yaml.hpp"
-#include "http_client.hpp"
 #include "logger.hpp"
+#include "nf_profile.hpp"
+#include "nf_service.hpp"
 #include "options.hpp"
 #include "pid_file.hpp"
 #include "pistache/http.h"
@@ -36,14 +38,14 @@ using namespace oai::ausf::app;
 using namespace oai::config;
 
 ausf_config ausf_cfg;
-ausf_app* ausf_app_inst              = nullptr;
-AUSFApiServer* api_server            = nullptr;
-ausf_http2_server* ausf_api_server_2 = nullptr;
-task_manager* tm_inst                = nullptr;
+std::shared_ptr<ausf_app> ausf_app_inst              = nullptr;
+std::unique_ptr<AUSFApiServer> api_server            = nullptr;
+std::unique_ptr<ausf_http2_server> ausf_api_server_2 = nullptr;
+std::unique_ptr<oai::sba::task_manager> tm_inst      = nullptr;
 
-std::shared_ptr<oai::http::http_client> http_client_inst = nullptr;
-std::unique_ptr<ausf_config_yaml> ausf_cfg_yaml          = nullptr;
-std::unique_ptr<lttng_configuration> lttng_config_yaml;
+std::shared_ptr<oai::sba::sbi_http_client> http_client_inst = nullptr;
+std::unique_ptr<ausf_config_yaml> ausf_cfg_yaml             = nullptr;
+std::unique_ptr<lttng_configuration> lttng_config_yaml      = nullptr;
 //------------------------------------------------------------------------------
 void my_app_signal_handler(int s) {
   auto shutdown_start = std::chrono::system_clock::now();
@@ -67,25 +69,21 @@ void my_app_signal_handler(int s) {
 
   // Delete instances
   if (api_server) {
-    delete api_server;
-    api_server = nullptr;
+    api_server.reset();
   }
 
   if (ausf_api_server_2) {
-    delete ausf_api_server_2;
-    ausf_api_server_2 = nullptr;
+    ausf_api_server_2.reset();
   }
   Logger::system().debug("AUSF API Servers memory done");
 
   if (tm_inst) {
-    delete tm_inst;
-    tm_inst = nullptr;
+    tm_inst.reset();
   }
   Logger::system().debug("Stopped the AUSF Task Manager.");
 
   if (ausf_app_inst) {
-    delete ausf_app_inst;
-    ausf_app_inst = nullptr;
+    ausf_app_inst.reset();
   }
 
   Logger::system().debug("AUSF APP memory done");
@@ -129,13 +127,14 @@ int main(int argc, char** argv) {
   Logger::set_lttng(static_cast<bool>(lttng_config_yaml->is_lttng_active()));
 
   Logger::init("ausf", Options::getlogStdout(), Options::getlogRotFilelog());
+  oai::sba::set_sba_logger(AUSF_APP);
   Logger::ausf_server().startup("Options parsed");
 
   std::signal(SIGTERM, my_app_signal_handler);
   std::signal(SIGINT, my_app_signal_handler);
 
   // Event subsystem
-  ausf_event ev;
+  auto ev = std::make_shared<ausf_event>();
 
   // Config
   Logger::ausf_server().debug(
@@ -152,25 +151,24 @@ int main(int argc, char** argv) {
   ausf_cfg_yaml->to_ausf_config(ausf_cfg);
 
   // HTTP Client
-  http_client_inst = oai::http::http_client::create_instance(
+  http_client_inst = oai::sba::sbi_http_client::create_instance(
       Logger::ausf_client(), ausf_cfg.http_request_timeout,
       ausf_cfg.sbi.if_name, ausf_cfg.http_version);
 
   // AUSF application layer
-  ausf_app_inst = new ausf_app(Options::getlibconfigConfig(), ev);
+  ausf_app_inst = std::make_shared<ausf_app>(Options::getlibconfigConfig(), ev);
   if (!ausf_app_inst->start()) {
     ausf_app_inst->stop();
     Logger::system().error("Could not start AUSF APP, exiting.");
     if (ausf_app_inst) {
-      delete ausf_app_inst;
-      ausf_app_inst = nullptr;
+      ausf_app_inst.reset();
     }
     return 1;
   }
 
   // Task Manager
-  tm_inst = new task_manager(ev);
-  std::thread task_manager_thread(&task_manager::run, tm_inst);
+  tm_inst = std::make_unique<oai::sba::task_manager>(ev);
+  std::thread task_manager_thread(&oai::sba::task_manager::run, tm_inst.get());
 
   // PID file
   std::string pid_file_name =
@@ -191,17 +189,17 @@ int main(int argc, char** argv) {
     Pistache::Address addr(
         std::string(inet_ntoa(*((struct in_addr*) &ausf_cfg.sbi.addr4))),
         Pistache::Port(ausf_cfg.sbi.port));
-    api_server = new AUSFApiServer(addr, ausf_app_inst);
+    api_server = std::make_unique<AUSFApiServer>(addr, ausf_app_inst);
     api_server->init(2);
-    std::thread ausf_manager(&AUSFApiServer::start, api_server);
+    std::thread ausf_manager(&AUSFApiServer::start, api_server.get());
     ausf_manager.join();
   } else {
     // AUSF NGHTTP API server (HTTP2)
-    ausf_api_server_2 = new ausf_http2_server(
+    ausf_api_server_2 = std::make_unique<ausf_http2_server>(
         oai::utils::conv::toString(ausf_cfg.sbi.addr4), ausf_cfg.sbi.port,
         ausf_app_inst);
     std::thread ausf_http2_manager(
-        &ausf_http2_server::start, ausf_api_server_2);
+        &ausf_http2_server::start, ausf_api_server_2.get());
     ausf_http2_manager.join();
   }
 

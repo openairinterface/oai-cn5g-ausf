@@ -6,17 +6,43 @@
 #define FILE_AUSF_EVENT_HPP_SEEN
 
 #include <boost/signals2.hpp>
-namespace bs2 = boost::signals2;
+#include <string>
 
 #include "ausf.h"
-#include "ausf_event_sig.hpp"
-#include "task_manager.hpp"
+#include "nf_event.hpp"
+
+namespace bs2 = boost::signals2;
 
 namespace oai::ausf::app {
-class task_manager;
-class ausf_event {
+
+// Signal for Loss of Connectivity
+// SUPI, Connectivity status, HTTP version
+typedef bs2::signal_type<
+    void(std::string, uint8_t, uint8_t),
+    bs2::keywords::mutex_type<bs2::dummy_mutex>>::type
+    loss_of_connectivity_sig_t;
+
+// Signal for UE Reachability for Data
+// SUPI, Reachability status, HTTP version
+typedef bs2::signal_type<
+    void(std::string, uint8_t, uint8_t),
+    bs2::keywords::mutex_type<bs2::dummy_mutex>>::type
+    ue_reachability_for_data_sig_t;
+
+// UE_REACHABILITY_FOR_SMS
+// LOCATION_REPORTING
+// CHANGE_OF_SUPI_PEI_ASSOCIATION
+// ROAMING_STATUS
+// COMMUNICATION_FAILURE
+// AVAILABILITY_AFTER_DNN_FAILURE
+// CN_TYPE_CHANGE
+
+}  // namespace oai::ausf::app
+
+namespace oai::ausf::app {
+class ausf_event : public oai::sba::nf_event {
  public:
-  ausf_event() {};
+  ausf_event()                      = default;
   ausf_event(ausf_event const&)     = delete;
   void operator=(ausf_event const&) = delete;
 
@@ -27,19 +53,8 @@ class ausf_event {
 
   // class register/handle event
   friend class ausf_app;
-  friend class ausf_nrf;
-  friend class task_manager;
+  friend class ausf_sbi;
 
-  //------------------------------------------------------------------------------
-  /*
-   * Subscribe to the task tick event
-   * @param [const task_sig_t::slot_type &] sig
-   * @param [uint64_t] period: interval between two events
-   * @param [uint64_t] start:
-   * @return void
-   */
-  bs2::connection subscribe_task_nf_heartbeat(
-      const task_sig_t::slot_type& sig, uint64_t period, uint64_t start = 0);
   //------------------------------------------------------------------------------
   /*
    * Subscribe to UE Loss of Connectivity Status signal
@@ -62,8 +77,6 @@ class ausf_event {
       const ue_reachability_for_data_sig_t::slot_type& sig);
 
  private:
-  task_sig_t task_tick;
-
   loss_of_connectivity_sig_t
       loss_of_connectivity;  // Signal for Loss of Connectivity Report
   ue_reachability_for_data_sig_t

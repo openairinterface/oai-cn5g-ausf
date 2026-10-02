@@ -25,8 +25,8 @@ namespace api {
 using namespace oai::_3gpp::model;
 
 AuthenticationResultDeletionApiImpl::AuthenticationResultDeletionApiImpl(
-    std::shared_ptr<Pistache::Rest::Router> rtr, ausf_app* ausf_app_inst,
-    std::string address)
+    std::shared_ptr<Pistache::Rest::Router> rtr,
+    const std::shared_ptr<ausf_app>& ausf_app_inst, std::string address)
     : AuthenticationResultDeletionApi(rtr),
       m_ausf_app(ausf_app_inst),
       m_address(address) {}

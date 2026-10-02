@@ -44,8 +44,8 @@ namespace api {
 using namespace oai::_3gpp::model;
 
 DefaultApiImpl::DefaultApiImpl(
-    std::shared_ptr<Pistache::Rest::Router> rtr, ausf_app* ausf_app_inst,
-    std::string address)
+    std::shared_ptr<Pistache::Rest::Router> rtr,
+    const std::shared_ptr<ausf_app>& ausf_app_inst, std::string address)
     : DefaultApi(rtr), m_ausf_app(ausf_app_inst), m_address(address) {}
 
 void DefaultApiImpl::eap_auth_method(

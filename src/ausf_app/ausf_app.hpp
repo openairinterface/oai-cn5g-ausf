@@ -7,6 +7,7 @@
 #include <pistache/http.h>
 
 #include <map>
+#include <memory>
 #include <shared_mutex>
 #include <string>
 
@@ -43,7 +44,8 @@ class security_context {
 // class ausf_config;
 class ausf_app {
  public:
-  explicit ausf_app(const std::string& config_file, ausf_event& ev);
+  explicit ausf_app(
+      const std::string& config_file, const std::shared_ptr<ausf_event>& ev);
   ausf_app(ausf_app const&)       = delete;
   void operator=(ausf_app const&) = delete;
 
@@ -74,7 +76,7 @@ class ausf_app {
       const std::string& contextId, std::shared_ptr<security_context> sc);
 
  private:
-  ausf_event& event_sub;
+  std::shared_ptr<ausf_event> event_sub;
 
   std::map<std::string, std::shared_ptr<security_context>>
       supi2security_context;
