@@ -22,7 +22,9 @@ using namespace oai::ausf::app;
 
 class ausf_http2_server {
  public:
-  ausf_http2_server(std::string addr, uint32_t port, ausf_app* ausf_app_inst)
+  ausf_http2_server(
+      std::string addr, uint32_t port,
+      const std::shared_ptr<ausf_app>& ausf_app_inst)
       : m_address(addr),
         m_port(port),
         server(),
@@ -51,7 +53,7 @@ class ausf_http2_server {
   std::string m_address;
   uint32_t m_port;
   http2 server;
-  ausf_app* m_ausf_app;
+  std::shared_ptr<ausf_app> m_ausf_app;
   bool running_server;
 };
 

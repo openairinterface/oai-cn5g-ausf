@@ -6,21 +6,21 @@ include_directories(${SRC_TOP_DIR}/api_server/)
 include_directories(${SRC_TOP_DIR}/common/)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/common)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/config)
-include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/http)
+include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/${AUSF_HTTP_CLIENT_DIR})
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/logger)
+include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/sba)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/utils)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/model)
 
 
 include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/model/ausf.cmake)
-include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/http/http.cmake)
+include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/sba/sba.cmake)
 
 add_library (AUSF STATIC
   ausf_app.cpp
   ausf_config.cpp
   ausf_config_yaml.cpp  
-  task_manager.cpp
-  ausf_event.cpp
+  ausf_event.cpp  
   ausf_profile.cpp
-  ausf_nrf.cpp 
+  ausf_sbi.cpp
 )

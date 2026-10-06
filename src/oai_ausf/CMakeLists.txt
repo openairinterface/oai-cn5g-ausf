@@ -225,6 +225,13 @@ include(CheckTypeSize)
 
 add_boolean_option( DISPLAY_LICENCE_INFO            False    "If a module has a licence banner to show")
 add_boolean_option( LOG_OAI                         False    "Thread safe logging utility")
+add_boolean_option( USE_NGHTTP2_CLIENT              False    "Use the nghttp2 HTTP client instead of the CPR HTTP client")
+
+if(USE_NGHTTP2_CLIENT)
+  set(AUSF_HTTP_CLIENT_DIR nghttp)
+else()
+  set(AUSF_HTTP_CLIENT_DIR http)
+endif()
 
 # System packages that are required
 # We use either the cmake buildin, in ubuntu are in: /usr/share/cmake*/Modules/
@@ -260,10 +267,11 @@ include_directories(${SRC_TOP_DIR}/api_server)
 include_directories(${SRC_TOP_DIR}/api_server/api)
 include_directories(${SRC_TOP_DIR}/api_server/impl)
 include_directories(${SRC_TOP_DIR}/5gaka)
-include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/http)
+include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/${AUSF_HTTP_CLIENT_DIR})
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/logger)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/model)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/ngap/libngap)
+include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/sba)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/utils)
 include_directories(${SRC_TOP_DIR}/${MOUNTED_COMMON}/utils/bstr)
 
@@ -274,7 +282,11 @@ add_executable(ausf
 
 ## Common modules
 include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/common/common.cmake)
-include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/http/http.cmake)
+if(USE_NGHTTP2_CLIENT)
+  include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/nghttp/nghttp.cmake)
+else()
+  include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/http/http.cmake)
+endif()
 include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/config/config.cmake)
 include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/logger/logger.cmake)
 include(${SRC_TOP_DIR}/${MOUNTED_COMMON}/utils/utils.cmake)
@@ -289,6 +301,10 @@ ENDIF(STATIC_LINKING)
 
 target_link_libraries (ausf ${ASAN} 
     -Wl,--start-group AUSF 3GPP_COMMON_TYPES 5GAKA AUSF_API -lnettle ${NETTLE_LIBRARIES} ${CRYPTO_LIBRARIES} -lnghttp2_asio -lfmt -lspdlog -lssl -lcrypto -lgmp -Wl,--end-group pthread m rt pistache curl yaml-cpp cpr::cpr)
+
+if(USE_NGHTTP2_CLIENT)
+  target_link_libraries(ausf nghttp2 boost_system boost_thread boost_date_time)
+endif()
     
 add_boolean_option(USE_LTTNG  False "Activate the LTTNG tracer, a debugging/monitoring framework" ON)
 if (USE_LTTNG)
