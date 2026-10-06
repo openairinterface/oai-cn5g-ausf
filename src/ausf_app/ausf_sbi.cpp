@@ -17,7 +17,7 @@ extern oai::config::ausf_config ausf_cfg;
 //------------------------------------------------------------------------------
 ausf_sbi::ausf_sbi(
     const std::shared_ptr<ausf_event>& ev,
-    const std::shared_ptr<oai::sba::sbi_http_client>& client_inst)
+    const std::shared_ptr<oai::sba::http_client>& client_inst)
     : oai::sba::nf_service(ev, client_inst) {
   generate_ausf_profile();
 }
@@ -80,7 +80,7 @@ uint64_t ausf_sbi::nrf_registration_retry_seconds() const {
 
 //------------------------------------------------------------------------------
 void ausf_sbi::on_registration_outcome(
-    bool success, const oai::sba::sbi_http_response& resp) {
+    bool success, const oai::sba::response& resp) {
   if (success) {
     Logger::ausf_sbi().info(
         "NF registration procedure successful (status %d)", resp.status_code);

@@ -26,7 +26,7 @@
 using namespace oai::ausf::app;
 using namespace oai::_3gpp::model;
 
-extern std::shared_ptr<oai::sba::sbi_http_client> http_client_inst;
+extern std::shared_ptr<oai::sba::http_client> http_client_inst;
 using namespace oai::config;
 extern ausf_config ausf_cfg;
 ausf_sbi* ausf_sbi_inst = nullptr;
@@ -159,7 +159,7 @@ void ausf_app::handle_ue_authentications(
   }
 
   // Send request to UDM
-  oai::sba::sbi_http_request http_request =
+  oai::sba::request http_request =
       http_client_inst->prepare_json_request(udm_uri, auth_info.dump());
   auto http_response = http_client_inst->send_http_request(
       oai::common::sbi::method_e::POST, http_request);
@@ -493,9 +493,8 @@ void ausf_app::handle_ue_authentications_confirmation(
           "confirmResultInfo: %s", confirm_result_info_str);
 
       // Send request to UDM
-      oai::sba::sbi_http_request http_request =
-          http_client_inst->prepare_json_request(
-              udm_uri, confirm_result_info_str);
+      oai::sba::request http_request = http_client_inst->prepare_json_request(
+          udm_uri, confirm_result_info_str);
       auto http_response = http_client_inst->send_http_request(
           oai::common::sbi::method_e::POST, http_request);
 

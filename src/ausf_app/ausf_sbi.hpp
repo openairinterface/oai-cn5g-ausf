@@ -15,7 +15,7 @@ class ausf_sbi : public oai::sba::nf_service {
  public:
   ausf_sbi(
       const std::shared_ptr<ausf_event>& ev,
-      const std::shared_ptr<oai::sba::sbi_http_client>& client_inst);
+      const std::shared_ptr<oai::sba::http_client>& client_inst);
   ausf_sbi(ausf_sbi const&)       = delete;
   ~ausf_sbi() override            = default;
   void operator=(ausf_sbi const&) = delete;
@@ -29,7 +29,7 @@ class ausf_sbi : public oai::sba::nf_service {
   bool nrf_registration_enabled() const override;
   uint64_t nrf_registration_retry_seconds() const override;
   void on_registration_outcome(
-      bool success, const oai::sba::sbi_http_response& resp) override;
+      bool success, const oai::sba::response& resp) override;
 
  private:
   ausf_profile ausf_nf_profile_;

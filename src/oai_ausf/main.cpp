@@ -43,9 +43,9 @@ std::unique_ptr<AUSFApiServer> api_server            = nullptr;
 std::unique_ptr<ausf_http2_server> ausf_api_server_2 = nullptr;
 std::unique_ptr<oai::sba::task_manager> tm_inst      = nullptr;
 
-std::shared_ptr<oai::sba::sbi_http_client> http_client_inst = nullptr;
-std::unique_ptr<ausf_config_yaml> ausf_cfg_yaml             = nullptr;
-std::unique_ptr<lttng_configuration> lttng_config_yaml      = nullptr;
+std::shared_ptr<oai::sba::http_client> http_client_inst = nullptr;
+std::unique_ptr<ausf_config_yaml> ausf_cfg_yaml         = nullptr;
+std::unique_ptr<lttng_configuration> lttng_config_yaml  = nullptr;
 //------------------------------------------------------------------------------
 void my_app_signal_handler(int s) {
   auto shutdown_start = std::chrono::system_clock::now();
@@ -151,7 +151,7 @@ int main(int argc, char** argv) {
   ausf_cfg_yaml->to_ausf_config(ausf_cfg);
 
   // HTTP Client
-  http_client_inst = oai::sba::sbi_http_client::create_instance(
+  http_client_inst = oai::sba::http_client::create_instance(
       Logger::ausf_client(), ausf_cfg.http_request_timeout,
       ausf_cfg.sbi.if_name, ausf_cfg.http_version);
 
