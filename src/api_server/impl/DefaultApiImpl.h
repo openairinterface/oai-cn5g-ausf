@@ -55,8 +55,8 @@ using namespace oai::_3gpp::model;
 class DefaultApiImpl : public oai::ausf_server::api::DefaultApi {
  public:
   DefaultApiImpl(
-      std::shared_ptr<Pistache::Rest::Router>, ausf_app* ausf_app_inst,
-      std::string address);
+      std::shared_ptr<Pistache::Rest::Router>,
+      const std::shared_ptr<ausf_app>& ausf_app_inst, std::string address);
   ~DefaultApiImpl() {}
 
   void eap_auth_method(
@@ -76,7 +76,7 @@ class DefaultApiImpl : public oai::ausf_server::api::DefaultApi {
       Pistache::Http::ResponseWriter& response);
 
  private:
-  ausf_app* m_ausf_app;
+  std::shared_ptr<ausf_app> m_ausf_app;
   std::string m_address;
 };
 

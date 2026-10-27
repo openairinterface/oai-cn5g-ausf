@@ -48,8 +48,8 @@ class AuthenticationResultDeletionApiImpl
     : public oai::ausf_server::api::AuthenticationResultDeletionApi {
  public:
   AuthenticationResultDeletionApiImpl(
-      std::shared_ptr<Pistache::Rest::Router>, ausf_app* ausf_app_inst,
-      std::string address);
+      std::shared_ptr<Pistache::Rest::Router>,
+      const std::shared_ptr<ausf_app>& ausf_app_inst, std::string address);
   ~AuthenticationResultDeletionApiImpl() {}
 
   void delete5g_aka_authentication_result(
@@ -58,7 +58,7 @@ class AuthenticationResultDeletionApiImpl
       const std::string& authCtxId, Pistache::Http::ResponseWriter& response);
 
  private:
-  ausf_app* m_ausf_app;
+  std::shared_ptr<ausf_app> m_ausf_app;
   std::string m_address;
 };
 

@@ -10,231 +10,94 @@
 using namespace oai::ausf::app;
 
 //------------------------------------------------------------------------------
-void ausf_profile::set_nf_instance_id(const std::string& instance_id) {
-  nf_instance_id = instance_id;
+ausf_profile::ausf_profile() : oai::sba::nf_profile(), ausf_info() {
+  nf_type = "AUSF";
 }
 
 //------------------------------------------------------------------------------
-void ausf_profile::get_nf_instance_id(std::string& instance_id) const {
-  instance_id = nf_instance_id;
+ausf_profile::ausf_profile(const std::string& id)
+    : oai::sba::nf_profile(id), ausf_info() {
+  nf_type = "AUSF";
 }
 
 //------------------------------------------------------------------------------
-std::string ausf_profile::get_nf_instance_id() const {
-  return nf_instance_id;
+ausf_profile::ausf_profile(const ausf_profile& other)
+    : oai::sba::nf_profile(), ausf_info() {
+  *this = other;
 }
 
 //------------------------------------------------------------------------------
-void ausf_profile::set_nf_instance_name(const std::string& instance_name) {
-  nf_instance_name = instance_name;
+ausf_profile& ausf_profile::operator=(const ausf_profile& other) {
+  if (this == &other) return *this;
+
+  nf_instance_id   = other.nf_instance_id;
+  nf_instance_name = other.nf_instance_name;
+  nf_type          = other.nf_type;
+  nf_status        = other.nf_status;
+  heartBeat_timer  = other.heartBeat_timer;
+  plmn_list        = other.plmn_list;
+  snssais          = other.snssais;
+  fqdn             = other.fqdn;
+  ipv4_addresses   = other.ipv4_addresses;
+  ipv6_addresses   = other.ipv6_addresses;
+  priority         = other.priority;
+  capacity         = other.capacity;
+  json_data        = other.json_data;
+  nf_services      = other.nf_services;
+  custom_info      = other.custom_info;
+  is_updated       = other.is_updated;
+  ausf_info        = other.ausf_info;
+  return *this;
 }
 
 //------------------------------------------------------------------------------
-void ausf_profile::get_nf_instance_name(std::string& instance_name) const {
-  instance_name = nf_instance_name;
+void ausf_profile::set_ausf_info(const oai::common::sbi::ausf_info_t& info) {
+  ausf_info = info;
 }
 
 //------------------------------------------------------------------------------
-std::string ausf_profile::get_nf_instance_name() const {
-  return nf_instance_name;
+void ausf_profile::get_ausf_info(oai::common::sbi::ausf_info_t& info) const {
+  info = ausf_info;
 }
 
 //------------------------------------------------------------------------------
-void ausf_profile::set_nf_type(const std::string& type) {
-  nf_type = type;
-}
-
-//------------------------------------------------------------------------------
-std::string ausf_profile::get_nf_type() const {
-  return nf_type;
-}
-//------------------------------------------------------------------------------
-void ausf_profile::set_nf_status(const std::string& status) {
-  nf_status = status;
-}
-
-//------------------------------------------------------------------------------
-void ausf_profile::get_nf_status(std::string& status) const {
-  status = nf_status;
-}
-
-//------------------------------------------------------------------------------
-std::string ausf_profile::get_nf_status() const {
-  return nf_status;
-}
-
-//------------------------------------------------------------------------------
-void ausf_profile::set_nf_heartBeat_timer(const int32_t& timer) {
-  heartBeat_timer = timer;
-}
-
-//------------------------------------------------------------------------------
-void ausf_profile::get_nf_heartBeat_timer(int32_t& timer) const {
-  timer = heartBeat_timer;
-}
-
-//------------------------------------------------------------------------------
-int32_t ausf_profile::get_nf_heartBeat_timer() const {
-  return heartBeat_timer;
-}
-
-//------------------------------------------------------------------------------
-void ausf_profile::set_nf_priority(const uint16_t& p) {
-  priority = p;
-}
-
-//------------------------------------------------------------------------------
-void ausf_profile::get_nf_priority(uint16_t& p) const {
-  p = priority;
-}
-
-//------------------------------------------------------------------------------
-uint16_t ausf_profile::get_nf_priority() const {
-  return priority;
-}
-
-//------------------------------------------------------------------------------
-void ausf_profile::set_nf_capacity(const uint16_t& c) {
-  capacity = c;
-}
-
-//------------------------------------------------------------------------------
-void ausf_profile::get_nf_capacity(uint16_t& c) const {
-  c = capacity;
-}
-
-//------------------------------------------------------------------------------
-uint16_t ausf_profile::get_nf_capacity() const {
-  return capacity;
-}
-
-//------------------------------------------------------------------------------
-void ausf_profile::set_nf_snssais(const std::vector<snssai_t>& s) {
-  snssais = s;
-}
-
-//------------------------------------------------------------------------------
-void ausf_profile::get_nf_snssais(std::vector<snssai_t>& s) const {
-  s = snssais;
-}
-
-//------------------------------------------------------------------------------
-void ausf_profile::add_snssai(const snssai_t& s) {
-  snssais.push_back(s);
-}
-
-//------------------------------------------------------------------------------
-void ausf_profile::set_nf_fqdn(const std::string& fqdN) {
-  fqdn = fqdN;
-}
-
-//------------------------------------------------------------------------------
-std::string ausf_profile::get_nf_fqdn() const {
-  return fqdn;
-}
-
-//------------------------------------------------------------------------------
-void ausf_profile::set_nf_ipv4_addresses(const std::vector<struct in_addr>& a) {
-  ipv4_addresses = a;
-}
-
-//------------------------------------------------------------------------------
-void ausf_profile::add_nf_ipv4_addresses(const struct in_addr& a) {
-  ipv4_addresses.push_back(a);
-}
-//------------------------------------------------------------------------------
-void ausf_profile::get_nf_ipv4_addresses(std::vector<struct in_addr>& a) const {
-  a = ipv4_addresses;
-}
-
-//------------------------------------------------------------------------------
-void ausf_profile::set_ausf_info(const oai::common::sbi::ausf_info_t& s) {
-  ausf_info = s;
-}
-
-//------------------------------------------------------------------------------
-void ausf_profile::get_ausf_info(oai::common::sbi::ausf_info_t& s) const {
-  s = ausf_info;
-}
-
-//------------------------------------------------------------------------------
-void ausf_profile::display() const {
-  Logger::ausf_app().debug("- NF instance info");
-  Logger::ausf_app().debug("    Instance ID: %s", nf_instance_id);
-  Logger::ausf_app().debug("    Instance name: %s", nf_instance_name);
-  Logger::ausf_app().debug("    Instance type: %s", nf_type);
-  Logger::ausf_app().debug("    Instance fqdn: %s", fqdn);
-  Logger::ausf_app().debug("    Status: %s", nf_status);
-  Logger::ausf_app().debug("    HeartBeat timer: %d", heartBeat_timer);
-  Logger::ausf_app().debug("    Priority: %d", priority);
-  Logger::ausf_app().debug("    Capacity: %d", capacity);
-  // SNSSAIs
-  if (snssais.size() > 0) {
-    Logger::ausf_app().debug("    SNSSAI:");
-  }
-  for (auto s : snssais) {
-    Logger::ausf_app().debug("        SST, SD: %d, %s", s.sst, s.sd);
-  }
-
-  // IPv4 Addresses
-  if (ipv4_addresses.size() > 0) {
-    Logger::ausf_app().debug("    IPv4 Addr:");
-  }
-  for (auto address : ipv4_addresses) {
-    Logger::ausf_app().debug("        %s", inet_ntoa(address));
-  }
+void ausf_profile::display() {
+  oai::sba::nf_profile::display();
 
   Logger::ausf_app().debug("\tAUSF Info");
   Logger::ausf_app().debug("\t\tGroupId: %s", ausf_info.groupid);
-  for (auto supi : ausf_info.supi_ranges) {
+  for (const auto& supi : ausf_info.supi_ranges) {
     Logger::ausf_app().debug(
         "\t\t SupiRanges: Start - %s, End - %s, Pattern - %s",
         supi.supi_range.start, supi.supi_range.end, supi.supi_range.pattern);
   }
-  for (auto route_ind : ausf_info.routing_indicators) {
+  for (const auto& route_ind : ausf_info.routing_indicators) {
     Logger::ausf_app().debug("\t\t Routing Indicators: %s", route_ind);
   }
 }
 
 //------------------------------------------------------------------------------
 void ausf_profile::to_json(nlohmann::json& data) const {
-  data["nfInstanceId"]   = nf_instance_id;
-  data["nfInstanceName"] = nf_instance_name;
-  data["nfType"]         = nf_type;
-  data["nfStatus"]       = nf_status;
-  data["heartBeatTimer"] = heartBeat_timer;
-  // SNSSAIs
-  data["sNssais"] = nlohmann::json::array();
-  for (auto s : snssais) {
-    nlohmann::json tmp = {};
-    tmp["sst"]         = s.sst;
-    tmp["sd"]          = s.sd;
-    data["sNssais"].push_back(tmp);
-  }
+  oai::sba::nf_profile::to_json(data);
+
+  // Preserve the AUSF registration payload produced before using the common
+  // NF profile implementation.
+  data.erase("json_data");
+  data.erase("nfServices");
+  if (snssais.empty()) data["sNssais"] = nlohmann::json::array();
   data["fqdn"] = fqdn;
-  // ipv4_addresses
-  data["ipv4Addresses"] = nlohmann::json::array();
-  for (auto address : ipv4_addresses) {
-    nlohmann::json tmp = inet_ntoa(address);
-    data["ipv4Addresses"].push_back(tmp);
-  }
 
-  data["priority"] = priority;
-  data["capacity"] = capacity;
-
-  // AUSF Info
   data["ausfInfo"]["groupId"]           = ausf_info.groupid;
   data["ausfInfo"]["supiRanges"]        = nlohmann::json::array();
   data["ausfInfo"]["routingIndicators"] = nlohmann::json::array();
-  for (auto supi : ausf_info.supi_ranges) {
-    nlohmann::json tmp = {};
-    tmp["start"]       = supi.supi_range.start;
-    tmp["end"]         = supi.supi_range.end;
-    tmp["pattern"]     = supi.supi_range.pattern;
-    data["ausfInfo"]["supiRanges"].push_back(tmp);
+  for (const auto& supi : ausf_info.supi_ranges) {
+    nlohmann::json item = {};
+    item["start"]       = supi.supi_range.start;
+    item["end"]         = supi.supi_range.end;
+    item["pattern"]     = supi.supi_range.pattern;
+    data["ausfInfo"]["supiRanges"].push_back(item);
   }
-  for (auto route_ind : ausf_info.routing_indicators) {
-    std::string tmp = route_ind;
+  for (const auto& route_ind : ausf_info.routing_indicators) {
     data["ausfInfo"]["routingIndicators"].push_back(route_ind);
   }
 
@@ -243,82 +106,72 @@ void ausf_profile::to_json(nlohmann::json& data) const {
 
 //------------------------------------------------------------------------------
 void ausf_profile::from_json(const nlohmann::json& data) {
+  snssais.clear();
+  ipv4_addresses.clear();
+  ausf_info = {};
+
   if (data.find("nfInstanceId") != data.end()) {
     nf_instance_id = data["nfInstanceId"].get<std::string>();
   }
-
   if (data.find("nfInstanceName") != data.end()) {
     nf_instance_name = data["nfInstanceName"].get<std::string>();
   }
-
   if (data.find("nfType") != data.end()) {
     nf_type = data["nfType"].get<std::string>();
   }
-
   if (data.find("nfStatus") != data.end()) {
     nf_status = data["nfStatus"].get<std::string>();
   }
-
   if (data.find("heartBeatTimer") != data.end()) {
     heartBeat_timer = data["heartBeatTimer"].get<int>();
   }
-  // sNssais
   if (data.find("sNssais") != data.end()) {
-    for (auto it : data["sNssais"]) {
-      snssai_t s = {};
-      s.sst      = it["sst"].get<int>();
-      s.sd       = it["sd"].get<std::string>();
-      snssais.push_back(s);
+    for (const auto& item : data["sNssais"]) {
+      snssai_t snssai = {};
+      snssai.sst      = item["sst"].get<int>();
+      snssai.sd       = item["sd"].get<std::string>();
+      snssais.push_back(snssai);
     }
   }
-
+  if (data.find("fqdn") != data.end()) {
+    fqdn = data["fqdn"].get<std::string>();
+  }
   if (data.find("ipv4Addresses") != data.end()) {
-    nlohmann::json addresses = data["ipv4Addresses"];
-
-    for (auto it : addresses) {
-      struct in_addr addr4 = {};
-      std::string address  = it.get<std::string>();
-      unsigned char buf_in_addr[sizeof(struct in_addr)];
-      if (inet_pton(AF_INET, oai::utils::trim(address).c_str(), buf_in_addr) ==
-          1) {
-        memcpy(&addr4, buf_in_addr, sizeof(struct in_addr));
-      } else {
+    for (const auto& item : data["ipv4Addresses"]) {
+      struct in_addr address = {};
+      auto value             = item.get<std::string>();
+      if (inet_pton(AF_INET, oai::utils::trim(value).c_str(), &address) != 1) {
         Logger::ausf_app().warn(
-            "Address conversion: Bad value %s", oai::utils::trim(address));
+            "Address conversion: Bad value %s", oai::utils::trim(value));
+        continue;
       }
-      add_nf_ipv4_addresses(addr4);
+      ipv4_addresses.push_back(address);
     }
   }
-
   if (data.find("priority") != data.end()) {
     priority = data["priority"].get<int>();
   }
-
   if (data.find("capacity") != data.end()) {
     capacity = data["capacity"].get<int>();
   }
 
-  // AUSF info
   if (data.find("ausfInfo") != data.end()) {
-    nlohmann::json info = data["ausfInfo"];
+    const auto& info = data["ausfInfo"];
     if (info.find("groupId") != info.end()) {
       ausf_info.groupid = info["groupId"].get<std::string>();
     }
     if (info.find("routingIndicators") != info.end()) {
-      nlohmann::json routing_indicators_list =
-          data["ausfInfo"]["routingIndicators"];
-      for (auto d : routing_indicators_list) {
-        ausf_info.routing_indicators.push_back(d);
+      for (const auto& indicator : info["routingIndicators"]) {
+        ausf_info.routing_indicators.push_back(indicator);
       }
     }
     if (info.find("supiRanges") != info.end()) {
-      nlohmann::json supi_ranges = data["ausfInfo"]["supiRanges"];
-      for (auto d : supi_ranges) {
-        oai::common::sbi::supi_range_info_item_t supi;
-        supi.supi_range.start   = d["start"];
-        supi.supi_range.end     = d["end"];
-        supi.supi_range.pattern = d["pattern"];
-        ausf_info.supi_ranges.push_back(supi);
+      for (const auto& range : info["supiRanges"]) {
+        oai::common::sbi::supi_range_info_item_t item = {};
+        item.supi_range.start                         = range["start"];
+        item.supi_range.end                           = range["end"];
+        item.supi_range.pattern                       = range["pattern"];
+        ausf_info.supi_ranges.push_back(item);
       }
     }
   }
