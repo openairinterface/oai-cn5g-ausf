@@ -391,8 +391,12 @@ void ausf_app::handle_ue_authentications_confirmation(
   Logger::ausf_app().info("Received res* %s", confirmation_data.getResStar());
 
   uint8_t res_star[16] = {0};
-  oai::utils::conv::hex_str_to_uint8(
-      confirmation_data.getResStar().c_str(), res_star);
+  // res* is a 16-byte value (32 hex chars); larger input would overflow this
+  // fixed-size buffer, so leave it zeroed and let the comparison fail below
+  if (confirmation_data.getResStar().length() == 32) {
+    oai::utils::conv::hex_str_to_uint8(
+        confirmation_data.getResStar().c_str(), res_star);
+  }
 
   ConfirmationDataResponse confirm_response;
   AuthResult auth_result = {};
