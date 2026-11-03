@@ -61,6 +61,8 @@ class ausf_app {
       const std::string& authCtxId, const ConfirmationData& confirmation_data,
       nlohmann::json& json_data, Pistache::Http::Code& code);
 
+  bool is_valid_res_star(const std::string& res_star) const;
+
   bool is_supi_2_security_context(const std::string& supi) const;
   std::shared_ptr<security_context> supi_2_security_context(
       const std::string& supi) const;

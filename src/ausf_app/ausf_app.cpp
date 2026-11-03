@@ -359,6 +359,16 @@ void ausf_app::handle_ue_authentications(
 }
 
 //------------------------------------------------------------------------------
+// res* is a 32-hex-character value; hex_str_to_uint8() decodes only up to
+// the first non-hex character and reports nothing, so validate the whole
+// string up front
+bool ausf_app::is_valid_res_star(const std::string& res_star) const {
+  return res_star.length() == 32 &&
+         res_star.find_first_not_of("0123456789abcdefABCDEF") ==
+             std::string::npos;
+}
+
+//------------------------------------------------------------------------------
 void ausf_app::handle_ue_authentications_confirmation(
     const std::string& auth_ctx_id, const ConfirmationData& confirmation_data,
     nlohmann::json& json_data, Pistache::Http::Code& code) {
@@ -391,8 +401,13 @@ void ausf_app::handle_ue_authentications_confirmation(
   Logger::ausf_app().info("Received res* %s", confirmation_data.getResStar());
 
   uint8_t res_star[16] = {0};
-  oai::utils::conv::hex_str_to_uint8(
-      confirmation_data.getResStar().c_str(), res_star);
+  // anything that is not exactly 32 hex chars (oversized input would overflow
+  // this fixed buffer, non-hex input would only partially decode) leaves the
+  // buffer zeroed and the comparison below fails with 403
+  if (is_valid_res_star(confirmation_data.getResStar())) {
+    oai::utils::conv::hex_str_to_uint8(
+        confirmation_data.getResStar().c_str(), res_star);
+  }
 
   ConfirmationDataResponse confirm_response;
   AuthResult auth_result = {};
